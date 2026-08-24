@@ -8,7 +8,7 @@
   <ItemGroup>
     <ClInclude Include="src\dpch.h" />
     <ClInclude Include="src\Interpreter\D++.h" />
-    <ClInclude Include="src\Interpreter\Tokens.h" />
+    <ClInclude Include="src\Interpreter\Tokenization.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\main.cpp">
@@ -16,6 +16,6 @@
     </ClCompile>
     <ClCompile Include="src\dpch.cpp" />
     <ClCompile Include="src\Interpreter\D++.cpp" />
-    <ClCompile Include="src\Interpreter\Tokens.cpp" />
+    <ClCompile Include="src\Interpreter\Tokenization.cpp" />
   </ItemGroup>
 </Project>

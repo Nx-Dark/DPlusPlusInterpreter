@@ -147,7 +147,7 @@
   <ItemGroup>
     <ClInclude Include="src\dpch.h" />
     <ClInclude Include="src\Interpreter\D++.h" />
-    <ClInclude Include="src\Interpreter\Tokens.h" />
+    <ClInclude Include="src\Interpreter\Tokenization.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\main.cpp" />
@@ -155,7 +155,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Interpreter\D++.cpp" />
-    <ClCompile Include="src\Interpreter\Tokens.cpp" />
+    <ClCompile Include="src\Interpreter\Tokenization.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

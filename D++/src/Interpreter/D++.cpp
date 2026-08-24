@@ -1,7 +1,7 @@
 #include "dpch.h"
 #include "D++.h"
 
-#include "Tokens.h"
+#include "Tokenization.h"
 
 namespace DXX {
 
@@ -50,18 +50,21 @@ namespace DXX {
 				break;
 			}
 			run(line);
-			m_HadError = false;
+			s_HadError = false;
 		}
 	}
 
 	void DXX::run(const std::string& srcLine)
 	{
-		if (m_HadError) std::exit(65);
+		if (s_HadError) std::exit(65);
 
-		Tokens tokens{ Tokens::Tokenizer(srcLine) };
+		Tokens tokens{};
 
-		for (const auto& t : tokens)
-			std::println("{0}", t);
+		Tokenizer tokenizer{ srcLine };
+		tokenizer.Tokenize(tokens);
+
+		for (auto& t : tokens)
+			std::println("Lex: {0}, Literal: {1}, Type: {2}, Line: {3}", t.m_Lexeme, t.m_Literal, t.m_Type, t.m_Line);
 
 		std::println();
 	}
@@ -96,12 +99,14 @@ namespace DXX {
 	}
 
 	//error reporting
-	void DXX::error(int line, const std::string& message) {
+	void DXX::error(int line, const std::string& message) 
+	{
 		reportError(line, "", message);
 	}
 
-	void DXX::reportError(int line, const std::string& where, const std::string& message) {
+	void DXX::reportError(int line, const std::string& where, const std::string& message) 
+	{
 		std::println("[line: {0}] -> Error: {1}: {2}", line, where, message);
-		m_HadError = true;
+		s_HadError = true;
 	}
 }

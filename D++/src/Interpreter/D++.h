@@ -2,8 +2,6 @@
 
 namespace DXX {
 
-	
-
 	class DXX
 	{
 	private:
@@ -11,7 +9,7 @@ namespace DXX {
 		int m_ArgC{};
 		std::vector<std::string> m_ArgV{};
 
-		bool m_HadError{};
+		inline static bool s_HadError{};
 
 	public:
 		DXX(int argc, const std::vector<std::string>& argv);
@@ -30,10 +28,10 @@ namespace DXX {
 		
 		//error reporting
 	public:
-		void error(int line, const std::string& message);
+		static void error(int line, const std::string& message);
 
 	private:
-		void reportError(int line, const std::string& where, const std::string& message);
+		static void reportError(int line, const std::string& where, const std::string& message);
 	};
 
 }
