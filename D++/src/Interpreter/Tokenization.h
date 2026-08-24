@@ -2,62 +2,6 @@
 
 namespace DXX {
 
-	inline std::string TokenTypeToString(TokenType type) {
-		switch (type) {
-		case TokenType::LEFT_PAREN: return "LEFT_PAREN";
-		case TokenType::RIGHT_PAREN: return "RIGHT_PAREN";
-		case TokenType::LEFT_BRACE: return "LEFT_BRACE";
-		case TokenType::RIGHT_BRACE: return "RIGHT_BRACE";
-		case TokenType::LEFT_SQ_BRACE: return "LEFT_SQ_BRACE";
-		case TokenType::RIGHT_SQ_BRACE: return "RIGHT_SQ_BRACE";
-		case TokenType::COMMA: return "COMMA";
-		case TokenType::DOT: return "DOT";
-		case TokenType::MINUS: return "MINUS";
-		case TokenType::PLUS: return "PLUS";
-		case TokenType::SEMICOLON: return "SEMICOLON";
-		case TokenType::SLASH: return "SLASH";
-		case TokenType::STAR: return "STAR";
-		case TokenType::BANG: return "BANG";
-		case TokenType::BANG_EQUAL: return "BANG_EQUAL";
-		case TokenType::EQUAL: return "EQUAL";
-		case TokenType::EQUAL_EQUAL: return "EQUAL_EQUAL";
-		case TokenType::GREATER: return "GREATER";
-		case TokenType::GREATER_EQUAL: return "GREATER_EQUAL";
-		case TokenType::LESS: return "LESS";
-		case TokenType::LESS_EQUAL: return "LESS_EQUAL";
-		case TokenType::PLUS_EQUAL: return "PLUS_EQUAL";
-		case TokenType::MINUS_EQUAL: return "MINUS_EQUAL";
-		case TokenType::SLASH_EQUAL: return "SLASH_EQUAL";
-		case TokenType::STAR_EQUAL: return "STAR_EQUAL";
-		case TokenType::IDENTIFIER: return "IDENTIFIER";
-		case TokenType::STRING: return "STRING";
-		case TokenType::NUMBER: return "NUMBER";
-		case TokenType::AND: return "AND";
-		case TokenType::CLASS: return "CLASS";
-		case TokenType::ELSE: return "ELSE";
-		case TokenType::FALSE: return "FALSE";
-		case TokenType::FUNC: return "FUNC";
-		case TokenType::FOR: return "FOR";
-		case TokenType::IF: return "IF";
-		case TokenType::NIL: return "NIL";
-		case TokenType::OR: return "OR";
-		case TokenType::PRINT: return "PRINT";
-		case TokenType::RETURN: return "RETURN";
-		case TokenType::SUPER: return "SUPER";
-		case TokenType::THIS: return "THIS";
-		case TokenType::TRUE: return "TRUE";
-		case TokenType::VAR: return "VAR";
-		case TokenType::WHILE: return "WHILE";
-		case TokenType::END_OF_FILE: return "END_OF_FILE";
-		default: return "UNKNOWN";
-		}
-	}
-
-	inline std::string LiteralToString(const Literal& literal)
-	{
-
-	}
-
 	enum class TokenType {
 
 		// Single-character tokens.
@@ -83,10 +27,13 @@ namespace DXX {
 
 	};
 
+	std::string TokenTypeToString(TokenType type);
+
 	struct Nil {
 		bool operator==(const Nil&) const = default;
 	};
 	using Literal = std::variant<Nil, float, std::string, bool>;
+	std::string LiteralToString(const Literal& literal);
 
 	struct Token {
 		TokenType m_Type{};
@@ -99,6 +46,10 @@ namespace DXX {
 		Token(TokenType type, std::string& lexeme, Literal literal, int line)
 			: m_Type(type), m_Lexeme(std::move(lexeme)), m_Literal(literal), m_Line(line) {
 
+		}
+
+		std::string toString() {
+			return "Line: " + std::to_string(m_Line) + ", Lex: " + m_Lexeme + ", Literal: " + LiteralToString(m_Literal) + ", TokenType: " + TokenTypeToString(m_Type);
 		}
 	};
 
@@ -153,8 +104,7 @@ namespace DXX {
 			{"True", TokenType::TRUE}
 		};
 		
-		//start and current tokens
-		int line{ 1 }; //which line the token is located at
+		int line{ 1 };
 
 		std::stringstream m_SC{};
 	public:
@@ -169,5 +119,69 @@ namespace DXX {
 
 		inline bool isalphNumeric(char ch) { return std::isalpha(ch) || std::isdigit(ch); }
 	};
+
+	//stuff
+	inline std::string TokenTypeToString(TokenType type) {
+		switch (type) {
+		case TokenType::LEFT_PAREN: return "LEFT_PAREN";
+		case TokenType::RIGHT_PAREN: return "RIGHT_PAREN";
+		case TokenType::LEFT_BRACE: return "LEFT_BRACE";
+		case TokenType::RIGHT_BRACE: return "RIGHT_BRACE";
+		case TokenType::LEFT_SQ_BRACE: return "LEFT_SQ_BRACE";
+		case TokenType::RIGHT_SQ_BRACE: return "RIGHT_SQ_BRACE";
+		case TokenType::COMMA: return "COMMA";
+		case TokenType::DOT: return "DOT";
+		case TokenType::MINUS: return "MINUS";
+		case TokenType::PLUS: return "PLUS";
+		case TokenType::SEMICOLON: return "SEMICOLON";
+		case TokenType::SLASH: return "SLASH";
+		case TokenType::STAR: return "STAR";
+		case TokenType::BANG: return "BANG";
+		case TokenType::BANG_EQUAL: return "BANG_EQUAL";
+		case TokenType::EQUAL: return "EQUAL";
+		case TokenType::EQUAL_EQUAL: return "EQUAL_EQUAL";
+		case TokenType::GREATER: return "GREATER";
+		case TokenType::GREATER_EQUAL: return "GREATER_EQUAL";
+		case TokenType::LESS: return "LESS";
+		case TokenType::LESS_EQUAL: return "LESS_EQUAL";
+		case TokenType::PLUS_EQUAL: return "PLUS_EQUAL";
+		case TokenType::MINUS_EQUAL: return "MINUS_EQUAL";
+		case TokenType::SLASH_EQUAL: return "SLASH_EQUAL";
+		case TokenType::STAR_EQUAL: return "STAR_EQUAL";
+		case TokenType::IDENTIFIER: return "IDENTIFIER";
+		case TokenType::STRING: return "STRING";
+		case TokenType::NUMBER: return "NUMBER";
+		case TokenType::AND: return "AND";
+		case TokenType::CLASS: return "CLASS";
+		case TokenType::ELSE: return "ELSE";
+		case TokenType::FALSE: return "FALSE";
+		case TokenType::FUNC: return "FUNC";
+		case TokenType::FOR: return "FOR";
+		case TokenType::IF: return "IF";
+		case TokenType::NIL: return "NIL";
+		case TokenType::OR: return "OR";
+		case TokenType::PRINT: return "PRINT";
+		case TokenType::RETURN: return "RETURN";
+		case TokenType::SUPER: return "SUPER";
+		case TokenType::THIS: return "THIS";
+		case TokenType::TRUE: return "TRUE";
+		case TokenType::VAR: return "VAR";
+		case TokenType::WHILE: return "WHILE";
+		case TokenType::END_OF_FILE: return "END_OF_FILE";
+		default: return "UNKNOWN";
+		}
+	}
+
+	inline std::string LiteralToString(const Literal& literal)
+	{
+		return std::visit([](auto&& arg) -> std::string {
+			using T = std::decay_t<decltype(arg)>;
+			if constexpr (std::is_same_v<T, Nil>) return "NIL";
+			else if constexpr (std::is_same_v<T, float>) return std::to_string(arg);
+			else if constexpr (std::is_same_v<T, std::string>) return arg;
+			else if constexpr (std::is_same_v<T, bool>) return arg ? "True" : "False";
+			return "";
+			}, literal);
+	}
 
 }

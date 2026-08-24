@@ -64,7 +64,7 @@ namespace DXX {
 		tokenizer.Tokenize(tokens);
 
 		for (auto& t : tokens)
-			std::println("Lex: {0}, Literal: {1}, Type: {2}, Line: {3}", t.m_Lexeme, t.m_Literal, t.m_Type, t.m_Line);
+			std::println("{0}", t.toString());
 
 		std::println();
 	}
