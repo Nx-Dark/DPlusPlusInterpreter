@@ -16,3 +16,7 @@
 #include <filesystem>
 #include <fstream>
 #include <variant>
+#include <cstddef>
+#include <type_traits>
+
+#include "Core/Core.h"

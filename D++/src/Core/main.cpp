@@ -1,6 +1,8 @@
 #include "dpch.h"
 
-#include "Interpreter/D++.h""
+#if 0
+
+#include "Interpreter/D++.h"
 
 
 void signalHandler(int signal)
@@ -25,9 +27,10 @@ int main(int argc, char* argv[])
 	}
 	
 	//instantiating the iterpreter
-	DXX::DXX* interpreter{ new DXX::DXX(argc, arg_counts) };
-	interpreter->launch();
-	delete interpreter;
+	DXX::DXX interpreter{ new DXX::DXX(argc, arg_counts) };
+	interpreter.launch();
 
 	return 0;
 }
+
+#endif

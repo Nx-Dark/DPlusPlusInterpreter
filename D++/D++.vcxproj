@@ -145,17 +145,28 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\AST\AstPrinter.h" />
+    <ClInclude Include="src\AST\ExpressionVisitor.h" />
+    <ClInclude Include="src\Core\Core.h" />
     <ClInclude Include="src\dpch.h" />
     <ClInclude Include="src\Interpreter\D++.h" />
-    <ClInclude Include="src\Interpreter\Tokenization.h" />
+    <ClInclude Include="src\AST\Expression.h" />
+    <ClInclude Include="src\Tokenizer\Literal.h" />
+    <ClInclude Include="src\Parser\Parser.h" />
+    <ClInclude Include="src\Tokenizer\Token.h" />
+    <ClInclude Include="src\Tokenizer\Tokenization.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AST\AstPrinter.cpp" />
+    <ClCompile Include="src\AST\Expression.cpp" />
     <ClCompile Include="src\Core\main.cpp" />
+    <ClCompile Include="src\Core\test.cpp" />
     <ClCompile Include="src\dpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Interpreter\D++.cpp" />
-    <ClCompile Include="src\Interpreter\Tokenization.cpp" />
+    <ClCompile Include="src\Parser\Parser.cpp" />
+    <ClCompile Include="src\Tokenizer\Tokenization.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -26,12 +26,17 @@ namespace DXX {
 		//parsing file helper function
 		std::string parseFile(const std::filesystem::path& filePath);
 		
-		//error reporting
 	public:
-		static void error(int line, const std::string& message);
+		inline static void error(int line, const std::string& message)
+		{
+			reportError(line, "", message);
+		}
 
-	private:
-		static void reportError(int line, const std::string& where, const std::string& message);
+		inline static void reportError(int line, const std::string& where, const std::string& message)
+		{
+			std::println("[line: {0}] -> Error: {1}: {2}", line, where, message);
+			s_HadError = true;
+		}
 	};
 
 }

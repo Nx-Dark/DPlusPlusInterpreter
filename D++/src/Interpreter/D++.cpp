@@ -1,7 +1,7 @@
 #include "dpch.h"
 #include "D++.h"
 
-#include "Tokenization.h"
+#include "Tokenizer/Tokenization.h"
 
 namespace DXX {
 
@@ -58,10 +58,7 @@ namespace DXX {
 	{
 		if (s_HadError) std::exit(65);
 
-		Tokens tokens{};
-
-		Tokenizer tokenizer{ srcLine };
-		tokenizer.Tokenize(tokens);
+		Tokens tokens{ Tokenizer::Tokenize(srcLine) };
 
 		for (auto& t : tokens)
 			std::println("{0}", t.toString());
@@ -89,24 +86,8 @@ namespace DXX {
 
 		file.read(sourceCode.data(), size);
 
-		if (!file) {
-			file.close();
-			return {};
-		}
-
 		file.close();
 		return sourceCode;
 	}
 
-	//error reporting
-	void DXX::error(int line, const std::string& message) 
-	{
-		reportError(line, "", message);
-	}
-
-	void DXX::reportError(int line, const std::string& where, const std::string& message) 
-	{
-		std::println("[line: {0}] -> Error: {1}: {2}", line, where, message);
-		s_HadError = true;
-	}
 }
