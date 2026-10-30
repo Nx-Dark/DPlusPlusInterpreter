@@ -1,5 +1,13 @@
 #pragma once
 
+#ifndef VERSION
+#define VERSION 1.1f
+#endif
+
+#ifndef BUILD_TYPE
+#define BUILD_TYPE "BETA"
+#endif
+
 namespace DXX {
 
 	class DXX

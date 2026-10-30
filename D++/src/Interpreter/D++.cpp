@@ -20,7 +20,7 @@ namespace DXX {
 	void DXX::launch()
 	{	
 		std::println("---------------------------------");
-		std::println("Using D++ Interpreter v1.0 Beta");
+		std::println("Using D++ Interpreter v{0} {1}", VERSION, BUILD_TYPE);
 		std::println("---------------------------------\n");
 
 		if (m_ArgC > 2) {
