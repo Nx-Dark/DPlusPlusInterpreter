@@ -2,6 +2,9 @@
 #include "D++.h"
 
 #include "Tokenizer/Tokenization.h"
+#include "Parser/Parser.h"
+
+#include "AST/AstPrinter.h"
 
 namespace DXX {
 
@@ -60,8 +63,12 @@ namespace DXX {
 
 		Tokens tokens{ Tokenizer::Tokenize(srcLine) };
 
-		for (auto& t : tokens)
-			std::println("{0}", t.toString());
+		//creating the parser
+		Parser parser{ std::move(tokens) };
+		Scope<Expr> expression{ parser.Parse() };
+
+		AstPrinter astPrinter{};
+		std::println("{0}", astPrinter.Print(*expression));
 
 		std::println();
 	}

@@ -1,9 +1,43 @@
 #pragma once
 
 #include "AST/Expression.h"
-#include "Tokenizer/Token.h"
 
 namespace DXX
 {
+
+	class Parser
+	{
+	private:
+		Tokens m_Tokens{};
+		size_t m_CurTknIdx{}; //points to the next token aboutta be consumed in the token collection;
+
+	public:
+		Parser() = default;
+		Parser(Tokens tokens);
+		Parser(const Parser&) = delete;
+		~Parser() = default;
+
+		Scope<Expr> Parse();
+
+	private:
+		//defining grammar rules for the parser;
+		Scope<Expr> expression();
+		Scope<Expr> equality();
+		Scope<Expr> comparison();
+		Scope<Expr> term();
+		Scope<Expr> factor();
+		Scope<Expr> unary();
+		Scope<Expr> primary();
+
+		//helper functions;
+		//to easily navigate in the token collection;
+		const Token& peek() const;
+		const Token& previous() const;
+
+		Token advance();
+		bool check(TokenType type) const;
+		bool match(TokenType type);
+		bool isAtEnd() const;
+	};
 
 }

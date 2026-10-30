@@ -114,14 +114,13 @@ namespace DXX
 		~Tokens() = default;
 
 		inline const std::vector<Token>& GetTokens() const { return m_Tokens; }
-		inline Token& at(std::size_t _index) { return m_Tokens.at(_index); }
-		inline Token& operator[](std::size_t index) { return m_Tokens[index]; }
+		inline Token& at(size_t _index) { return m_Tokens.at(_index); }
+		inline const Token& at(size_t _index) const { return m_Tokens.at(_index); }
+		inline Token& operator[](size_t index) { return m_Tokens[index]; }
+		inline const Token& operator[](size_t index) const { return m_Tokens[index]; }
 
 		inline void operator<<(const Token& token) { m_Tokens.push_back(token); }
 		inline void operator<<(Token&& token) { m_Tokens.push_back(std::move(token)); }
-
-		inline const Token& at(std::size_t _index) const { return m_Tokens.at(_index); }
-		inline const Token& operator[](std::size_t index) const { return m_Tokens[index]; }
 
 		inline void push_token(const Token& token) { m_Tokens.push_back(token); }
 		inline void remove_token(const Token& token) {

@@ -1,5 +1,7 @@
 #include "dpch.h"
 
+#if 0
+
 #include "AST/AstPrinter.h"
 
 int main(int argc, char** argv)
@@ -21,3 +23,5 @@ int main(int argc, char** argv)
 
 	return 0;
 }
+
+#endif

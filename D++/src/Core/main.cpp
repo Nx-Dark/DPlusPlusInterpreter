@@ -1,7 +1,5 @@
 #include "dpch.h"
 
-#if 0
-
 #include "Interpreter/D++.h"
 
 
@@ -27,10 +25,8 @@ int main(int argc, char* argv[])
 	}
 	
 	//instantiating the iterpreter
-	DXX::DXX interpreter{ new DXX::DXX(argc, arg_counts) };
+	DXX::DXX interpreter{ argc, arg_counts };
 	interpreter.launch();
 
 	return 0;
 }
-
-#endif

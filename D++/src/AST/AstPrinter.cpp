@@ -1,4 +1,7 @@
 #include "dpch.h"
+
+#if 1
+
 #include "AstPrinter.h"
 
 namespace DXX
@@ -31,3 +34,5 @@ namespace DXX
 	}
 
 }
+
+#endif

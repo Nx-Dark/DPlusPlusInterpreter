@@ -1,5 +1,7 @@
 #pragma once
 
+#if 1
+
 #include "Expression.h"
 #include "ExpressionVisitor.h"
 
@@ -21,3 +23,5 @@ namespace DXX
 	};
 
 }
+
+#endif
