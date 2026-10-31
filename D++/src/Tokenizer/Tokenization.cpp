@@ -1,28 +1,36 @@
 #include "dpch.h"
 #include "Tokenization.h"
 
-#include "Interpreter/D++.h"
-
 namespace DXX {
 
-	Tokens Tokenizer::Tokenize(const std::string& sourceCode)
+	static void DiagnosticReportErrors(DiagnosticEngine& engine, DiagnosticSeverity severity, const std::string& message, SourceLocation srcLocation)
+	{
+		Diagnostic errorReport{ severity, DiagnosticPhase::LEXING, message, srcLocation };
+		engine.Report(std::move(errorReport));
+	}
+
+	Tokens Tokenizer::Tokenize(const std::string& sourceCode, const std::string& sourceName, DiagnosticEngine& diagnosticEngine)
 	{
 		sourceStream.str(sourceCode);
 		sourceStream.clear();
 		sourceStream.seekg(0);
 
 		line = 1;
+		column = 1;
 		Tokens tokens{};
 
-		char ch;
+		while (sourceStream.peek() != EOF) {
 
-		while (sourceStream.get(ch)) {
+			const std::size_t tokenLine{ line };
+			const std::size_t tokenColumn{ column };
+
+			char ch{ consume() };
+
 			TokenType type{};
 			std::string lexeme{ ch };
 			Literal literal;
 
-			if (ch == ' ' || ch == '\t' || ch == '\r') continue;
-			else if (ch == '\n') { line++; continue; }
+			if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n') { continue; }
 
 			if (punctuationChars.find(ch) != std::string::npos)
 			{
@@ -37,7 +45,7 @@ namespace DXX {
 					case '(': type = TokenType::LEFT_PAREN; break;
 					case '.': type = TokenType::DOT; break;
 					case ',': type = TokenType::COMMA; break;
-					default: DXX::error(line, "Unknown Puncuation Operator!"); continue;
+					default: continue;
 				}
 
 			}
@@ -47,28 +55,28 @@ namespace DXX {
 
 				switch (ch)
 				{
-					case '!': if (next == '=') { lexeme += next; sourceStream.get(); type = TokenType::BANG_EQUAL; } else {type = TokenType::BANG;} break;
-					case '=': if (next == '=') { lexeme += next; sourceStream.get(); type = TokenType::EQUAL_EQUAL; } else {type = TokenType::EQUAL;} break;
-					case '>': if (next == '=') { lexeme += next; sourceStream.get(); type = TokenType::GREATER_EQUAL; } else {type = TokenType::GREATER;} break;
-					case '<': if (next == '=') { lexeme += next; sourceStream.get(); type = TokenType::LESS_EQUAL; } else {type = TokenType::LESS;} break;
-					case '+': if (next == '=') { lexeme += next; sourceStream.get(); type = TokenType::PLUS_EQUAL; } else {type = TokenType::PLUS;} break;
-					case '-': if (next == '=') { lexeme += next; sourceStream.get(); type = TokenType::MINUS_EQUAL; } else {type = TokenType::MINUS;} break;
+					case '!': if (next == '=') { lexeme += consume(); type = TokenType::BANG_EQUAL; } else {type = TokenType::BANG;} break;
+					case '=': if (next == '=') { lexeme += consume(); type = TokenType::EQUAL_EQUAL; } else {type = TokenType::EQUAL;} break;
+					case '>': if (next == '=') { lexeme += consume(); type = TokenType::GREATER_EQUAL; } else {type = TokenType::GREATER;} break;
+					case '<': if (next == '=') { lexeme += consume(); type = TokenType::LESS_EQUAL; } else {type = TokenType::LESS;} break;
+					case '+': if (next == '=') { lexeme += consume(); type = TokenType::PLUS_EQUAL; } else {type = TokenType::PLUS;} break;
+					case '-': if (next == '=') { lexeme += consume(); type = TokenType::MINUS_EQUAL; } else {type = TokenType::MINUS;} break;
 					case '/':
 						if (next == '=') 
 						{ 
-							lexeme += next; sourceStream.get();
+							lexeme += consume();
 							type = TokenType::SLASH_EQUAL; 
 						} 
 						else if (next == '/') {
-							while (sourceStream.peek() != '\n' && sourceStream.peek() != EOF) sourceStream.get();
+							while (sourceStream.peek() != '\n' && sourceStream.peek() != EOF) consume();
 							continue;
 						}
 						else type = TokenType::SLASH; 
 
 						break;
 
-					case '*': if (next == '=') { lexeme += next; sourceStream.get(); type = TokenType::STAR_EQUAL; } else { type = TokenType::STAR; } break;
-					default: DXX::error(line, "Unknown Operator/Character!"); continue;
+					case '*': if (next == '=') { lexeme += consume(); type = TokenType::STAR_EQUAL; } else { type = TokenType::STAR; } break;
+					default: continue;
 				}
 
 			}
@@ -77,22 +85,24 @@ namespace DXX {
 				switch (ch)
 				{
 					case '"': {
-						if(!string(lexeme)) continue;
+						if(!string(lexeme, sourceName, diagnosticEngine, tokenLine, tokenColumn)) continue;
 						type = TokenType::STRING;
 						break;
 					}
 					default:
-						if (std::isdigit(ch)) {
-							number(lexeme);
+						if (std::isdigit(static_cast<unsigned char>(ch))) {
+							if (!number(lexeme, sourceName, diagnosticEngine, tokenLine, tokenColumn)) continue;
 							type = TokenType::NUMBER;
 						}
-						else if (ch == '_' || std::isalpha(ch)) {
+						else if (ch == '_' || std::isalpha(static_cast<unsigned char>(ch))) {
 							identifier(lexeme);
 							type = TokenType::IDENTIFIER;
 						}
 
 						else {
-							DXX::error(line, "Unexpected Character!");
+							DiagnosticReportErrors(diagnosticEngine, DiagnosticSeverity::ERROR, std::string{ "Unexpected Character: '" } + ch + "'",
+								{ sourceName, tokenLine, tokenColumn, 0 });
+
 							continue;
 						}
 
@@ -124,58 +134,111 @@ namespace DXX {
 			else if (type == TokenType::NONE)
 				continue;
 
-			tokens << Token{ type, lexeme, literal, line };
+			tokens << Token{ type, lexeme, literal, tokenLine, tokenColumn };
 
 		}
 
-		tokens << Token{ TokenType::END_OF_FILE, "", Nil{}, line };
+		tokens << Token{ TokenType::END_OF_FILE, "", Nil{}, line, column };
 
 		return tokens;
 	}
 
-	bool Tokenizer::string(std::string& lex)
+	char Tokenizer::consume()
+	{
+		char ch{ static_cast<char>(sourceStream.get()) };
+
+		if (ch == '\n')
+		{
+			line++;
+			column = 1;
+		}
+		else
+			column++;
+
+		return ch;
+	}
+
+	bool Tokenizer::string(std::string& lex, const std::string& sourceName, DiagnosticEngine& diagnosticEngine, std::size_t startLine, std::size_t startColumn)
 	{
 		while (sourceStream.peek() != '"' && sourceStream.peek() != EOF)
 		{
-			if (sourceStream.peek() == '\n') line++;
-			lex += static_cast<char>(sourceStream.get());
+			lex += consume();
 		}
 
 		if (sourceStream.peek() == EOF)
 		{
-			DXX::error(line, "Unterminated String!");
+			DiagnosticReportErrors(diagnosticEngine, DiagnosticSeverity::ERROR, "Unterminated String Literal.",
+				{ sourceName, startLine, startColumn, 0 });
+
 			return false;
 		}
 
 		//closing '"';
-		lex += static_cast<char>(sourceStream.get());
+		lex += consume();
 		return true;
 	}
 
-	void Tokenizer::number(std::string& lex)
+	bool Tokenizer::number(std::string& lex, const std::string& sourceName, DiagnosticEngine& diagnosticEngine, std::size_t startLine, std::size_t startColumn)
 	{
-		while (std::isdigit(sourceStream.peek())) {
-			lex += sourceStream.get();
+		while (std::isdigit(static_cast<unsigned char>(sourceStream.peek()))) {
+			lex += consume();
 		}
 
 		if (sourceStream.peek() == '.') {
+			 
 			sourceStream.get();
 			int next{ sourceStream.peek() };
 			sourceStream.unget();
 
-			if (std::isdigit(next)) {
-				lex += static_cast<char>(sourceStream.get());
+			if (std::isdigit(static_cast<unsigned char>(next))) {
+				lex += consume();
 
-				while (std::isdigit(sourceStream.peek())) {
-					lex += static_cast<char>(sourceStream.get());
+				while (std::isdigit(static_cast<unsigned char>(sourceStream.peek()))) {
+					lex += consume();
 				}
+				
+				if (sourceStream.peek() == '.')
+				{
+					sourceStream.get();
+					next = sourceStream.peek();
+					sourceStream.unget();
+
+					if (std::isdigit(static_cast<unsigned char>(next)) || next == '.')
+					{
+						while (std::isdigit(static_cast<unsigned char>(sourceStream.peek())) || sourceStream.peek() == '.')
+							consume();
+
+						DiagnosticReportErrors(diagnosticEngine, DiagnosticSeverity::ERROR, "Invalid numeric literal.",
+							{ sourceName, startLine, startColumn, 0 });
+
+						return false;
+					}
+				}
+
 			}
+			
 		}
+
+		//identifier issues with numbers;
+		if (std::isalpha(static_cast<unsigned char>(sourceStream.peek())) || sourceStream.peek() == '_')
+		{
+			DiagnosticReportErrors(diagnosticEngine, DiagnosticSeverity::ERROR, "Invalid numeric literal.",
+				{ sourceName, startLine, startColumn, 0 });
+
+			while (isalphNumeric(sourceStream.peek()) || sourceStream.peek() == '_' || sourceStream.peek() == '.')
+				consume();
+
+			return false;
+		}
+
+		return true;
 	}
 
-	void Tokenizer::identifier(std::string& lex)
+	bool Tokenizer::identifier(std::string& lex)
 	{
-		while (isalphNumeric(sourceStream.peek()) || sourceStream.peek() == '_') lex += sourceStream.get();
+		while (isalphNumeric(sourceStream.peek()) || sourceStream.peek() == '_') lex += consume();
+
+		return true;
 	}
 
 }

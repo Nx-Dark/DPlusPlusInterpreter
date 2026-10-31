@@ -1,5 +1,5 @@
 #include "dpch.h"
-#include "D++.h"
+#include "Application.h"
 
 #include "Tokenizer/Tokenization.h"
 #include "Parser/Parser.h"
@@ -8,16 +8,16 @@
 
 namespace DXX {
 
-	DXX::DXX(int argc, const std::vector<std::string>& argv)
-		: m_ArgC(argc), m_ArgV(argv)
+	Application::Application(int argc, const std::vector<std::string>& argv)
+		: m_ArgC{ argc }, m_ArgV{ argv }, m_DiagnosticReporter{ m_DiagnosticEngine, m_SourceManager }
 	{
 	}
 
-	DXX::~DXX()
+	Application::~Application()
 	{
 	}
 
-	void DXX::launch()
+	void Application::launch()
 	{	
 		std::println("---------------------------------");
 		std::println("Using D++ Interpreter v{0} {1}", VERSION, BUILD_TYPE);
@@ -36,13 +36,14 @@ namespace DXX {
 
 	}
 
-	void DXX::runFile(const std::string& filePath)
+	void Application::runFile(const std::string& filePath)
 	{
 		std::string sourceCode{ parseFile(filePath) };
-		run(sourceCode);
+		std::println("{0}", filePath);
+		run(sourceCode, filePath);
 	}
 
-	void DXX::runPrompt()
+	void Application::runPrompt()
 	{
 		while(true)
 		{
@@ -52,29 +53,43 @@ namespace DXX {
 				std::println("\nExiting D++ Interpreter!");
 				break;
 			}
-			run(line);
-			s_HadError = false;
+			run(line, "InteractiveMode");
 		}
 	}
 
-	void DXX::run(const std::string& srcLine)
+	void Application::run(const std::string& sourceCode, const std::string& sourceName)
 	{
-		if (s_HadError) std::exit(65);
-
-		Tokens tokens{ Tokenizer::Tokenize(srcLine) };
+		//clear diagnostics data;
+		m_DiagnosticEngine.Clear();
+		
+		m_SourceManager.AddSource(sourceName, sourceCode);
+		Tokens tokens{ Tokenizer::Tokenize(sourceCode, sourceName, m_DiagnosticEngine) };
 
 		//creating the parser
-		Parser parser{ std::move(tokens) };
+		Parser parser{ std::move(tokens), m_DiagnosticEngine, sourceName };
 		Scope<Expr> expression{ parser.Parse() };
+		
+		//evalution and interpreting does here(future plans);
 
-		AstPrinter astPrinter{};
-		std::println("{0}", astPrinter.Print(*expression));
+		//reporting diagnostic data;
+		m_DiagnosticReporter.ReportDiagnostics();
+
+		if (expression)
+		{
+			AstPrinter astPrinter{};
+			std::println("{0}", astPrinter.Print(*expression));
+		}
+
+		//for (const auto& token : tokens)
+		//{
+		//	std::println("{0}", token.toString());
+		//}
 
 		std::println();
 	}
 
 	//helpers
-	std::string DXX::parseFile(const std::filesystem::path& filePath)
+	std::string Application::parseFile(const std::filesystem::path& filePath)
 	{
 		std::error_code ec{};
 		auto size{ std::filesystem::file_size(filePath, ec) };

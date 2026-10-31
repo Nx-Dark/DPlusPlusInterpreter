@@ -3,6 +3,8 @@
 #include "Literal.h"
 #include "Token.h"
 
+#include "Diagnostics/DiagnosticEngine.h"
+
 namespace DXX {
 
 	class Tokenizer
@@ -30,18 +32,21 @@ namespace DXX {
 		};
 
 		inline static std::stringstream sourceStream{};
-		inline static int line{ 1 };
+		inline static std::size_t line{ 1 };
+		inline static std::size_t column{ 1 };
 
 	public:
-		static Tokens Tokenize(const std::string& sourceCode);
+		static Tokens Tokenize(const std::string& sourceCode, const std::string& sourceName, DiagnosticEngine& diagnosticEngine);
 
 	private:
-		static bool string(std::string& lex);
-		static void number(std::string& lex);
-		static void identifier(std::string& lex);
+		static bool string(std::string& lex, const std::string& sourceName, DiagnosticEngine& diagnosticEngine, std::size_t startLine, std::size_t startColumn);
+		static bool number(std::string& lex, const std::string& sourceName, DiagnosticEngine& diagnosticEngine, std::size_t startLine, std::size_t startColumn);
+		static bool identifier(std::string& lex);
+
+		static char consume();
 
 		inline static bool isalphNumeric(int ch) { 
-			return ch != EOF && (std::isalpha(static_cast<unsigned char>(ch)) || std::isdigit(static_cast<unsigned char>(ch))); 
+			return (ch != EOF) && (std::isalnum(static_cast<unsigned char>(ch))); 
 		}
 	};
 

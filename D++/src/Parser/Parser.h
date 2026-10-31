@@ -2,18 +2,28 @@
 
 #include "AST/Expression.h"
 
+#include "Diagnostics/Diagnostic.h"
+#include "Diagnostics/DiagnosticEngine.h"
+
 namespace DXX
 {
 
 	class Parser
 	{
 	private:
+
+		//parse error struct
+		struct ParseError {};
+
 		Tokens m_Tokens{};
 		size_t m_CurTknIdx{}; //points to the next token aboutta be consumed in the token collection;
 
+		DiagnosticEngine& m_DiagnosticEngine;
+		std::string m_SourceName{};
+
 	public:
 		Parser() = default;
-		Parser(Tokens tokens);
+		Parser(Tokens tokens, DiagnosticEngine& m_DiagnosticEngine, const std::string& srcName);
 		Parser(const Parser&) = delete;
 		~Parser() = default;
 
@@ -38,6 +48,9 @@ namespace DXX
 		bool check(TokenType type) const;
 		bool match(TokenType type);
 		bool isAtEnd() const;
+
+		//error handling
+		ParseError error(const Token& token, const std::string& message);
 	};
 
 }

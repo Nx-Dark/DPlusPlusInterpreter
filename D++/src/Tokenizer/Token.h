@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Literal.h"
+#include <cstddef>
 
 namespace DXX
 {
@@ -91,17 +92,18 @@ namespace DXX
 		TokenType m_Type{};
 		std::string m_Lexeme{};
 		Literal m_Literal{};
-		int m_Line{};
+		std::size_t m_Line{};
+		std::size_t m_Column{};
 
-		Token(TokenType type, std::string lexeme, Literal literal, int line)
-			: m_Type(type), m_Lexeme(std::move(lexeme)), m_Literal(std::move(literal)), m_Line(line) {
+		Token(TokenType type, std::string lexeme, Literal literal, std::size_t line, std::size_t column)
+			: m_Type(type), m_Lexeme(std::move(lexeme)), m_Literal(std::move(literal)), m_Line(line), m_Column{ column } {
 
 		}
 
 		bool operator==(const Token&) const = default;
 
 		std::string toString() const {
-			return "Line: " + std::to_string(m_Line) + ", Lex: " + m_Lexeme + ", Literal: " + LiteralToString(m_Literal) + ", TokenType: " + TokenTypeToString(m_Type);
+			return "Line: " + std::to_string(m_Line) + ", Column: " + std::to_string(m_Column) + ", Lex: " + m_Lexeme + ", Literal: " + LiteralToString(m_Literal) + ", TokenType: " + TokenTypeToString(m_Type);
 		}
 	};
 

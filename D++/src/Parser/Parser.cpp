@@ -4,12 +4,29 @@
 namespace DXX
 {
 
-	Parser::Parser(Tokens tokens)
-		: m_Tokens{ std::move(tokens) } { }
+	Parser::Parser(Tokens tokens, DiagnosticEngine& diagnosticEngine, const std::string& srcName)
+		: m_Tokens{ std::move(tokens) }, m_DiagnosticEngine{ diagnosticEngine }, m_SourceName{ srcName }
+	{
+	}
 
 	Scope<Expr> Parser::Parse()
 	{
-		return expression();
+		Scope<Expr> expr{}; //this is the goddamn expression AST;
+
+		try
+		{
+			expr = expression();
+
+			if (!isAtEnd())
+				throw error(peek(), "Unexpected token after Expression.");
+		}
+
+		catch (const ParseError& error)
+		{
+			return nullptr;
+		}
+
+		return expr;
 	}
 
 	//defining functions for grammar rules for the parser
@@ -119,17 +136,14 @@ namespace DXX
 			{
 				Scope<Expr> expr{ expression() };
 				if (!check(TokenType::RIGHT_PAREN)) {
-					std::println("Error");
-					break;
+					throw error(peek(), "Expected ')' after Expression.");
 				}
 
 				advance();
 				return CreateScope<GroupingExpr>(std::move(expr));
 			}
 			default:
-				//temporary;
-				std::println("Eror");
-				break;
+				throw error(token, "Expected an Expression.");
 		}
 
 		return {};
@@ -176,6 +190,22 @@ namespace DXX
 	bool Parser::isAtEnd() const
 	{
 		return peek().m_Type == TokenType::END_OF_FILE;
+	}
+
+	//error handling
+	Parser::ParseError Parser::error(const Token& token, const std::string& message)
+	{
+
+		Diagnostic diag{
+			DiagnosticSeverity::ERROR,
+			DiagnosticPhase::PARSING,
+			message,
+			{m_SourceName, token.m_Line, token.m_Column, 0}
+		};
+
+		m_DiagnosticEngine.Report(std::move(diag));
+
+		return ParseError{};
 	}
 
 }

@@ -5,6 +5,7 @@
 namespace DXX
 {
 
+	//for AstPrinter, returns string;
 	std::string LiteralExpr::Accept(ExprVisitor& visitor) const
 	{
 		return visitor.visitLiteral(*this);

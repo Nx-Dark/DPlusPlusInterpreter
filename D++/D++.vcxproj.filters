@@ -7,7 +7,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\dpch.h" />
-    <ClInclude Include="src\Interpreter\D++.h" />
+    <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Tokenizer\Tokenization.h" />
     <ClInclude Include="src\Parser\Parser.h" />
     <ClInclude Include="src\AST\Expression.h" />
@@ -16,17 +16,24 @@
     <ClInclude Include="src\Tokenizer\Token.h" />
     <ClInclude Include="src\AST\ExpressionVisitor.h" />
     <ClInclude Include="src\AST\AstPrinter.h" />
+    <ClInclude Include="src\Diagnostics\Diagnostic.h" />
+    <ClInclude Include="src\Diagnostics\DiagnosticEngine.h" />
+    <ClInclude Include="src\Diagnostics\DiagnosticReporter.h" />
+    <ClInclude Include="src\Source\SourceFile.h" />
+    <ClInclude Include="src\Source\SourceManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\main.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="src\dpch.cpp" />
-    <ClCompile Include="src\Interpreter\D++.cpp" />
+    <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Tokenizer\Tokenization.cpp" />
     <ClCompile Include="src\Parser\Parser.cpp" />
     <ClCompile Include="src\AST\AstPrinter.cpp" />
     <ClCompile Include="src\AST\Expression.cpp" />
-    <ClCompile Include="src\Core\test.cpp" />
+    <ClCompile Include="src\Diagnostics\DiagnosticEngine.cpp" />
+    <ClCompile Include="src\Diagnostics\DiagnosticReporter.cpp" />
+    <ClCompile Include="src\Source\SourceManager.cpp" />
   </ItemGroup>
 </Project>
