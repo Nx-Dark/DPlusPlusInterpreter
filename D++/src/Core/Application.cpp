@@ -5,6 +5,7 @@
 #include "Parser/Parser.h"
 
 #include "AST/AstPrinter.h"
+#include "Interpreter/Interpreter.h"
 
 namespace DXX {
 
@@ -74,10 +75,21 @@ namespace DXX {
 		//reporting diagnostic data;
 		m_DiagnosticReporter.ReportDiagnostics();
 
+		//return if there are lexing or parsing errors
+		if (m_DiagnosticEngine.HasErrors()) return;
+
+		//if (expression)
+		//{
+		//	AstPrinter astPrinter{};
+		//	std::println("{0}", astPrinter.Print(*expression));
+		//}
+
 		if (expression)
 		{
-			AstPrinter astPrinter{};
-			std::println("{0}", astPrinter.Print(*expression));
+			Interpreter interpreter{};
+			Literal literal{ expression->Accept(interpreter) };
+
+			std::println("{0}", LiteralToString(literal));
 		}
 
 		//for (const auto& token : tokens)

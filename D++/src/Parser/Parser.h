@@ -32,6 +32,8 @@ namespace DXX
 	private:
 		//defining grammar rules for the parser;
 		Scope<Expr> expression();
+		Scope<Expr> logicalOr();
+		Scope<Expr> logicalAnd();
 		Scope<Expr> equality();
 		Scope<Expr> comparison();
 		Scope<Expr> term();

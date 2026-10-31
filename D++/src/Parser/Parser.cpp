@@ -32,7 +32,39 @@ namespace DXX
 	//defining functions for grammar rules for the parser
 	Scope<Expr> Parser::expression()
 	{
-		return equality();
+		return logicalOr();
+	}
+
+	Scope<Expr> Parser::logicalOr()
+	{
+		Scope<Expr> expr{ logicalAnd() };
+
+		while (check(TokenType::OR))
+		{
+			Token op{ advance() };
+
+			Scope<Expr> rightExpr{ logicalAnd() };
+
+			expr = CreateScope<BinaryExpr>(std::move(expr), std::move(op), std::move(rightExpr));
+		}
+
+		return expr;
+	}
+
+	Scope<Expr> Parser::logicalAnd()
+	{
+		Scope<Expr> expr{ equality() };
+
+		while (check(TokenType::AND))
+		{
+			Token op{ advance() };
+
+			Scope<Expr> rightExpr{ equality() };
+
+			expr = CreateScope<BinaryExpr>(std::move(expr), std::move(op), std::move(rightExpr));
+		}
+
+		return expr;
 	}
 
 	Scope<Expr> Parser::equality()

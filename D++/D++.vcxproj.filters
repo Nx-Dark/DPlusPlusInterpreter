@@ -21,6 +21,8 @@
     <ClInclude Include="src\Diagnostics\DiagnosticReporter.h" />
     <ClInclude Include="src\Source\SourceFile.h" />
     <ClInclude Include="src\Source\SourceManager.h" />
+    <ClInclude Include="src\AST\EvaluatorVisitor.h" />
+    <ClInclude Include="src\Interpreter\Interpreter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\main.cpp">
@@ -35,5 +37,6 @@
     <ClCompile Include="src\Diagnostics\DiagnosticEngine.cpp" />
     <ClCompile Include="src\Diagnostics\DiagnosticReporter.cpp" />
     <ClCompile Include="src\Source\SourceManager.cpp" />
+    <ClCompile Include="src\Interpreter\Interpreter.cpp" />
   </ItemGroup>
 </Project>
