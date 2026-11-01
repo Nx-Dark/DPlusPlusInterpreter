@@ -10,6 +10,8 @@ namespace DXX
 	class UnaryExpr;
 	class BinaryExpr;
 	class GroupingExpr;
+	class VariableExpr;
+	class AssignExpr;
 
 	//visitor interface for evaluator visitors;
 	class EvaluatorVisitor
@@ -17,10 +19,12 @@ namespace DXX
 	public:
 		virtual ~EvaluatorVisitor() = default;
 
-		virtual Literal visitLiteral (const LiteralExpr& literalExpr) = 0;
-		virtual Literal visitUnary   (const UnaryExpr& unaryExpr) = 0;
-		virtual Literal visitBinary  (const BinaryExpr& binaryExpr) = 0;
-		virtual Literal visitGrouping(const GroupingExpr& groupingExpr) = 0;
+		virtual Literal visitLiteral    (const LiteralExpr& literalExpr)   = 0;
+		virtual Literal visitUnary      (const UnaryExpr& unaryExpr)       = 0;
+		virtual Literal visitBinary     (const BinaryExpr& binaryExpr)     = 0;
+		virtual Literal visitGrouping   (const GroupingExpr& groupingExpr) = 0;
+		virtual Literal visitVariable   (const VariableExpr& variableExpr) = 0;
+		virtual Literal visitAssignment (const AssignExpr& assignExpr)     = 0;
 	};
 
 }

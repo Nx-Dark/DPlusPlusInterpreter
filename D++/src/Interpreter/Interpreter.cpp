@@ -14,8 +14,8 @@ namespace DXX
 		else return true;
 	}
 
-	Interpreter::Interpreter(DiagnosticEngine& engine, const std::string& sourceName)
-		: m_DiagnosticEngine{ engine }, m_SourceName{ sourceName }
+	Interpreter::Interpreter(DiagnosticEngine& engine)
+		: m_DiagnosticEngine{ engine }
 	{
 
 	}
@@ -187,6 +187,28 @@ namespace DXX
 		return groupingExpr.m_Expr->Accept(*this);
 	}
 
+	Literal Interpreter::visitVariable(const VariableExpr& variableExpr)
+	{
+		const auto& varName{ variableExpr.m_Token.m_Lexeme };
+
+		const auto& varLiteral{ m_Environment.get(varName) };
+
+		if (varLiteral)
+			return varLiteral.value();
+
+		throw error(variableExpr.m_Token, "Undefined Variable.");
+	}
+
+	Literal Interpreter::visitAssignment(const AssignExpr& assignExpr)
+	{
+		Literal value{ assignExpr.m_Expr->Accept(*this) };
+
+		if (m_Environment.assign(assignExpr.m_Identifier.m_Lexeme, value))
+			return value;
+		
+		throw error(assignExpr.m_Identifier, "Undefined Variable.");
+	}
+
 	//------------------------------------------------------------------
 
 	void Interpreter::visitExpressionStmt(const ExpressionStmt& expressionStmt)
@@ -199,6 +221,16 @@ namespace DXX
 		Literal literal{ printStmt.m_Expr->Accept(*this) };
 
 		std::println("{0}", LiteralToString(literal));
+	}
+
+	void Interpreter::visitVarStmt(const VarStmt& varStmt)
+	{
+		Literal value{ Nil{} };
+
+		if (varStmt.m_InitializerExpr)
+			value = varStmt.m_InitializerExpr->Accept(*this);
+
+		m_Environment.define(varStmt.m_Token.m_Lexeme, value);
 	}
 
 	//runtime error handling

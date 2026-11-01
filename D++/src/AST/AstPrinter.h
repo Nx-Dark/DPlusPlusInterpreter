@@ -17,6 +17,8 @@ namespace DXX
 		virtual std::string visitUnary(const UnaryExpr& unaryExpr) override;
 		virtual std::string visitBinary(const BinaryExpr& binaryExpr) override;
 		virtual std::string visitGrouping(const GroupingExpr& groupingExpr) override;
+		virtual std::string visitVariable(const VariableExpr& variableExpr) override;
+		virtual std::string visitAssignment(const AssignExpr& assignExpr) override;
 
 		std::string Print(const Expr& expr);
 

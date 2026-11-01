@@ -34,6 +34,7 @@ namespace DXX
 		//defining grammar rules for the parser;
 		//pasring expression
 		Scope<Expr> expression();
+		Scope<Expr> assignment();
 		Scope<Expr> logicalOr();
 		Scope<Expr> logicalAnd();
 		Scope<Expr> equality();
@@ -45,8 +46,10 @@ namespace DXX
 		
 		//parsing statements;
 		Scope<Stmt> statement();
+		Scope<Stmt> declaration(); //for variable decl, class decl, func decl and stuff
 		Scope<Stmt> printStatement();
 		Scope<Stmt> expressionStatement();
+		Scope<Stmt> varDeclaration(); //var statement;
 
 		//helper functions;
 		//to easily navigate in the token collection;

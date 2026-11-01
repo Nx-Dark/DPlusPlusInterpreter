@@ -4,16 +4,13 @@
 #include "Tokenizer/Tokenization.h"
 #include "Parser/Parser.h"
 
-#include "AST/AstPrinter.h"
-#include "Interpreter/Interpreter.h"
-
 //debug stuff
 #include "Debug/InstrumentationTimer.h"
 
 namespace DXX {
 
 	Application::Application(int argc, const std::vector<std::string>& argv)
-		: m_ArgC{ argc }, m_ArgV{ argv }, m_DiagnosticReporter{ m_DiagnosticEngine, m_SourceManager }
+		: m_ArgC{ argc }, m_ArgV{ argv }, m_DiagnosticReporter{ m_DiagnosticEngine, m_SourceManager }, m_Interpreter{ m_DiagnosticEngine }
 	{
 	}
 
@@ -64,7 +61,7 @@ namespace DXX {
 	void Application::run(const std::string& sourceCode, const std::string& sourceName)
 	{
 		//debug
-		//Debug::Timer timer{};
+		Debug::Timer timer{};
 
 		//clear diagnostics data;
 		m_DiagnosticEngine.Clear();
@@ -86,8 +83,8 @@ namespace DXX {
 		m_DiagnosticEngine.Clear();
 
 		//interpreting the statements;
-		Interpreter interpreter{ m_DiagnosticEngine, sourceName };
-		interpreter.Interpret(statements);
+		m_Interpreter.SetSourceName(sourceName);
+		m_Interpreter.Interpret(statements);
 
 		m_DiagnosticReporter.ReportDiagnostics();
 

@@ -15,4 +15,9 @@ namespace DXX
 		visitor.visitPrintStmt(*this);
 	}
 
+	void VarStmt::Accept(StmtVisitor& visitor) const
+	{
+		visitor.visitVarStmt(*this);
+	}
+
 }

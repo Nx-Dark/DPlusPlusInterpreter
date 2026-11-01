@@ -10,6 +10,7 @@
 
 #include "Diagnostics/DiagnosticEngine.h"
 #include "Diagnostics/DiagnosticReporter.h"
+#include "Interpreter/Interpreter.h"
 
 namespace DXX {
 
@@ -26,6 +27,9 @@ namespace DXX {
 		//diagnostics and error reporting
 		DiagnosticEngine m_DiagnosticEngine;
 		DiagnosticReporter m_DiagnosticReporter;
+
+		//interpreter instance;
+		Interpreter m_Interpreter;
 
 	public:
 		Application(int argc, const std::vector<std::string>& argv);

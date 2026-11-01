@@ -27,6 +27,16 @@ namespace DXX
 		return visitor.visitGrouping(*this);
 	}
 
+	std::string VariableExpr::Accept(ExprVisitor& visitor) const
+	{
+		return visitor.visitVariable(*this);
+	}
+
+	std::string AssignExpr::Accept(ExprVisitor& visitor) const
+	{
+		return visitor.visitAssignment(*this);
+	}
+
 	//------------------------------------------------------------------------//
 
 	//for Evaluator, returns Literal;
@@ -45,9 +55,19 @@ namespace DXX
 		return visitor.visitBinary(*this);
 	}
 
+
 	Literal GroupingExpr::Accept(EvaluatorVisitor& visitor) const
 	{
 		return visitor.visitGrouping(*this);
 	}
 
+	Literal VariableExpr::Accept(EvaluatorVisitor& visitor) const
+	{
+		return visitor.visitVariable(*this);
+	}
+
+	Literal AssignExpr::Accept(EvaluatorVisitor& visitor) const
+	{
+		return visitor.visitAssignment(*this);
+	}
 }

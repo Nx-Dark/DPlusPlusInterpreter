@@ -6,6 +6,8 @@
 #include "Diagnostics/Diagnostic.h"
 #include "Diagnostics/DiagnosticEngine.h"
 
+#include "Environment.h"
+
 namespace DXX
 {
 
@@ -21,8 +23,12 @@ namespace DXX
 		DiagnosticEngine& m_DiagnosticEngine;
 		std::string m_SourceName{};
 
+		//environment;
+		Environment m_Environment{};
+
 	public:
-		Interpreter(DiagnosticEngine& engine, const std::string& sourceName);
+		Interpreter(DiagnosticEngine& engine);
+		inline void SetSourceName(const std::string& sourceName) { m_SourceName = sourceName; }
 
 		virtual ~Interpreter() = default;
 
@@ -35,10 +41,13 @@ namespace DXX
 		virtual Literal visitUnary(const UnaryExpr& unaryExpr) override;
 		virtual Literal visitBinary(const BinaryExpr& binaryExpr) override;
 		virtual Literal visitGrouping(const GroupingExpr& groupingExpr) override;
+		virtual Literal visitVariable(const VariableExpr& variableExpr) override;
+		virtual Literal visitAssignment(const AssignExpr& assignExpr) override;
 
 		//statement visitor functions;
 		virtual void visitExpressionStmt(const ExpressionStmt& expressionStmt) override;
 		virtual void visitPrintStmt(const PrintStmt& printStmt) override;
+		virtual void visitVarStmt(const VarStmt& varStmt) override;
 
 	private:
 		RuntimeError error(const Token& tk, const std::string& msg);

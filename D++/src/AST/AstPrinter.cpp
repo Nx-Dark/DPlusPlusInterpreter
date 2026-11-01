@@ -28,6 +28,16 @@ namespace DXX
 		return "(group " + groupingExpr.m_Expr->Accept(*this) + ")";
 	}
 
+	std::string AstPrinter::visitVariable(const VariableExpr& variableExpr)
+	{
+		return variableExpr.m_Token.m_Lexeme;
+	}
+
+	std::string AstPrinter::visitAssignment(const AssignExpr& assignExpr)
+	{
+		return assignExpr.m_Identifier.m_Lexeme + " = " + assignExpr.Accept(*this);
+	}
+
 	std::string AstPrinter::Print(const Expr& expr)
 	{
 		return expr.Accept(*this);

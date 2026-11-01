@@ -157,6 +157,7 @@
     <ClInclude Include="src\Diagnostics\Diagnostic.h" />
     <ClInclude Include="src\Diagnostics\DiagnosticEngine.h" />
     <ClInclude Include="src\Diagnostics\DiagnosticReporter.h" />
+    <ClInclude Include="src\Interpreter\Environment.h" />
     <ClInclude Include="src\Interpreter\Interpreter.h" />
     <ClInclude Include="src\Parser\Parser.h" />
     <ClInclude Include="src\Source\SourceFile.h" />
@@ -174,6 +175,7 @@
     <ClCompile Include="src\Core\main.cpp" />
     <ClCompile Include="src\Diagnostics\DiagnosticEngine.cpp" />
     <ClCompile Include="src\Diagnostics\DiagnosticReporter.cpp" />
+    <ClCompile Include="src\Interpreter\Environment.cpp" />
     <ClCompile Include="src\Interpreter\Interpreter.cpp" />
     <ClCompile Include="src\Parser\Parser.cpp" />
     <ClCompile Include="src\Source\SourceManager.cpp" />

@@ -79,4 +79,34 @@ namespace DXX
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
 	};
 
+	//more stuff
+	class VariableExpr : public Expr
+	{
+	public:
+		Token m_Token;
+
+	public:
+		VariableExpr(Token token)
+			: m_Token{ std::move(token) } { }
+
+		virtual std::string Accept(ExprVisitor& visitor) const override;
+		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+	};
+
+	class AssignExpr : public Expr
+	{
+	public:
+		Token m_Identifier;
+		Scope<Expr> m_Expr{};
+
+	public:
+		AssignExpr(Token identifier, Scope<Expr> expr)
+			: m_Identifier{ std::move(identifier) }, m_Expr{ std::move(expr) } 
+		{
+		}
+
+		virtual std::string Accept(ExprVisitor& visitor) const override;
+		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+	};
+
 }

@@ -11,29 +11,12 @@ namespace DXX
 
 	std::vector<Scope<Stmt>> Parser::Parse()
 	{
-		//Scope<Expr> expr{}; //this is the goddamn expression AST;
-
-		//try
-		//{
-		//	expr = expression();
-
-		//	if (!isAtEnd())
-		//		throw error(peek(), "Unexpected token after Expression.");
-		//}
-
-		//catch (const ParseError& error)
-		//{
-		//	return nullptr;
-		//}
-
-		//return expr;
-
 		std::vector<Scope<Stmt>> statements{};
 
 		try {
 			while (!isAtEnd())
 			{
-				statements.push_back(statement());
+				statements.push_back(declaration());
 			}
 		}
 		catch (const ParseError&)
@@ -47,7 +30,29 @@ namespace DXX
 	//defining functions for grammar rules for the parser
 	Scope<Expr> Parser::expression()
 	{
-		return logicalOr();
+		return assignment();
+	}
+
+	Scope<Expr> Parser::assignment()
+	{
+		Scope<Expr> expr{ logicalOr() };
+
+		if (match(TokenType::EQUAL))
+		{
+			Token equals{ previous() };
+			Scope<Expr> rightExpr{ assignment() };
+
+			VariableExpr* variableExpr{ dynamic_cast<VariableExpr*>(expr.get()) };
+			if (variableExpr)
+			{
+				Token name { variableExpr->m_Token };
+				return CreateScope<AssignExpr>(std::move(name), std::move(rightExpr));
+			}
+
+			throw error(equals, "Invalid Assignment target.");
+		}
+
+		return expr;
 	}
 
 	Scope<Expr> Parser::logicalOr()
@@ -178,6 +183,7 @@ namespace DXX
 			case TokenType::NIL   :
 			case TokenType::TRUE  :
 			case TokenType::FALSE : return CreateScope<LiteralExpr>(std::move(token.m_Literal));
+			case TokenType::IDENTIFIER: return CreateScope<VariableExpr>(std::move(token));
 			
 			case TokenType::LEFT_PAREN:
 			{
@@ -209,6 +215,18 @@ namespace DXX
 		return expressionStatement();
 	}
 
+	Scope<Stmt> Parser::declaration()
+	{
+		Token token{ peek() };
+
+		switch (token.m_Type)
+		{
+			case TokenType::VAR: return varDeclaration();
+		}
+
+		return statement();
+	}
+
 	Scope<Stmt> Parser::printStatement()
 	{
 		advance();
@@ -219,10 +237,25 @@ namespace DXX
 
 	Scope<Stmt> Parser::expressionStatement()
 	{
-		advance();
 		Scope<Expr> expr{ expression() };
 		consume(TokenType::SEMICOLON, "Expected ';' after Statement.");
 		return CreateScope<ExpressionStmt>(std::move(expr));
+	}
+
+	Scope<Stmt> Parser::varDeclaration()
+	{
+		advance();
+		Token identifier{ consume(TokenType::IDENTIFIER, "Expected an Identifier.") };
+
+		Scope<Expr> expr{nullptr};
+
+		if (match(TokenType::EQUAL))
+		{
+			expr = expression();
+		}
+
+		consume(TokenType::SEMICOLON, "Expected ';' after Statement.");
+		return CreateScope<VarStmt>(std::move(identifier), std::move(expr));
 	}
 
 	//defining helper functions;
