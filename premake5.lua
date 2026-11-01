@@ -58,5 +58,5 @@ project "D++"
 
     filter "configurations:Dist"
         runtime "Release"
-        optimize "on"
+        optimize "Full"
         incrementallink "off"
