@@ -15,6 +15,7 @@ namespace DXX
 		LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
 		LEFT_SQ_BRACE, RIGHT_SQ_BRACE,
 		COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,
+		//BITWISE_AND, BITWISE_OR, BITWISE_XOR, BITWISE_LEFT_SHIFT, BITWISE_RIGHT_SHIFT, //Future
 
 		// One or two character tokens.
 		BANG, BANG_EQUAL,
@@ -51,6 +52,11 @@ namespace DXX
 		case TokenType::SEMICOLON: return "SEMICOLON";
 		case TokenType::SLASH: return "SLASH";
 		case TokenType::STAR: return "STAR";
+		//case TokenType::BITWISE_AND: return "BITWISE_AND";
+		//case TokenType::BITWISE_OR: return "BITWISE_OR";
+		//case TokenType::BITWISE_XOR: return "BITWISE_XOR";
+		//case TokenType::BITWISE_LEFT_SHIFT: return "BITWISE_LEFT_SHIFT";
+		//case TokenType::BITWISE_RIGHT_SHIFT: return "BITWISE_RIGHT_SHIFT";
 		case TokenType::BANG: return "BANG";
 		case TokenType::BANG_EQUAL: return "BANG_EQUAL";
 		case TokenType::EQUAL: return "EQUAL";

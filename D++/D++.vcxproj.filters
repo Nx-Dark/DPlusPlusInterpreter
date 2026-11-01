@@ -1,42 +1,110 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="AST">
+      <UniqueIdentifier>{6DD2870B-D9DB-877C-6257-9E7CCE5F937C}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Diagnostics">
+      <UniqueIdentifier>{1D0ED850-89C3-5046-12B8-4A1D7E6C474A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interpreter">
+      <UniqueIdentifier>{D91FB902-45D5-31F8-CEC9-2BCF3A7E28FC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parser">
+      <UniqueIdentifier>{D27997C9-BE1B-C29F-A7D6-D5F3931749F0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{56EB95D1-428D-C0A7-2B48-D4FB178947F8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tokenizer">
+      <UniqueIdentifier>{6088AFBB-CCF2-6332-1531-15D881DA4187}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AST\AstPrinter.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AST\EvaluatorVisitor.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AST\Expression.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AST\ExpressionVisitor.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Application.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Diagnostics\Diagnostic.h">
+      <Filter>Diagnostics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Diagnostics\DiagnosticEngine.h">
+      <Filter>Diagnostics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Diagnostics\DiagnosticReporter.h">
+      <Filter>Diagnostics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Interpreter\Interpreter.h">
+      <Filter>Interpreter</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Parser\Parser.h">
+      <Filter>Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Source\SourceFile.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Source\SourceManager.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tokenizer\Literal.h">
+      <Filter>Tokenizer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tokenizer\Token.h">
+      <Filter>Tokenizer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tokenizer\Tokenization.h">
+      <Filter>Tokenizer</Filter>
+    </ClInclude>
     <ClInclude Include="src\dpch.h" />
-    <ClInclude Include="src\Core\Application.h" />
-    <ClInclude Include="src\Tokenizer\Tokenization.h" />
-    <ClInclude Include="src\Parser\Parser.h" />
-    <ClInclude Include="src\AST\Expression.h" />
-    <ClInclude Include="src\Core\Core.h" />
-    <ClInclude Include="src\Tokenizer\Literal.h" />
-    <ClInclude Include="src\Tokenizer\Token.h" />
-    <ClInclude Include="src\AST\ExpressionVisitor.h" />
-    <ClInclude Include="src\AST\AstPrinter.h" />
-    <ClInclude Include="src\Diagnostics\Diagnostic.h" />
-    <ClInclude Include="src\Diagnostics\DiagnosticEngine.h" />
-    <ClInclude Include="src\Diagnostics\DiagnosticReporter.h" />
-    <ClInclude Include="src\Source\SourceFile.h" />
-    <ClInclude Include="src\Source\SourceManager.h" />
-    <ClInclude Include="src\AST\EvaluatorVisitor.h" />
-    <ClInclude Include="src\Interpreter\Interpreter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AST\AstPrinter.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AST\Expression.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Application.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
     <ClCompile Include="src\Core\main.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Diagnostics\DiagnosticEngine.cpp">
+      <Filter>Diagnostics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Diagnostics\DiagnosticReporter.cpp">
+      <Filter>Diagnostics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Interpreter\Interpreter.cpp">
+      <Filter>Interpreter</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Parser\Parser.cpp">
+      <Filter>Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Source\SourceManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tokenizer\Tokenization.cpp">
+      <Filter>Tokenizer</Filter>
+    </ClCompile>
     <ClCompile Include="src\dpch.cpp" />
-    <ClCompile Include="src\Core\Application.cpp" />
-    <ClCompile Include="src\Tokenizer\Tokenization.cpp" />
-    <ClCompile Include="src\Parser\Parser.cpp" />
-    <ClCompile Include="src\AST\AstPrinter.cpp" />
-    <ClCompile Include="src\AST\Expression.cpp" />
-    <ClCompile Include="src\Diagnostics\DiagnosticEngine.cpp" />
-    <ClCompile Include="src\Diagnostics\DiagnosticReporter.cpp" />
-    <ClCompile Include="src\Source\SourceManager.cpp" />
-    <ClCompile Include="src\Interpreter\Interpreter.cpp" />
   </ItemGroup>
 </Project>

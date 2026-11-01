@@ -9,24 +9,39 @@ namespace DXX
 	{
 	}
 
-	Scope<Expr> Parser::Parse()
+	std::vector<Scope<Stmt>> Parser::Parse()
 	{
-		Scope<Expr> expr{}; //this is the goddamn expression AST;
+		//Scope<Expr> expr{}; //this is the goddamn expression AST;
 
-		try
+		//try
+		//{
+		//	expr = expression();
+
+		//	if (!isAtEnd())
+		//		throw error(peek(), "Unexpected token after Expression.");
+		//}
+
+		//catch (const ParseError& error)
+		//{
+		//	return nullptr;
+		//}
+
+		//return expr;
+
+		std::vector<Scope<Stmt>> statements{};
+
+		try {
+			while (!isAtEnd())
+			{
+				statements.push_back(statement());
+			}
+		}
+		catch (const ParseError&)
 		{
-			expr = expression();
-
-			if (!isAtEnd())
-				throw error(peek(), "Unexpected token after Expression.");
+			return statements;
 		}
 
-		catch (const ParseError& error)
-		{
-			return nullptr;
-		}
-
-		return expr;
+		return statements;
 	}
 
 	//defining functions for grammar rules for the parser
@@ -180,6 +195,35 @@ namespace DXX
 
 		return {};
 	}
+	
+	//parsing statements
+	Scope<Stmt> Parser::statement()
+	{
+		Token token{ peek() };
+
+		switch (token.m_Type)
+		{
+			case TokenType::PRINT: return printStatement();
+		}
+
+		return expressionStatement();
+	}
+
+	Scope<Stmt> Parser::printStatement()
+	{
+		advance();
+		Scope<Expr> expr{ expression() };
+		consume(TokenType::SEMICOLON, "Expected ';' after Statement.");
+		return CreateScope<PrintStmt>(std::move(expr));
+	}
+
+	Scope<Stmt> Parser::expressionStatement()
+	{
+		advance();
+		Scope<Expr> expr{ expression() };
+		consume(TokenType::SEMICOLON, "Expected ';' after Statement.");
+		return CreateScope<ExpressionStmt>(std::move(expr));
+	}
 
 	//defining helper functions;
 	const Token& Parser::peek() const
@@ -197,6 +241,14 @@ namespace DXX
 			++m_CurTknIdx;
 
 		return previous();
+	}
+
+	Token Parser::consume(TokenType type, const std::string& msg)
+	{
+		if (check(type))
+			return advance();
+
+		throw error(peek(), msg);
 	}
 
 	//checking the token type of the next boutta be consumed token

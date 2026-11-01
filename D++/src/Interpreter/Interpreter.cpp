@@ -2,6 +2,7 @@
 #include "Interpreter.h"
 
 #include "AST/Expression.h"
+#include "AST/Statement.h"
 
 namespace DXX
 {
@@ -11,6 +12,38 @@ namespace DXX
 		if (std::holds_alternative<Nil>(literal)) return false;
 		else if (std::holds_alternative<bool>(literal)) return std::get<bool>(literal);
 		else return true;
+	}
+
+	Interpreter::Interpreter(DiagnosticEngine& engine, const std::string& sourceName)
+		: m_DiagnosticEngine{ engine }, m_SourceName{ sourceName }
+	{
+
+	}
+
+	void Interpreter::Interpret(const Expr& expr)
+	{
+		try {
+			Literal literal{ expr.Accept(*this) };
+			std::println("{0}", LiteralToString(literal));
+		}
+		catch (const RuntimeError&)
+		{
+			return;
+		}
+	}
+
+	void Interpreter::Interpret(const std::vector<Scope<Stmt>>& stmts)
+	{
+		try {
+			for (const auto& stmt : stmts)
+			{
+				stmt->Accept(*this);
+			}
+		}
+		catch (const RuntimeError&)
+		{
+			return;
+		}
 	}
 
 	Literal Interpreter::visitLiteral(const LiteralExpr& literalExpr)
@@ -28,7 +61,7 @@ namespace DXX
 			case TokenType::MINUS: {
 				if (std::holds_alternative<float>(operand))
 					return -(std::get<float>(operand));
-				break;
+				throw error(op, "Operation must done on a number.");
 			}
 			case TokenType::BANG:
 			{
@@ -40,8 +73,7 @@ namespace DXX
 					return false;
 			}
 			default:
-				std::println("Error"); //TODO: report runtime error;
-				break;
+				throw error(op, "Unexpected Error Occured.");
 		}
 
 		return Nil{};
@@ -74,25 +106,29 @@ namespace DXX
 					return std::get<float>(leftOperand) + std::get<float>(rightOperand);
 				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
 					return std::get<std::string>(leftOperand) + std::get<std::string>(rightOperand);
-				break;
+				
+				throw error(op, "Operation must be done on two number or two string.");
 			}
 			case TokenType::MINUS:
 			{
 				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
 					return std::get<float>(leftOperand) - std::get<float>(rightOperand);
-				break;
+				
+				throw error(op, "Operation must be done on a number.");
 			}
 			case TokenType::STAR:
 			{
 				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
 					return std::get<float>(leftOperand) * std::get<float>(rightOperand);
-				break;
+				
+				throw error(op, "Operation must be done on a number.");
 			}
 			case TokenType::SLASH:
 			{
 				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
 					return std::get<float>(leftOperand) / std::get<float>(rightOperand);
-				break;
+				
+				throw error(op, "Operation must be done on a number.");
 			}
 
 			//logical and comparison operations;
@@ -102,7 +138,8 @@ namespace DXX
 					return std::get<float>(leftOperand) > std::get<float>(rightOperand);
 				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
 					return std::get<std::string>(leftOperand) > std::get<std::string>(rightOperand);
-				break;
+
+				throw error(op, "Operation must be done on two number or two string.");
 			}
 			case TokenType::LESS:
 			{
@@ -110,7 +147,8 @@ namespace DXX
 					return std::get<float>(leftOperand) < std::get<float>(rightOperand);
 				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
 					return std::get<std::string>(leftOperand) < std::get<std::string>(rightOperand);
-				break;
+
+				throw error(op, "Operation must be done on two number or two string.");
 			}
 			case TokenType::GREATER_EQUAL:
 			{
@@ -118,7 +156,8 @@ namespace DXX
 					return std::get<float>(leftOperand) >= std::get<float>(rightOperand);
 				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
 					return std::get<std::string>(leftOperand) >= std::get<std::string>(rightOperand);
-				break;
+				
+				throw error(op, "Operation must be done on two number or two string.");
 			}
 			case TokenType::LESS_EQUAL:
 			{
@@ -126,7 +165,8 @@ namespace DXX
 					return std::get<float>(leftOperand) <= std::get<float>(rightOperand);
 				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
 					return std::get<std::string>(leftOperand) <= std::get<std::string>(rightOperand);
-				break;
+				
+				throw error(op, "Operation must be done on two number or two string.");
 			}
 			case TokenType::EQUAL_EQUAL: return leftOperand == rightOperand;
 			case TokenType::BANG_EQUAL : return leftOperand != rightOperand;
@@ -136,8 +176,7 @@ namespace DXX
 			case TokenType::OR : return rightOperand;
 
 			default:
-				std::println("Error"); //TODO: report runtime error;
-				break;
+				throw error(op, "Unexpected Error Occured.");
 		}
 
 		return Nil{};
@@ -146,5 +185,34 @@ namespace DXX
 	Literal Interpreter::visitGrouping(const GroupingExpr& groupingExpr)
 	{
 		return groupingExpr.m_Expr->Accept(*this);
+	}
+
+	//------------------------------------------------------------------
+
+	void Interpreter::visitExpressionStmt(const ExpressionStmt& expressionStmt)
+	{
+		expressionStmt.m_Expr->Accept(*this);
+	}
+
+	void Interpreter::visitPrintStmt(const PrintStmt& printStmt)
+	{
+		Literal literal{ printStmt.m_Expr->Accept(*this) };
+
+		std::println("{0}", LiteralToString(literal));
+	}
+
+	//runtime error handling
+	RuntimeError Interpreter::error(const Token& tk, const std::string& msg)
+	{
+		Diagnostic diag{
+			DiagnosticSeverity::ERROR,
+			DiagnosticPhase::RUNTIME,
+			msg,
+			{ m_SourceName, tk.m_Line, tk.m_Column, 0 }
+		};
+
+		m_DiagnosticEngine.Report(std::move(diag));
+
+		return RuntimeError{};
 	}
 }

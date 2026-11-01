@@ -5,6 +5,7 @@
 namespace DXX
 {
 
+	class Expr;
 	class LiteralExpr;
 	class UnaryExpr;
 	class BinaryExpr;

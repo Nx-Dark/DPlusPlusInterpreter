@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AST/Expression.h"
+#include "AST/Statement.h"
 
 #include "Diagnostics/Diagnostic.h"
 #include "Diagnostics/DiagnosticEngine.h"
@@ -27,10 +28,11 @@ namespace DXX
 		Parser(const Parser&) = delete;
 		~Parser() = default;
 
-		Scope<Expr> Parse();
+		std::vector<Scope<Stmt>> Parse();
 
 	private:
 		//defining grammar rules for the parser;
+		//pasring expression
 		Scope<Expr> expression();
 		Scope<Expr> logicalOr();
 		Scope<Expr> logicalAnd();
@@ -40,6 +42,11 @@ namespace DXX
 		Scope<Expr> factor();
 		Scope<Expr> unary();
 		Scope<Expr> primary();
+		
+		//parsing statements;
+		Scope<Stmt> statement();
+		Scope<Stmt> printStatement();
+		Scope<Stmt> expressionStatement();
 
 		//helper functions;
 		//to easily navigate in the token collection;
@@ -47,6 +54,7 @@ namespace DXX
 		const Token& previous() const;
 
 		Token advance();
+		Token consume(TokenType type, const std::string& msg);
 		bool check(TokenType type) const;
 		bool match(TokenType type);
 		bool isAtEnd() const;

@@ -147,36 +147,40 @@
   <ItemGroup>
     <ClInclude Include="src\AST\AstPrinter.h" />
     <ClInclude Include="src\AST\EvaluatorVisitor.h" />
+    <ClInclude Include="src\AST\Expression.h" />
     <ClInclude Include="src\AST\ExpressionVisitor.h" />
+    <ClInclude Include="src\AST\Statement.h" />
+    <ClInclude Include="src\AST\StatementVisitor.h" />
+    <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\Core.h" />
-    <ClInclude Include="src\Diagnostics\DiagnosticReporter.h" />
+    <ClInclude Include="src\Debug\InstrumentationTimer.h" />
     <ClInclude Include="src\Diagnostics\Diagnostic.h" />
     <ClInclude Include="src\Diagnostics\DiagnosticEngine.h" />
-    <ClInclude Include="src\dpch.h" />
-    <ClInclude Include="src\Core\Application.h" />
-    <ClInclude Include="src\AST\Expression.h" />
+    <ClInclude Include="src\Diagnostics\DiagnosticReporter.h" />
     <ClInclude Include="src\Interpreter\Interpreter.h" />
+    <ClInclude Include="src\Parser\Parser.h" />
     <ClInclude Include="src\Source\SourceFile.h" />
     <ClInclude Include="src\Source\SourceManager.h" />
     <ClInclude Include="src\Tokenizer\Literal.h" />
-    <ClInclude Include="src\Parser\Parser.h" />
     <ClInclude Include="src\Tokenizer\Token.h" />
     <ClInclude Include="src\Tokenizer\Tokenization.h" />
+    <ClInclude Include="src\dpch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AST\AstPrinter.cpp" />
     <ClCompile Include="src\AST\Expression.cpp" />
+    <ClCompile Include="src\AST\Statement.cpp" />
+    <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\main.cpp" />
     <ClCompile Include="src\Diagnostics\DiagnosticEngine.cpp" />
     <ClCompile Include="src\Diagnostics\DiagnosticReporter.cpp" />
-    <ClCompile Include="src\dpch.cpp">
-      <PrecompiledHeader>Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Interpreter\Interpreter.cpp" />
     <ClCompile Include="src\Parser\Parser.cpp" />
     <ClCompile Include="src\Source\SourceManager.cpp" />
     <ClCompile Include="src\Tokenizer\Tokenization.cpp" />
+    <ClCompile Include="src\dpch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -7,6 +7,9 @@
 #include "AST/AstPrinter.h"
 #include "Interpreter/Interpreter.h"
 
+//debug stuff
+#include "Debug/InstrumentationTimer.h"
+
 namespace DXX {
 
 	Application::Application(int argc, const std::vector<std::string>& argv)
@@ -40,7 +43,6 @@ namespace DXX {
 	void Application::runFile(const std::string& filePath)
 	{
 		std::string sourceCode{ parseFile(filePath) };
-		std::println("{0}", filePath);
 		run(sourceCode, filePath);
 	}
 
@@ -54,12 +56,16 @@ namespace DXX {
 				std::println("\nExiting D++ Interpreter!");
 				break;
 			}
+			if (line.empty()) continue;
 			run(line, "InteractiveMode");
 		}
 	}
 
 	void Application::run(const std::string& sourceCode, const std::string& sourceName)
 	{
+		//debug
+		//Debug::Timer timer{};
+
 		//clear diagnostics data;
 		m_DiagnosticEngine.Clear();
 		
@@ -68,9 +74,7 @@ namespace DXX {
 
 		//creating the parser
 		Parser parser{ std::move(tokens), m_DiagnosticEngine, sourceName };
-		Scope<Expr> expression{ parser.Parse() };
-		
-		//evalution and interpreting does here(future plans);
+		std::vector<Scope<Stmt>> statements { parser.Parse() };
 
 		//reporting diagnostic data;
 		m_DiagnosticReporter.ReportDiagnostics();
@@ -78,24 +82,14 @@ namespace DXX {
 		//return if there are lexing or parsing errors
 		if (m_DiagnosticEngine.HasErrors()) return;
 
-		//if (expression)
-		//{
-		//	AstPrinter astPrinter{};
-		//	std::println("{0}", astPrinter.Print(*expression));
-		//}
+		//clearing diagnostic data before runtime error;
+		m_DiagnosticEngine.Clear();
 
-		if (expression)
-		{
-			Interpreter interpreter{};
-			Literal literal{ expression->Accept(interpreter) };
+		//interpreting the statements;
+		Interpreter interpreter{ m_DiagnosticEngine, sourceName };
+		interpreter.Interpret(statements);
 
-			std::println("{0}", LiteralToString(literal));
-		}
-
-		//for (const auto& token : tokens)
-		//{
-		//	std::println("{0}", token.toString());
-		//}
+		m_DiagnosticReporter.ReportDiagnostics();
 
 		std::println();
 	}

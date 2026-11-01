@@ -18,5 +18,6 @@
 #include <variant>
 #include <cstddef>
 #include <type_traits>
+#include <expected>
 
 #include "Core/Core.h"
