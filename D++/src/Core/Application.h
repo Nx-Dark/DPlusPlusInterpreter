@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef VERSION
-#define VERSION 1.5f
+#define VERSION 1.7f
 #endif
 
 #ifndef BUILD_TYPE
