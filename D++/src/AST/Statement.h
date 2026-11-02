@@ -64,4 +64,19 @@ namespace DXX
 
 	};
 
+	//block stmt
+	class BlockStmt : public Stmt
+	{
+	public:
+		std::vector<Scope<Stmt>> m_Statements{};
+
+	public:
+		BlockStmt(std::vector<Scope<Stmt>> statements)
+			: m_Statements{ std::move(statements) } 
+		{
+		}
+
+		virtual void Accept(StmtVisitor& visitor) const override;
+	};
+
 }

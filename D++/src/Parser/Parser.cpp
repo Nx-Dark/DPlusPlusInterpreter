@@ -210,6 +210,7 @@ namespace DXX
 		switch (token.m_Type)
 		{
 			case TokenType::PRINT: return printStatement();
+			case TokenType::LEFT_BRACE: return CreateScope<BlockStmt>(std::move(block()));
 		}
 
 		return expressionStatement();
@@ -256,6 +257,22 @@ namespace DXX
 
 		consume(TokenType::SEMICOLON, "Expected ';' after Statement.");
 		return CreateScope<VarStmt>(std::move(identifier), std::move(expr));
+	}
+	
+	std::vector<Scope<Stmt>> Parser::block()
+	{
+		advance(); //consuming the '{' left brace;
+
+		std::vector<Scope<Stmt>> statements{};
+
+		while (!check(TokenType::RIGHT_BRACE) && !isAtEnd())
+		{
+			statements.push_back(declaration());
+		}
+		
+		consume(TokenType::RIGHT_BRACE, "Expected '}' after Block.");
+
+		return statements;
 	}
 
 	//defining helper functions;

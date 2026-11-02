@@ -7,6 +7,7 @@ namespace DXX
 	class ExpressionStmt;
 	class PrintStmt;
 	class VarStmt;
+	class BlockStmt;
 
 	//statement visitor interface
 	class StmtVisitor
@@ -18,6 +19,7 @@ namespace DXX
 		virtual void visitExpressionStmt(const ExpressionStmt& expressionStmt) = 0;
 		virtual void visitPrintStmt(const PrintStmt& printStmt) = 0;
 		virtual void visitVarStmt(const VarStmt& varStmt) = 0;
+		virtual void visitBlockStmt(const BlockStmt& blockStmt) = 0;
 	};
 
 }

@@ -7,6 +7,30 @@
 namespace DXX
 {
 
+	//environment guard to restore to previous env if runtime error gets thrown;
+	class EnvironmentGuard
+	{
+	private:
+		Interpreter& m_Interpreter;
+		Ref<Environment> m_Previous{};
+
+	public:
+		EnvironmentGuard(Ref<Environment> previous, Interpreter& interpreter)
+			: m_Previous{ std::move(previous) },  m_Interpreter { interpreter }
+		{
+			Ref<Environment> newEnvironment{ CreateRef<Environment>(m_Previous) };
+			m_Interpreter.m_Environment = newEnvironment;
+		}
+
+		~EnvironmentGuard()
+		{
+			m_Interpreter.m_Environment = m_Previous;
+		}
+
+		EnvironmentGuard(const EnvironmentGuard&) = delete;
+		EnvironmentGuard& operator=(const EnvironmentGuard&) = delete;
+	};
+
 	static bool isTruthy(const Literal& literal)
 	{
 		if (std::holds_alternative<Nil>(literal)) return false;
@@ -15,9 +39,8 @@ namespace DXX
 	}
 
 	Interpreter::Interpreter(DiagnosticEngine& engine)
-		: m_DiagnosticEngine{ engine }
+		: m_DiagnosticEngine{ engine }, m_Environment{ CreateRef<Environment>() }
 	{
-
 	}
 
 	void Interpreter::Interpret(const Expr& expr)
@@ -191,7 +214,7 @@ namespace DXX
 	{
 		const auto& varName{ variableExpr.m_Token.m_Lexeme };
 
-		const auto& varLiteral{ m_Environment.get(varName) };
+		const auto& varLiteral{ m_Environment->get(varName) };
 
 		if (varLiteral)
 			return varLiteral.value();
@@ -203,13 +226,14 @@ namespace DXX
 	{
 		Literal value{ assignExpr.m_Expr->Accept(*this) };
 
-		if (m_Environment.assign(assignExpr.m_Identifier.m_Lexeme, value))
+		if (m_Environment->assign(assignExpr.m_Identifier.m_Lexeme, value))
 			return value;
 		
 		throw error(assignExpr.m_Identifier, "Undefined Variable.");
 	}
 
 	//------------------------------------------------------------------
+	//visiting statements;
 
 	void Interpreter::visitExpressionStmt(const ExpressionStmt& expressionStmt)
 	{
@@ -230,7 +254,17 @@ namespace DXX
 		if (varStmt.m_InitializerExpr)
 			value = varStmt.m_InitializerExpr->Accept(*this);
 
-		m_Environment.define(varStmt.m_Token.m_Lexeme, value);
+		m_Environment->define(varStmt.m_Token.m_Lexeme, value);
+	}
+
+	void Interpreter::visitBlockStmt(const BlockStmt& blockStmt)
+	{
+
+		EnvironmentGuard envGuard{ m_Environment, *this };
+
+		for (const auto& statement : blockStmt.m_Statements)
+			statement->Accept(*this);
+
 	}
 
 	//runtime error handling

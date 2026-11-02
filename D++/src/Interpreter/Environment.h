@@ -13,8 +13,11 @@ namespace DXX
 
 		std::unordered_map<std::string, Literal> m_Values{};
 
+		Ref<Environment> m_Enclosing{ nullptr };
+
 	public:
 		Environment() = default;
+		Environment(Ref<Environment> enclosing);
 		~Environment() = default;
 
 		//getters

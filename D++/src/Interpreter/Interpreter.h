@@ -24,7 +24,9 @@ namespace DXX
 		std::string m_SourceName{};
 
 		//environment;
-		Environment m_Environment{};
+		Ref<Environment> m_Environment{};
+
+		friend class EnvironmentGuard;
 
 	public:
 		Interpreter(DiagnosticEngine& engine);
@@ -48,6 +50,7 @@ namespace DXX
 		virtual void visitExpressionStmt(const ExpressionStmt& expressionStmt) override;
 		virtual void visitPrintStmt(const PrintStmt& printStmt) override;
 		virtual void visitVarStmt(const VarStmt& varStmt) override;
+		virtual void visitBlockStmt(const BlockStmt& blockStmt) override;
 
 	private:
 		RuntimeError error(const Token& tk, const std::string& msg);

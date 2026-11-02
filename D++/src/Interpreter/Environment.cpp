@@ -4,6 +4,11 @@
 namespace DXX
 {
 
+	Environment::Environment(Ref<Environment> enclosing)
+		: m_Enclosing{ enclosing } 
+	{
+	}
+
 	void Environment::define(const std::string& name, Literal value)
 	{
 		m_Values[name] = std::move(value);
@@ -16,16 +21,24 @@ namespace DXX
 		if (it != m_Values.end())
 			return it->second;
 
+		else if (m_Enclosing)
+			return m_Enclosing->get(name);
+
 		return std::nullopt;
 	}
 
 	bool Environment::assign(const std::string& name, Literal value)
 	{
-		if (m_Values.contains(name))
+		auto it{ m_Values.find(name) };
+
+		if (it != m_Values.end())
 		{
-			m_Values[name] = value;
+			it->second = value;
 			return true;
 		}
+
+		else if (m_Enclosing)
+			return m_Enclosing->assign(name, std::move(value));
 
 		return false;
 	}
