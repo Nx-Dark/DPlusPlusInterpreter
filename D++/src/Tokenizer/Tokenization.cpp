@@ -76,6 +76,7 @@ namespace DXX {
 						break;
 
 					case '*': if (next == '=') { lexeme += consume(); type = TokenType::STAR_EQUAL; } else { type = TokenType::STAR; } break;
+					case '%': if (next == '=') { lexeme += consume(); type = TokenType::MODULO_EQUAL; } else { type = TokenType::MODULO; } break;
 					default: continue;
 				}
 

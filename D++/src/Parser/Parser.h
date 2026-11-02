@@ -63,7 +63,17 @@ namespace DXX
 		Token advance();
 		Token consume(TokenType type, const std::string& msg);
 		bool check(TokenType type) const;
-		bool match(TokenType type);
+		template<typename... Types>
+		inline bool match(Types... types)
+		{
+			if ((check(types) || ...))
+			{
+				advance();
+				return true;
+			}
+
+			return false;
+		}
 		bool isAtEnd() const;
 
 		//error handling

@@ -14,7 +14,7 @@ namespace DXX
 		// Single-character tokens.
 		LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
 		LEFT_SQ_BRACE, RIGHT_SQ_BRACE,
-		COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,
+		COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR, MODULO,
 		//BITWISE_AND, BITWISE_OR, BITWISE_XOR, BITWISE_LEFT_SHIFT, BITWISE_RIGHT_SHIFT, //Future
 
 		// One or two character tokens.
@@ -22,7 +22,7 @@ namespace DXX
 		EQUAL, EQUAL_EQUAL,
 		GREATER, GREATER_EQUAL,
 		LESS, LESS_EQUAL,
-		PLUS_EQUAL, MINUS_EQUAL, SLASH_EQUAL, STAR_EQUAL,
+		PLUS_EQUAL, MINUS_EQUAL, SLASH_EQUAL, STAR_EQUAL, MODULO_EQUAL,
 
 		// Literals.
 		IDENTIFIER, STRING, NUMBER,
@@ -101,6 +101,7 @@ namespace DXX
 		std::size_t m_Line{};
 		std::size_t m_Column{};
 
+		Token() = default;
 		Token(TokenType type, std::string lexeme, Literal literal, std::size_t line, std::size_t column)
 			: m_Type(type), m_Lexeme(std::move(lexeme)), m_Literal(std::move(literal)), m_Line(line), m_Column{ column } {
 

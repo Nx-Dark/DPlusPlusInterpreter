@@ -39,19 +39,35 @@ namespace DXX
 	{
 		Scope<Expr> expr{ logicalOr() };
 
-		if (match(TokenType::EQUAL))
+		if (match(TokenType::EQUAL, TokenType::PLUS_EQUAL, TokenType::MINUS_EQUAL, TokenType::STAR_EQUAL, TokenType::SLASH_EQUAL))
 		{
-			Token equals{ previous() };
+			Token op{ previous() };
+			Token binaryOp{};
+
+			switch (op.m_Type)
+			{
+				case TokenType::EQUAL:											  break;
+				case TokenType::PLUS_EQUAL  : binaryOp.m_Type = TokenType::PLUS;  break;
+				case TokenType::MINUS_EQUAL : binaryOp.m_Type = TokenType::MINUS; break;
+				case TokenType::STAR_EQUAL  : binaryOp.m_Type = TokenType::STAR;  break;
+				case TokenType::SLASH_EQUAL : binaryOp.m_Type = TokenType::SLASH; break;
+			}
+
 			Scope<Expr> rightExpr{ assignment() };
 
 			VariableExpr* variableExpr{ dynamic_cast<VariableExpr*>(expr.get()) };
 			if (variableExpr)
 			{
 				Token name { variableExpr->m_Token };
+				if (op.m_Type != TokenType::EQUAL)
+				{
+					Scope<Expr> binaryExpr{ CreateScope<BinaryExpr>(std::move(CreateScope<VariableExpr>(name)), binaryOp, std::move(rightExpr)) };
+					return CreateScope<AssignExpr>(std::move(name), std::move(binaryExpr));
+				}
 				return CreateScope<AssignExpr>(std::move(name), std::move(rightExpr));
 			}
 
-			throw error(equals, "Invalid Assignment target.");
+			throw error(op, "Invalid Assignment target.");
 		}
 
 		return expr;
@@ -374,18 +390,6 @@ namespace DXX
 		if (isAtEnd()) return false;
 
 		return peek().m_Type == type;
-	}
-
-	bool Parser::match(TokenType type)
-	{
-		if (check(type))
-		{
-			advance(); 
-			return true;
-		}
-
-		return false;
-		
 	}
 
 	bool Parser::isAtEnd() const
