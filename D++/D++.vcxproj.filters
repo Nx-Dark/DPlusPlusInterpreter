@@ -7,6 +7,9 @@
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Debug">
+      <UniqueIdentifier>{0C95060D-78A9-2EBE-412B-D21DADFE2AEF}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Diagnostics">
       <UniqueIdentifier>{1D0ED850-89C3-5046-12B8-4A1D7E6C474A}</UniqueIdentifier>
     </Filter>
@@ -36,11 +39,20 @@
     <ClInclude Include="src\AST\ExpressionVisitor.h">
       <Filter>AST</Filter>
     </ClInclude>
+    <ClInclude Include="src\AST\Statement.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AST\StatementVisitor.h">
+      <Filter>AST</Filter>
+    </ClInclude>
     <ClInclude Include="src\Core\Application.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Core.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Debug\InstrumentationTimer.h">
+      <Filter>Debug</Filter>
     </ClInclude>
     <ClInclude Include="src\Diagnostics\Diagnostic.h">
       <Filter>Diagnostics</Filter>
@@ -50,6 +62,9 @@
     </ClInclude>
     <ClInclude Include="src\Diagnostics\DiagnosticReporter.h">
       <Filter>Diagnostics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Interpreter\Environment.h">
+      <Filter>Interpreter</Filter>
     </ClInclude>
     <ClInclude Include="src\Interpreter\Interpreter.h">
       <Filter>Interpreter</Filter>
@@ -81,6 +96,9 @@
     <ClCompile Include="src\AST\Expression.cpp">
       <Filter>AST</Filter>
     </ClCompile>
+    <ClCompile Include="src\AST\Statement.cpp">
+      <Filter>AST</Filter>
+    </ClCompile>
     <ClCompile Include="src\Core\Application.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -92,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="src\Diagnostics\DiagnosticReporter.cpp">
       <Filter>Diagnostics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Interpreter\Environment.cpp">
+      <Filter>Interpreter</Filter>
     </ClCompile>
     <ClCompile Include="src\Interpreter\Interpreter.cpp">
       <Filter>Interpreter</Filter>
