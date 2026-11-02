@@ -209,6 +209,7 @@ namespace DXX
 
 		switch (token.m_Type)
 		{
+			case TokenType::IF: return ifStatement();
 			case TokenType::PRINT: return printStatement();
 			case TokenType::LEFT_BRACE: return CreateScope<BlockStmt>(std::move(block()));
 		}
@@ -228,6 +229,30 @@ namespace DXX
 		return statement();
 	}
 
+	Scope<Stmt> Parser::expressionStatement()
+	{
+		Scope<Expr> expr{ expression() };
+		consume(TokenType::SEMICOLON, "Expected ';' after Statement.");
+		return CreateScope<ExpressionStmt>(std::move(expr));
+	}
+
+	Scope<Stmt> Parser::ifStatement()
+	{
+		advance();
+
+		consume(TokenType::LEFT_PAREN, "Expected '(' after if.");
+		Scope<Expr> condition{ expression() };
+		consume(TokenType::RIGHT_PAREN, "Expected ')' after if condition.");
+
+		Scope<Stmt> thenBranch{ statement() };
+		Scope<Stmt> elseBranch{ nullptr };
+
+		if (match(TokenType::ELSE))
+			elseBranch = statement();
+
+		return CreateScope<IfStmt>(std::move(condition), std::move(thenBranch), std::move(elseBranch));
+	}
+
 	Scope<Stmt> Parser::printStatement()
 	{
 		advance();
@@ -236,12 +261,6 @@ namespace DXX
 		return CreateScope<PrintStmt>(std::move(expr));
 	}
 
-	Scope<Stmt> Parser::expressionStatement()
-	{
-		Scope<Expr> expr{ expression() };
-		consume(TokenType::SEMICOLON, "Expected ';' after Statement.");
-		return CreateScope<ExpressionStmt>(std::move(expr));
-	}
 
 	Scope<Stmt> Parser::varDeclaration()
 	{

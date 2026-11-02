@@ -25,4 +25,9 @@ namespace DXX
 		visitor.visitBlockStmt(*this);
 	}
 
+	void IfStmt::Accept(StmtVisitor& visitor) const
+	{
+		visitor.visitIfStmt(*this);
+	}
+
 }

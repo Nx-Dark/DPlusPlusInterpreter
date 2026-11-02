@@ -48,6 +48,7 @@ namespace DXX
 		Scope<Stmt> statement();
 		Scope<Stmt> declaration(); //for variable decl, class decl, func decl and stuff
 		Scope<Stmt> expressionStatement();
+		Scope<Stmt> ifStatement();
 		Scope<Stmt> printStatement();
 		Scope<Stmt> varDeclaration(); //var statement;
 		std::vector<Scope<Stmt>> block();

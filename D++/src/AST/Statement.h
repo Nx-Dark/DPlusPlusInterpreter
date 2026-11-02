@@ -79,4 +79,20 @@ namespace DXX
 		virtual void Accept(StmtVisitor& visitor) const override;
 	};
 
+	//conditional statements
+	class IfStmt : public Stmt
+	{
+	public:
+		Scope<Expr> m_Condition{};
+		Scope<Stmt> m_ThenBranch{};
+		Scope<Stmt> m_ElseBranch{};
+
+	public:
+		IfStmt(Scope<Expr> condition, Scope<Stmt> thenBranch, Scope<Stmt> elseBranch)
+			: m_Condition{ std::move(condition) }, m_ThenBranch{ std::move(thenBranch) }, m_ElseBranch{ std::move(elseBranch) }
+		{ }
+
+		virtual void Accept(StmtVisitor& visitor) const override;
+	};
+
 }

@@ -35,6 +35,7 @@ namespace DXX
 	{
 		if (std::holds_alternative<Nil>(literal)) return false;
 		else if (std::holds_alternative<bool>(literal)) return std::get<bool>(literal);
+		else if (std::holds_alternative<float>(literal) && std::get<float>(literal) == 0.0f) return false;
 		else return true;
 	}
 
@@ -265,6 +266,15 @@ namespace DXX
 		for (const auto& statement : blockStmt.m_Statements)
 			statement->Accept(*this);
 
+	}
+
+	void Interpreter::visitIfStmt(const IfStmt& ifStmt)
+	{
+		if (isTruthy(ifStmt.m_Condition->Accept(*this)))
+			ifStmt.m_ThenBranch->Accept(*this);
+
+		else if (ifStmt.m_ElseBranch)
+			ifStmt.m_ElseBranch->Accept(*this);
 	}
 
 	//runtime error handling
