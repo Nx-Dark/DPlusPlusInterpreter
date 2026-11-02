@@ -54,9 +54,15 @@ namespace DXX
 		virtual void visitIfStmt(const IfStmt& ifStmt) override;
 		virtual void visitWhileStmt(const WhileStmt& whileStmt) override;
 		virtual void visitForStmt(const ForStmt& forStmt) override;
+		virtual void visitBreakStmt(const BreakStmt& breakStmt) override;
+		virtual void visitContinueStmt(const ContinueStmt& continueStmt) override;
 
 	private:
 		RuntimeError error(const Token& tk, const std::string& msg);
+
+		//break and continue internal signals;
+		struct BreakSignal {};
+		struct ContinueSignal {};
 	};
 
 }

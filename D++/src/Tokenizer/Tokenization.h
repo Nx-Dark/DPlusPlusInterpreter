@@ -28,7 +28,9 @@ namespace DXX {
 			{"this", TokenType::THIS},
 			{"var", TokenType::VAR},
 			{"False", TokenType::FALSE},
-			{"True", TokenType::TRUE}
+			{"True", TokenType::TRUE},
+			{"break", TokenType::BREAK},
+			{"continue", TokenType::CONTINUE}
 		};
 
 		inline static std::stringstream sourceStream{};

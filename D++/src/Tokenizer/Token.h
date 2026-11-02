@@ -29,7 +29,7 @@ namespace DXX
 
 		// Keywords.
 		AND, CLASS, ELSE, FALSE, FUNC, FOR, IF, NIL, OR,
-		PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,
+		PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE, CONTINUE, BREAK,
 
 		END_OF_FILE
 
@@ -57,6 +57,12 @@ namespace DXX
 		//case TokenType::BITWISE_XOR: return "BITWISE_XOR";
 		//case TokenType::BITWISE_LEFT_SHIFT: return "BITWISE_LEFT_SHIFT";
 		//case TokenType::BITWISE_RIGHT_SHIFT: return "BITWISE_RIGHT_SHIFT";
+		case TokenType::STAR_EQUAL: return "STAR_EQUAL";
+		case TokenType::PLUS_EQUAL: return "PLUS_EQUAL";
+		case TokenType::MINUS_EQUAL: return "MINUS_EQUAL";
+		case TokenType::SLASH_EQUAL: return "SLASH_EQUAL";
+		case TokenType::MODULO: return "MODULO";
+		case TokenType::MODULO_EQUAL: return "MODULO_EQUAL";
 		case TokenType::BANG: return "BANG";
 		case TokenType::BANG_EQUAL: return "BANG_EQUAL";
 		case TokenType::EQUAL: return "EQUAL";
@@ -65,10 +71,6 @@ namespace DXX
 		case TokenType::GREATER_EQUAL: return "GREATER_EQUAL";
 		case TokenType::LESS: return "LESS";
 		case TokenType::LESS_EQUAL: return "LESS_EQUAL";
-		case TokenType::PLUS_EQUAL: return "PLUS_EQUAL";
-		case TokenType::MINUS_EQUAL: return "MINUS_EQUAL";
-		case TokenType::SLASH_EQUAL: return "SLASH_EQUAL";
-		case TokenType::STAR_EQUAL: return "STAR_EQUAL";
 		case TokenType::IDENTIFIER: return "IDENTIFIER";
 		case TokenType::STRING: return "STRING";
 		case TokenType::NUMBER: return "NUMBER";

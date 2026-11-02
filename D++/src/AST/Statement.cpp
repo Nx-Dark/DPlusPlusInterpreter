@@ -40,4 +40,14 @@ namespace DXX
 		visitor.visitForStmt(*this);
 	}
 
+	void BreakStmt::Accept(StmtVisitor& visitor) const
+	{
+		visitor.visitBreakStmt(*this);
+	}
+
+	void ContinueStmt::Accept(StmtVisitor& visitor) const
+	{
+		visitor.visitContinueStmt(*this);
+	}
+
 }

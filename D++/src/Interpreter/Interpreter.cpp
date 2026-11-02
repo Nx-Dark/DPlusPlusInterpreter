@@ -282,7 +282,19 @@ namespace DXX
 		EnvironmentGuard envGuard{ m_Environment, *this };
 
 		while (isTruthy(whileStmt.m_Condition->Accept(*this)))
-			whileStmt.m_ThenBranch->Accept(*this);
+		{
+			try {
+				whileStmt.m_ThenBranch->Accept(*this);
+			}
+
+			catch (const BreakSignal&) {
+				break;
+			}
+
+			catch (const ContinueSignal&) {
+				continue;
+			}
+		}
 	}
 
 	void Interpreter::visitForStmt(const ForStmt& forStmt)
@@ -299,12 +311,33 @@ namespace DXX
 					break;
 			}
 
-			forStmt.m_Body->Accept(*this);
+			try {
+
+				forStmt.m_Body->Accept(*this);
+			}
+
+			catch (const BreakSignal&) {
+				break;
+			}
+
+			catch (const ContinueSignal&) {
+
+			}
 
 			//checking the increment
 			if (forStmt.m_Increment)
 				forStmt.m_Increment->Accept(*this);
 		}
+	}
+
+	void Interpreter::visitBreakStmt(const BreakStmt& breakStmt)
+	{
+		throw BreakSignal{};
+	}
+
+	void Interpreter::visitContinueStmt(const ContinueStmt& continueStmt)
+	{
+		throw ContinueSignal{};
 	}
 
 	//runtime error handling

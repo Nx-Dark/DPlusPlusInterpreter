@@ -126,4 +126,24 @@ namespace DXX
 		virtual void Accept(StmtVisitor& visitor) const override;
 	};
 
+	//control statements;
+	class BreakStmt : public Stmt
+	{
+	public:
+
+	public:
+
+		virtual void Accept(StmtVisitor& visitor) const override;
+	};
+
+	class ContinueStmt : public Stmt
+	{
+	public:
+
+	public:
+
+		virtual void Accept(StmtVisitor& visitor) const override;
+	};
+
+
 }

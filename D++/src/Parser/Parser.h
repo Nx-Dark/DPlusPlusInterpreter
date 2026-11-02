@@ -52,6 +52,8 @@ namespace DXX
 		Scope<Stmt> printStatement();
 		Scope<Stmt> whileStatement();
 		Scope<Stmt> forStatement();
+		Scope<Stmt> breakStatement();
+		Scope<Stmt> continueStatement();
 		Scope<Stmt> varDeclaration(bool consumeSemicolon = true); //var statement;
 		std::vector<Scope<Stmt>> block();
 

@@ -231,6 +231,8 @@ namespace DXX
 			case TokenType::PRINT: return printStatement();
 			case TokenType::WHILE: return whileStatement();
 			case TokenType::FOR: return forStatement();
+			case TokenType::BREAK: return breakStatement();
+			case TokenType::CONTINUE: return continueStatement();
 			case TokenType::LEFT_BRACE: return CreateScope<BlockStmt>(std::move(block()));
 		}
 
@@ -276,6 +278,7 @@ namespace DXX
 	Scope<Stmt> Parser::printStatement()
 	{
 		advance();
+
 		Scope<Expr> expr{ expression() };
 		consume(TokenType::SEMICOLON, "Expected ';' after Statement.");
 		return CreateScope<PrintStmt>(std::move(expr));
@@ -324,6 +327,22 @@ namespace DXX
 		Scope<Stmt> body{ statement() };
 
 		return CreateScope<ForStmt>(std::move(initializer), std::move(condition), std::move(increment), std::move(body));
+	}
+
+	Scope<Stmt> Parser::breakStatement()
+	{
+		advance();
+
+		consume(TokenType::SEMICOLON, "Expected ';' after break.");
+		return CreateScope<BreakStmt>();
+	}
+
+	Scope<Stmt> Parser::continueStatement()
+	{
+		advance();
+
+		consume(TokenType::SEMICOLON, "Expected ';' after continue.");
+		return CreateScope<ContinueStmt>();
 	}
 
 	Scope<Stmt> Parser::varDeclaration(bool consumeSemicolon)

@@ -11,6 +11,8 @@ namespace DXX
 	class IfStmt;
 	class WhileStmt;
 	class ForStmt;
+	class BreakStmt;
+	class ContinueStmt;
 
 	//statement visitor interface
 	class StmtVisitor
@@ -26,6 +28,8 @@ namespace DXX
 		virtual void visitIfStmt(const IfStmt& ifStmt) = 0;
 		virtual void visitWhileStmt(const WhileStmt& whileStmt) = 0;
 		virtual void visitForStmt(const ForStmt& forStmt) = 0;
+		virtual void visitBreakStmt(const BreakStmt& breakStmt) = 0;
+		virtual void visitContinueStmt(const ContinueStmt& continueStmt) = 0;
 	};
 
 }
