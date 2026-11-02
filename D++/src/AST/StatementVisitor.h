@@ -9,6 +9,8 @@ namespace DXX
 	class VarStmt;
 	class BlockStmt;
 	class IfStmt;
+	class WhileStmt;
+	class ForStmt;
 
 	//statement visitor interface
 	class StmtVisitor
@@ -22,6 +24,8 @@ namespace DXX
 		virtual void visitVarStmt(const VarStmt& varStmt) = 0;
 		virtual void visitBlockStmt(const BlockStmt& blockStmt) = 0;
 		virtual void visitIfStmt(const IfStmt& ifStmt) = 0;
+		virtual void visitWhileStmt(const WhileStmt& whileStmt) = 0;
+		virtual void visitForStmt(const ForStmt& forStmt) = 0;
 	};
 
 }

@@ -52,6 +52,8 @@ namespace DXX
 		virtual void visitVarStmt(const VarStmt& varStmt) override;
 		virtual void visitBlockStmt(const BlockStmt& blockStmt) override;
 		virtual void visitIfStmt(const IfStmt& ifStmt) override;
+		virtual void visitWhileStmt(const WhileStmt& whileStmt) override;
+		virtual void visitForStmt(const ForStmt& forStmt) override;
 
 	private:
 		RuntimeError error(const Token& tk, const std::string& msg);

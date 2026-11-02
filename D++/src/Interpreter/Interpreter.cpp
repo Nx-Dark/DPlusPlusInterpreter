@@ -277,6 +277,36 @@ namespace DXX
 			ifStmt.m_ElseBranch->Accept(*this);
 	}
 
+	void Interpreter::visitWhileStmt(const WhileStmt& whileStmt)
+	{
+		EnvironmentGuard envGuard{ m_Environment, *this };
+
+		while (isTruthy(whileStmt.m_Condition->Accept(*this)))
+			whileStmt.m_ThenBranch->Accept(*this);
+	}
+
+	void Interpreter::visitForStmt(const ForStmt& forStmt)
+	{
+		EnvironmentGuard envGuard{ m_Environment, *this };
+
+		if (forStmt.m_Initializer) forStmt.m_Initializer->Accept(*this);
+
+		while (true)
+		{
+			//checking the condition
+			if (forStmt.m_Condition) {
+				if (!isTruthy(forStmt.m_Condition->Accept(*this)))
+					break;
+			}
+
+			forStmt.m_Body->Accept(*this);
+
+			//checking the increment
+			if (forStmt.m_Increment)
+				forStmt.m_Increment->Accept(*this);
+		}
+	}
+
 	//runtime error handling
 	RuntimeError Interpreter::error(const Token& tk, const std::string& msg)
 	{

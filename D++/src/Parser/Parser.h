@@ -50,7 +50,9 @@ namespace DXX
 		Scope<Stmt> expressionStatement();
 		Scope<Stmt> ifStatement();
 		Scope<Stmt> printStatement();
-		Scope<Stmt> varDeclaration(); //var statement;
+		Scope<Stmt> whileStatement();
+		Scope<Stmt> forStatement();
+		Scope<Stmt> varDeclaration(bool consumeSemicolon = true); //var statement;
 		std::vector<Scope<Stmt>> block();
 
 		//helper functions;

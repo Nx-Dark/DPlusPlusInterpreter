@@ -13,15 +13,17 @@ namespace DXX
 	{
 		std::vector<Scope<Stmt>> statements{};
 
-		try {
-			while (!isAtEnd())
+		while (!isAtEnd())
+		{
+			try 
 			{
 				statements.push_back(declaration());
 			}
-		}
-		catch (const ParseError&)
-		{
-			synchronize();
+
+			catch (const ParseError&)
+			{
+				synchronize();
+			}
 		}
 
 		return statements;
@@ -211,6 +213,8 @@ namespace DXX
 		{
 			case TokenType::IF: return ifStatement();
 			case TokenType::PRINT: return printStatement();
+			case TokenType::WHILE: return whileStatement();
+			case TokenType::FOR: return forStatement();
 			case TokenType::LEFT_BRACE: return CreateScope<BlockStmt>(std::move(block()));
 		}
 
@@ -261,8 +265,52 @@ namespace DXX
 		return CreateScope<PrintStmt>(std::move(expr));
 	}
 
+	Scope<Stmt> Parser::whileStatement()
+	{
+		advance();
 
-	Scope<Stmt> Parser::varDeclaration()
+		consume(TokenType::LEFT_PAREN, "Expected '(' after while.");
+		Scope<Expr> condition{ expression() };
+		consume(TokenType::RIGHT_PAREN, "Expected ')' after while condition.");
+
+		Scope<Stmt> branch{ statement() };
+
+		return CreateScope<WhileStmt>(std::move(condition), std::move(branch));
+	}
+
+	Scope<Stmt> Parser::forStatement()
+	{
+		advance();
+
+		consume(TokenType::LEFT_PAREN, "Expected '(' after for.");
+		Scope<Stmt> initializer{ nullptr };
+		if (check(TokenType::VAR))
+			initializer = varDeclaration(false);
+		else if (check(TokenType::SEMICOLON))
+			initializer = nullptr;
+		else
+			initializer = CreateScope<ExpressionStmt>(expression());
+
+		consume(TokenType::SEMICOLON, "Expected ';' after initializer.");
+
+		Scope<Expr> condition{ nullptr };
+		if (!check(TokenType::SEMICOLON))
+			condition = expression();
+
+		consume(TokenType::SEMICOLON, "Expected ';' after condition.");
+
+		Scope<Expr> increment{ nullptr };
+		if (!check(TokenType::RIGHT_PAREN))
+			increment = expression();
+
+		consume(TokenType::RIGHT_PAREN, "Expected ')' after for condition.");
+
+		Scope<Stmt> body{ statement() };
+
+		return CreateScope<ForStmt>(std::move(initializer), std::move(condition), std::move(increment), std::move(body));
+	}
+
+	Scope<Stmt> Parser::varDeclaration(bool consumeSemicolon)
 	{
 		advance();
 		Token identifier{ consume(TokenType::IDENTIFIER, "Expected an Identifier.") };
@@ -274,7 +322,7 @@ namespace DXX
 			expr = expression();
 		}
 
-		consume(TokenType::SEMICOLON, "Expected ';' after Statement.");
+		if(consumeSemicolon) consume(TokenType::SEMICOLON, "Expected ';' after Statement.");
 		return CreateScope<VarStmt>(std::move(identifier), std::move(expr));
 	}
 	

@@ -95,4 +95,35 @@ namespace DXX
 		virtual void Accept(StmtVisitor& visitor) const override;
 	};
 
+	class WhileStmt : public Stmt
+	{
+	public:
+		Scope<Expr> m_Condition{};
+		Scope<Stmt> m_ThenBranch{};
+
+	public:
+		WhileStmt(Scope<Expr> condition, Scope<Stmt> thenBranch)
+			: m_Condition{ std::move(condition) }, m_ThenBranch{ std::move(thenBranch) }
+		{
+		}
+
+		virtual void Accept(StmtVisitor& visitor) const override;
+	};
+
+	class ForStmt : public Stmt
+	{
+	public:
+		Scope<Stmt> m_Initializer{};
+		Scope<Expr> m_Condition{};
+		Scope<Expr> m_Increment{};
+		Scope<Stmt> m_Body{};
+
+	public:
+		ForStmt(Scope<Stmt> initializer, Scope<Expr> condition, Scope<Expr> increment, Scope<Stmt> body)
+			: m_Initializer{ std::move(initializer) }, m_Condition{ std::move(condition) }, m_Increment{ std::move(increment) }, m_Body{ std::move(body) }
+		{ }
+
+		virtual void Accept(StmtVisitor& visitor) const override;
+	};
+
 }

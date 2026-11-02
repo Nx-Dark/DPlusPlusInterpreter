@@ -30,4 +30,14 @@ namespace DXX
 		visitor.visitIfStmt(*this);
 	}
 
+	void WhileStmt::Accept(StmtVisitor& visitor) const
+	{
+		visitor.visitWhileStmt(*this);
+	}
+
+	void ForStmt::Accept(StmtVisitor& visitor) const
+	{
+		visitor.visitForStmt(*this);
+	}
+
 }
