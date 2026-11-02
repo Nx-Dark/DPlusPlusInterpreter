@@ -64,6 +64,7 @@ namespace DXX
 
 		//error handling
 		ParseError error(const Token& token, const std::string& message);
+		void synchronize();
 	};
 
 }

@@ -21,7 +21,7 @@ namespace DXX
 		}
 		catch (const ParseError&)
 		{
-			return statements;
+			synchronize();
 		}
 
 		return statements;
@@ -325,4 +325,31 @@ namespace DXX
 		return ParseError{};
 	}
 
+	void Parser::synchronize()
+	{
+
+		while (!isAtEnd())
+		{
+
+			const Token& token{ peek() };
+
+			switch(token.m_Type)
+			{
+				//statement end;
+				case TokenType::SEMICOLON: advance(); return;
+
+				//statement sync points
+				case TokenType::PRINT: return;
+				case TokenType::RETURN: return;
+				case TokenType::VAR: return;
+				case TokenType::CLASS: return;
+				case TokenType::FUNC: return;
+				case TokenType::IF: return;
+				case TokenType::WHILE: return;
+				case TokenType::FOR: return;
+
+				default: advance();
+			}
+		}
+	}
 }
