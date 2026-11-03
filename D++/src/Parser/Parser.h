@@ -18,6 +18,7 @@ namespace DXX
 
 		Tokens m_Tokens{};
 		size_t m_CurTknIdx{}; //points to the next token aboutta be consumed in the token collection;
+		size_t m_LoopDepth{}; //increments if the parser is inside a loop body;
 
 		DiagnosticEngine& m_DiagnosticEngine;
 		std::string m_SourceName{};

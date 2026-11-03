@@ -4,6 +4,27 @@
 namespace DXX
 {
 
+	struct LoopDepthGuard
+	{
+	private:
+		size_t& m_LoopDepth;
+
+	public:
+		explicit LoopDepthGuard(size_t& depth)
+			: m_LoopDepth{ depth } 
+		{
+			++m_LoopDepth;
+		}
+
+		~LoopDepthGuard()
+		{
+			--m_LoopDepth;
+		}
+
+		LoopDepthGuard(const LoopDepthGuard&) = delete;
+		LoopDepthGuard& operator=(const LoopDepthGuard&) = delete;
+	};
+
 	Parser::Parser(Tokens tokens, DiagnosticEngine& diagnosticEngine, const std::string& srcName)
 		: m_Tokens{ std::move(tokens) }, m_DiagnosticEngine{ diagnosticEngine }, m_SourceName{ srcName }
 	{
@@ -292,9 +313,11 @@ namespace DXX
 		Scope<Expr> condition{ expression() };
 		consume(TokenType::RIGHT_PAREN, "Expected ')' after while condition.");
 
-		Scope<Stmt> branch{ statement() };
+		LoopDepthGuard loopdepthGuard{ m_LoopDepth };
 
-		return CreateScope<WhileStmt>(std::move(condition), std::move(branch));
+		Scope<Stmt> body{ statement() };
+
+		return CreateScope<WhileStmt>(std::move(condition), std::move(body));
 	}
 
 	Scope<Stmt> Parser::forStatement()
@@ -324,6 +347,8 @@ namespace DXX
 
 		consume(TokenType::RIGHT_PAREN, "Expected ')' after for condition.");
 
+		LoopDepthGuard loopdepthGuard{ m_LoopDepth };
+
 		Scope<Stmt> body{ statement() };
 
 		return CreateScope<ForStmt>(std::move(initializer), std::move(condition), std::move(increment), std::move(body));
@@ -331,7 +356,10 @@ namespace DXX
 
 	Scope<Stmt> Parser::breakStatement()
 	{
-		advance();
+		Token token{ advance() };
+
+		if (m_LoopDepth == 0)
+			throw error(token, "Unexpected break outside of loop.");
 
 		consume(TokenType::SEMICOLON, "Expected ';' after break.");
 		return CreateScope<BreakStmt>();
@@ -339,7 +367,10 @@ namespace DXX
 
 	Scope<Stmt> Parser::continueStatement()
 	{
-		advance();
+		Token token{ advance() };
+
+		if (m_LoopDepth == 0)
+			throw error(token, "Unexpected continue outside of loop.");
 
 		consume(TokenType::SEMICOLON, "Expected ';' after continue.");
 		return CreateScope<ContinueStmt>();

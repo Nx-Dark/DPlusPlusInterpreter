@@ -8,7 +8,7 @@ namespace DXX
 {
 
 	//environment guard to restore to previous env if runtime error gets thrown;
-	class EnvironmentGuard
+	struct EnvironmentGuard
 	{
 	private:
 		Interpreter& m_Interpreter;
