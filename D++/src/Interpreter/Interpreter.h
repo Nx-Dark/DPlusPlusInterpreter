@@ -49,17 +49,17 @@ namespace DXX
 		virtual Literal visitCall(const CallExpr& callExpr) override;
 
 		//statement visitor functions;
-		virtual void visitExpressionStmt(ExpressionStmt& expressionStmt, Scope<Stmt>& statement) override;
-		virtual void visitPrintStmt(PrintStmt& printStmt, Scope<Stmt>& statement) override;
-		virtual void visitVarStmt(VarStmt& varStmt, Scope<Stmt>& statement) override;
-		virtual void visitBlockStmt(BlockStmt& blockStmt, Scope<Stmt>& statement) override;
-		virtual void visitIfStmt(IfStmt& ifStmt, Scope<Stmt>& statement) override;
-		virtual void visitWhileStmt(WhileStmt& whileStmt, Scope<Stmt>& statement) override;
-		virtual void visitForStmt(ForStmt& forStmt, Scope<Stmt>& statement) override;
-		virtual void visitBreakStmt(BreakStmt& , Scope<Stmt>& statement) override;
-		virtual void visitContinueStmt(ContinueStmt&, Scope<Stmt>& statement) override;
-		virtual void visitReturnStmt(ReturnStmt& returnstmt, Scope<Stmt>& statement) override;
-		virtual void visitFunctionStmt(FunctionStmt& functionStmt, Scope<Stmt>& statement) override;
+		virtual void visitExpressionStmt(ExpressionStmt& expressionStmt) override;
+		virtual void visitPrintStmt(PrintStmt& printStmt) override;
+		virtual void visitVarStmt(VarStmt& varStmt) override;
+		virtual void visitBlockStmt(BlockStmt& blockStmt) override;
+		virtual void visitIfStmt(IfStmt& ifStmt) override;
+		virtual void visitWhileStmt(WhileStmt& whileStmt) override;
+		virtual void visitForStmt(ForStmt& forStmt) override;
+		virtual void visitBreakStmt(BreakStmt&) override;
+		virtual void visitContinueStmt(ContinueStmt&) override;
+		virtual void visitReturnStmt(ReturnStmt& returnstmt) override;
+		virtual void visitFunctionStmt(FunctionStmt& functionStmt) override;
 
 	private:
 		RuntimeError error(const Token& tk, const std::string& msg);

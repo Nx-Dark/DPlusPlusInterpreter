@@ -13,7 +13,7 @@ namespace DXX
 	public:
 		virtual ~Stmt() = default;
 
-		virtual void Accept(StmtVisitor& visitor, Scope<Stmt>& self) = 0;
+		virtual void Accept(StmtVisitor& visitor) = 0;
 	};
 
 	//expressionstmt
@@ -28,7 +28,7 @@ namespace DXX
 		{
 		}
 
-		virtual void Accept(StmtVisitor& visitor, Scope<Stmt>& self) override;
+		virtual void Accept(StmtVisitor& visitor) override;
 
 	};
 
@@ -44,7 +44,7 @@ namespace DXX
 		{
 		}
 
-		virtual void Accept(StmtVisitor& visitor, Scope<Stmt>& self) override;
+		virtual void Accept(StmtVisitor& visitor) override;
 	};
 
 	//var stmt
@@ -60,7 +60,7 @@ namespace DXX
 		{
 		}
 
-		virtual void Accept(StmtVisitor& visitor, Scope<Stmt>& self) override;
+		virtual void Accept(StmtVisitor& visitor) override;
 
 	};
 
@@ -76,7 +76,7 @@ namespace DXX
 		{
 		}
 
-		virtual void Accept(StmtVisitor& visitor, Scope<Stmt>& self) override;
+		virtual void Accept(StmtVisitor& visitor) override;
 	};
 
 	//conditional statements
@@ -92,7 +92,7 @@ namespace DXX
 			: m_Condition{ std::move(condition) }, m_ThenBranch{ std::move(thenBranch) }, m_ElseBranch{ std::move(elseBranch) }
 		{ }
 
-		virtual void Accept(StmtVisitor& visitor, Scope<Stmt>& self) override;
+		virtual void Accept(StmtVisitor& visitor) override;
 	};
 
 	class WhileStmt : public Stmt
@@ -107,7 +107,7 @@ namespace DXX
 		{
 		}
 
-		virtual void Accept(StmtVisitor& visitor, Scope<Stmt>& self) override;
+		virtual void Accept(StmtVisitor& visitor) override;
 	};
 
 	class ForStmt : public Stmt
@@ -123,7 +123,7 @@ namespace DXX
 			: m_Initializer{ std::move(initializer) }, m_Condition{ std::move(condition) }, m_Increment{ std::move(increment) }, m_Body{ std::move(body) }
 		{ }
 
-		virtual void Accept(StmtVisitor& visitor, Scope<Stmt>& self) override;
+		virtual void Accept(StmtVisitor& visitor) override;
 	};
 
 	//control statements;
@@ -133,7 +133,7 @@ namespace DXX
 
 	public:
 
-		virtual void Accept(StmtVisitor& visitor, Scope<Stmt>& self) override;
+		virtual void Accept(StmtVisitor& visitor) override;
 	};
 
 	class ContinueStmt : public Stmt
@@ -142,7 +142,7 @@ namespace DXX
 
 	public:
 
-		virtual void Accept(StmtVisitor& visitor, Scope<Stmt>& self) override;
+		virtual void Accept(StmtVisitor& visitor) override;
 	};
 
 	class ReturnStmt : public Stmt
@@ -157,7 +157,7 @@ namespace DXX
 		{
 		}
 
-		virtual void Accept(StmtVisitor& visitor, Scope<Stmt>& self) override;
+		virtual void Accept(StmtVisitor& visitor) override;
 	};
 
 	//functions
@@ -174,7 +174,7 @@ namespace DXX
 		{
 		}
 
-		virtual void Accept(StmtVisitor& visitor, Scope<Stmt>& self) override;
+		virtual void Accept(StmtVisitor& visitor) override;
 	};
 
 

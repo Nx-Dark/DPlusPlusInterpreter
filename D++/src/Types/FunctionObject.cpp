@@ -24,7 +24,7 @@ namespace DXX
 
 		try {
 
-			m_Declaration->m_Body->Accept(interpreter, m_Declaration->m_Body);
+			m_Declaration->m_Body->Accept(interpreter);
 
 		}
 		catch (const Interpreter::ReturnSignal& signal)

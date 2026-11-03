@@ -5,58 +5,58 @@
 namespace DXX
 {
 
-	void ExpressionStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
+	void ExpressionStmt::Accept(StmtVisitor& visitor)
 	{
-		visitor.visitExpressionStmt(*this, self);
+		visitor.visitExpressionStmt(*this);
 	}
 
-	void PrintStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
+	void PrintStmt::Accept(StmtVisitor& visitor)
 	{
-		visitor.visitPrintStmt(*this, self);
+		visitor.visitPrintStmt(*this);
 	}
 
-	void VarStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
+	void VarStmt::Accept(StmtVisitor& visitor)
 	{
-		visitor.visitVarStmt(*this, self);
+		visitor.visitVarStmt(*this);
 	}
 
-	void BlockStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
+	void BlockStmt::Accept(StmtVisitor& visitor)
 	{
-		visitor.visitBlockStmt(*this, self);
+		visitor.visitBlockStmt(*this);
 	}
 
-	void IfStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
+	void IfStmt::Accept(StmtVisitor& visitor)
 	{
-		visitor.visitIfStmt(*this, self);
+		visitor.visitIfStmt(*this );
 	}
 
-	void WhileStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
+	void WhileStmt::Accept(StmtVisitor& visitor )
 	{
-		visitor.visitWhileStmt(*this, self);
+		visitor.visitWhileStmt(*this);
 	}
 
-	void ForStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
+	void ForStmt::Accept(StmtVisitor& visitor)
 	{
-		visitor.visitForStmt(*this, self);
+		visitor.visitForStmt(*this);
 	}
 
-	void BreakStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
+	void BreakStmt::Accept(StmtVisitor& visitor)
 	{
-		visitor.visitBreakStmt(*this, self);
+		visitor.visitBreakStmt(*this);
 	}
 
-	void ContinueStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
+	void ContinueStmt::Accept(StmtVisitor& visitor)
 	{
-		visitor.visitContinueStmt(*this, self);
+		visitor.visitContinueStmt(*this);
 	}
-	void ReturnStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
+	void ReturnStmt::Accept(StmtVisitor& visitor )
 	{
-		visitor.visitReturnStmt(*this, self);
+		visitor.visitReturnStmt(*this);
 	}
 
-	void FunctionStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
+	void FunctionStmt::Accept(StmtVisitor& visitor)
 	{
-		visitor.visitFunctionStmt(*this, self);
+		visitor.visitFunctionStmt(*this);
 	}
 
 }

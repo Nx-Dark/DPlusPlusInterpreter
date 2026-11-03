@@ -37,9 +37,9 @@ namespace DXX
 	void Interpreter::Interpret(std::vector<Scope<Stmt>> stmts)
 	{
 		try {
-			for (auto& stmt : stmts)
+			for (const auto& stmt : stmts)
 			{
-				stmt->Accept(*this, stmt);
+				stmt->Accept(*this);
 			}
 		}
 		catch (const RuntimeError&)
@@ -243,12 +243,12 @@ namespace DXX
 	//------------------------------------------------------------------
 	//visiting statements;
 
-	void Interpreter::visitExpressionStmt(ExpressionStmt& expressionStmt, Scope<Stmt>& statement)
+	void Interpreter::visitExpressionStmt(ExpressionStmt& expressionStmt)
 	{
 		expressionStmt.m_Expr->Accept(*this);
 	}
 
-	void Interpreter::visitPrintStmt(PrintStmt& printStmt, Scope<Stmt>& statement)
+	void Interpreter::visitPrintStmt(PrintStmt& printStmt)
 	{
 
 		Literal literal{ printStmt.m_Expr->Accept(*this) };
@@ -256,7 +256,7 @@ namespace DXX
 		std::println("{0}", LiteralToString(literal));
 	}
 
-	void Interpreter::visitVarStmt(VarStmt& varStmt, Scope<Stmt>& statement)
+	void Interpreter::visitVarStmt(VarStmt& varStmt)
 	{
 
 		Literal value{ Nil{} };
@@ -267,27 +267,27 @@ namespace DXX
 		m_Environment->define(varStmt.m_Token.m_Lexeme, value);
 	}
 
-	void Interpreter::visitBlockStmt(BlockStmt& blockStmt, Scope<Stmt>& statement)
+	void Interpreter::visitBlockStmt(BlockStmt& blockStmt)
 	{
 
 		EnvironmentGuard envGuard{ m_Environment, *this };
 
 		for (auto& stmt : blockStmt.m_Statements)
-			stmt->Accept(*this, stmt);
+			stmt->Accept(*this);
 
 	}
 
-	void Interpreter::visitIfStmt(IfStmt& ifStmt, Scope<Stmt>& statement)
+	void Interpreter::visitIfStmt(IfStmt& ifStmt)
 	{
 
 		if (isTruthy(ifStmt.m_Condition->Accept(*this)))
-			ifStmt.m_ThenBranch->Accept(*this, ifStmt.m_ThenBranch);
+			ifStmt.m_ThenBranch->Accept(*this);
 
 		else if (ifStmt.m_ElseBranch)
-			ifStmt.m_ElseBranch->Accept(*this, ifStmt.m_ElseBranch);
+			ifStmt.m_ElseBranch->Accept(*this);
 	}
 
-	void Interpreter::visitWhileStmt(WhileStmt& whileStmt, Scope<Stmt>& statement)
+	void Interpreter::visitWhileStmt(WhileStmt& whileStmt)
 	{
 
 		EnvironmentGuard envGuard{ m_Environment, *this };
@@ -295,7 +295,7 @@ namespace DXX
 		while (isTruthy(whileStmt.m_Condition->Accept(*this)))
 		{
 			try {
-				whileStmt.m_ThenBranch->Accept(*this, whileStmt.m_ThenBranch);
+				whileStmt.m_ThenBranch->Accept(*this);
 			}
 
 			catch (const BreakSignal&) {
@@ -308,12 +308,12 @@ namespace DXX
 		}
 	}
 
-	void Interpreter::visitForStmt(ForStmt& forStmt, Scope<Stmt>& statement)
+	void Interpreter::visitForStmt(ForStmt& forStmt)
 	{
 
 		EnvironmentGuard envGuard{ m_Environment, *this };
 
-		if (forStmt.m_Initializer) forStmt.m_Initializer->Accept(*this, forStmt.m_Initializer);
+		if (forStmt.m_Initializer) forStmt.m_Initializer->Accept(*this);
 
 		while (true)
 		{
@@ -325,7 +325,7 @@ namespace DXX
 
 			try {
 
-				forStmt.m_Body->Accept(*this, forStmt.m_Body);
+				forStmt.m_Body->Accept(*this);
 			}
 
 			catch (const BreakSignal&) {
@@ -342,17 +342,17 @@ namespace DXX
 		}
 	}
 
-	void Interpreter::visitBreakStmt(BreakStmt&, Scope<Stmt>& statement)
+	void Interpreter::visitBreakStmt(BreakStmt&)
 	{
 		throw BreakSignal{};
 	}
 
-	void Interpreter::visitContinueStmt(ContinueStmt&, Scope<Stmt>& statement)
+	void Interpreter::visitContinueStmt(ContinueStmt&)
 	{
 		throw ContinueSignal{};
 	}
 
-	void Interpreter::visitReturnStmt(ReturnStmt& returnStmt, Scope<Stmt>& statement)
+	void Interpreter::visitReturnStmt(ReturnStmt& returnStmt)
 	{
 		Literal returnVal{ Nil{} };
 		if (returnStmt.m_Expr)
@@ -361,7 +361,7 @@ namespace DXX
 		throw ReturnSignal{ returnVal };
 	}
 
-	void Interpreter::visitFunctionStmt(FunctionStmt& functionStmt, Scope<Stmt>& statement)
+	void Interpreter::visitFunctionStmt(FunctionStmt& functionStmt)
 	{
 		Token fName{ functionStmt.m_Name };
 

@@ -23,17 +23,17 @@ namespace DXX
 		virtual ~StmtVisitor() = default;
 
 		//visitors
-		virtual void visitExpressionStmt(ExpressionStmt& expressionStmt, Scope<Stmt>& statement)  = 0;
-		virtual void visitPrintStmt		(PrintStmt& printStmt, Scope<Stmt>&           statement)  = 0;
-		virtual void visitVarStmt		(VarStmt& varStmt, Scope<Stmt>&				stateement)	= 0;
-		virtual void visitBlockStmt		(BlockStmt& blockStmt, Scope<Stmt>&           statement)	= 0;
-		virtual void visitIfStmt		(IfStmt& ifStmt, Scope<Stmt>&                 statement)	= 0;
-		virtual void visitWhileStmt		(WhileStmt& whileStmt, Scope<Stmt>&			statement)	= 0;
-		virtual void visitForStmt		(ForStmt& forStmt, Scope<Stmt>&				statement)	= 0;
-		virtual void visitBreakStmt		(BreakStmt& breakStmt, Scope<Stmt>&			statement)	= 0;
-		virtual void visitContinueStmt	(ContinueStmt& continueStmt, Scope<Stmt>&		statement)	= 0;
-		virtual void visitReturnStmt    (ReturnStmt& continueStmt, Scope<Stmt>& statement) = 0;
-		virtual void visitFunctionStmt	(FunctionStmt& functionStmt, Scope<Stmt>&		statement)	= 0;
+		virtual void visitExpressionStmt(ExpressionStmt& expressionStmt) = 0;
+		virtual void visitPrintStmt(PrintStmt& printStmt) = 0;
+		virtual void visitVarStmt(VarStmt& varStmt) = 0;
+		virtual void visitBlockStmt(BlockStmt& blockStmt) = 0;
+		virtual void visitIfStmt(IfStmt& ifStmt) = 0;
+		virtual void visitWhileStmt(WhileStmt& whileStmt) = 0;
+		virtual void visitForStmt(ForStmt& forStmt) = 0;
+		virtual void visitBreakStmt(BreakStmt& breakStmt) = 0;
+		virtual void visitContinueStmt(ContinueStmt& continueStmt) = 0;
+		virtual void visitReturnStmt(ReturnStmt& continueStmt) = 0;
+		virtual void visitFunctionStmt(FunctionStmt& functionStmt) = 0;
 	};
 
 }
