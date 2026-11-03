@@ -11,6 +11,7 @@ namespace DXX
 	class GroupingExpr;
 	class VariableExpr;
 	class AssignExpr;
+	class CallExpr;
 
 	//interface;
 	class ExprVisitor
@@ -23,7 +24,8 @@ namespace DXX
 		virtual std::string visitBinary     (const BinaryExpr& binaryExpr)     = 0;
 		virtual std::string visitGrouping   (const GroupingExpr& groupingExir) = 0;
 		virtual std::string visitVariable   (const VariableExpr& variableExpr) = 0;
-		virtual std::string visitAssignment (const AssignExpr& assignExpr)   = 0;
+		virtual std::string visitAssignment (const AssignExpr& assignExpr)     = 0;
+		virtual std::string visitCall		(const CallExpr& callExpr)       = 0;
 	};
 
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Tokenizer/Literal.h"
+#include "Types/Literal.h"
 #include "Core/Core.h"
 
 namespace DXX

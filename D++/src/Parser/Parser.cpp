@@ -205,7 +205,34 @@ namespace DXX
 			return CreateScope<UnaryExpr>(std::move(op), std::move(rightExpr));
 		}
 
-		return primary();
+		return call();
+	}
+
+	Scope<Expr> Parser::call()
+	{
+		Scope<Expr> callee{ primary() };
+
+		while(match(TokenType::LEFT_PAREN))
+		{
+			callee = finishCall(std::move(callee));
+		}
+
+		return callee;
+	}
+
+	Scope<Expr> Parser::finishCall(Scope<Expr> callee)
+	{
+		std::vector<Scope<Expr>> arguments{};
+
+		while (!check(TokenType::RIGHT_PAREN)) 
+		{
+			arguments.push_back(expression());
+			if (!check(TokenType::RIGHT_PAREN)) consume(TokenType::COMMA, "Expected ',' after argument expression.");
+		}
+
+		Token closingParen{ consume(TokenType::RIGHT_PAREN, "Expected ')' after function call.") };
+
+		return CreateScope<CallExpr>(std::move(callee), std::move(arguments), std::move(closingParen));
 	}
 
 	Scope<Expr> Parser::primary()
@@ -267,6 +294,7 @@ namespace DXX
 		switch (token.m_Type)
 		{
 			case TokenType::VAR: return varDeclaration();
+			case TokenType::FUNC: return functionDeclaration();
 		}
 
 		return statement();
@@ -390,6 +418,35 @@ namespace DXX
 
 		if(consumeSemicolon) consume(TokenType::SEMICOLON, "Expected ';' after Statement.");
 		return CreateScope<VarStmt>(std::move(identifier), std::move(expr));
+	}
+
+	Scope<Stmt> Parser::functionDeclaration()
+	{
+		advance();
+
+		Token identifier{ consume(TokenType::IDENTIFIER, "Expected an Identifier after func.") };
+		consume(TokenType::LEFT_PAREN, "Expected an '(' after Identifier.");
+
+		std::vector<Token> parameters{};
+		while (check(TokenType::IDENTIFIER))
+		{
+			parameters.push_back(advance());
+			if(!check(TokenType::RIGHT_PAREN)) consume(TokenType::COMMA, "Expected ',' after parameter names.");
+		}
+
+		consume(TokenType::RIGHT_PAREN, "Expected an ')' after func decl.");
+
+		std::vector<Scope<Stmt>> funcBodyStmts{};
+		Token bodyToken{ peek() };
+		if (!check(TokenType::LEFT_BRACE))
+			throw error(bodyToken, "Expected func body.");
+
+		funcBodyStmts = block();
+
+		Scope<BlockStmt> funcBody{ CreateScope<BlockStmt>(std::move(funcBodyStmts)) };
+
+		return CreateScope<FunctionStmt>(std::move(identifier), std::move(funcBody), std::move(parameters));
+
 	}
 	
 	std::vector<Scope<Stmt>> Parser::block()

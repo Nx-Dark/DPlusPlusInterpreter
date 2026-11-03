@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Literal.h"
+#include "Types/Literal.h"
 #include <cstddef>
 
 namespace DXX

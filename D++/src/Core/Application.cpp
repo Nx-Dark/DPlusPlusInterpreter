@@ -84,7 +84,7 @@ namespace DXX {
 
 		//interpreting the statements;
 		m_Interpreter.SetSourceName(sourceName);
-		m_Interpreter.Interpret(statements);
+		m_Interpreter.Interpret(std::move(statements));
 
 		m_DiagnosticReporter.ReportDiagnostics();
 

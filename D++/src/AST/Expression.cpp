@@ -37,6 +37,11 @@ namespace DXX
 		return visitor.visitAssignment(*this);
 	}
 
+	std::string CallExpr::Accept(ExprVisitor& visitor) const
+	{
+		return visitor.visitCall(*this);
+	}
+
 	//------------------------------------------------------------------------//
 
 	//for Evaluator, returns Literal;
@@ -69,5 +74,10 @@ namespace DXX
 	Literal AssignExpr::Accept(EvaluatorVisitor& visitor) const
 	{
 		return visitor.visitAssignment(*this);
+	}
+
+	Literal CallExpr::Accept(EvaluatorVisitor& visitor) const
+	{
+		return visitor.visitCall(*this);
 	}
 }

@@ -27,9 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\AST\AstPrinter.h">
-      <Filter>AST</Filter>
-    </ClInclude>
     <ClInclude Include="src\AST\EvaluatorVisitor.h">
       <Filter>AST</Filter>
     </ClInclude>
@@ -78,7 +75,7 @@
     <ClInclude Include="src\Source\SourceManager.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="src\Tokenizer\Literal.h">
+    <ClInclude Include="src\Types\Literal.h">
       <Filter>Tokenizer</Filter>
     </ClInclude>
     <ClInclude Include="src\Tokenizer\Token.h">
@@ -88,11 +85,9 @@
       <Filter>Tokenizer</Filter>
     </ClInclude>
     <ClInclude Include="src\dpch.h" />
+    <ClInclude Include="src\Types\Callable.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\AST\AstPrinter.cpp">
-      <Filter>AST</Filter>
-    </ClCompile>
     <ClCompile Include="src\AST\Expression.cpp">
       <Filter>AST</Filter>
     </ClCompile>

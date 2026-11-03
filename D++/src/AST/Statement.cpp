@@ -5,49 +5,54 @@
 namespace DXX
 {
 
-	void ExpressionStmt::Accept(StmtVisitor& visitor) const
+	void ExpressionStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
 	{
-		visitor.visitExpressionStmt(*this);
+		visitor.visitExpressionStmt(*this, self);
 	}
 
-	void PrintStmt::Accept(StmtVisitor& visitor) const
+	void PrintStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
 	{
-		visitor.visitPrintStmt(*this);
+		visitor.visitPrintStmt(*this, self);
 	}
 
-	void VarStmt::Accept(StmtVisitor& visitor) const
+	void VarStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
 	{
-		visitor.visitVarStmt(*this);
+		visitor.visitVarStmt(*this, self);
 	}
 
-	void BlockStmt::Accept(StmtVisitor& visitor) const
+	void BlockStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
 	{
-		visitor.visitBlockStmt(*this);
+		visitor.visitBlockStmt(*this, self);
 	}
 
-	void IfStmt::Accept(StmtVisitor& visitor) const
+	void IfStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
 	{
-		visitor.visitIfStmt(*this);
+		visitor.visitIfStmt(*this, self);
 	}
 
-	void WhileStmt::Accept(StmtVisitor& visitor) const
+	void WhileStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
 	{
-		visitor.visitWhileStmt(*this);
+		visitor.visitWhileStmt(*this, self);
 	}
 
-	void ForStmt::Accept(StmtVisitor& visitor) const
+	void ForStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
 	{
-		visitor.visitForStmt(*this);
+		visitor.visitForStmt(*this, self);
 	}
 
-	void BreakStmt::Accept(StmtVisitor& visitor) const
+	void BreakStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
 	{
-		visitor.visitBreakStmt(*this);
+		visitor.visitBreakStmt(*this, self);
 	}
 
-	void ContinueStmt::Accept(StmtVisitor& visitor) const
+	void ContinueStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
 	{
-		visitor.visitContinueStmt(*this);
+		visitor.visitContinueStmt(*this, self);
+	}
+
+	void FunctionStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
+	{
+		visitor.visitFunctionStmt(*this, self);
 	}
 
 }

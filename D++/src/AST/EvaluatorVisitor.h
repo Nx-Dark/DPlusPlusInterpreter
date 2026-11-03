@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Tokenizer/Literal.h"
+#include "Types/Literal.h"
 
 namespace DXX
 {
@@ -12,6 +12,7 @@ namespace DXX
 	class GroupingExpr;
 	class VariableExpr;
 	class AssignExpr;
+	class CallExpr;
 
 	//visitor interface for evaluator visitors;
 	class EvaluatorVisitor
@@ -25,6 +26,7 @@ namespace DXX
 		virtual Literal visitGrouping   (const GroupingExpr& groupingExpr) = 0;
 		virtual Literal visitVariable   (const VariableExpr& variableExpr) = 0;
 		virtual Literal visitAssignment (const AssignExpr& assignExpr)     = 0;
+		virtual Literal visitCall       (const CallExpr& callExpr)	       = 0;
 	};
 
 }

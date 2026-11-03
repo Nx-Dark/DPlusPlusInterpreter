@@ -109,4 +109,21 @@ namespace DXX
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
 	};
 
+	class CallExpr : public Expr
+	{
+	public:
+		Scope<Expr> m_Callee{};
+		std::vector<Scope<Expr>> m_Arguments{};
+		Token m_ClosingParen{};
+
+	public:
+		CallExpr(Scope<Expr> callee, std::vector<Scope<Expr>> args, Token closingParen)
+			: m_Callee{ std::move(callee) }, m_Arguments{ std::move(args) }, m_ClosingParen{ std::move(closingParen) }
+		{
+		}
+
+		virtual std::string Accept(ExprVisitor& visitor) const override;
+		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+	};
+
 }

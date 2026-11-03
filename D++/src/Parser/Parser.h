@@ -43,7 +43,10 @@ namespace DXX
 		Scope<Expr> term();
 		Scope<Expr> factor();
 		Scope<Expr> unary();
+		Scope<Expr> call();
 		Scope<Expr> primary();
+
+		Scope<Expr> finishCall(Scope<Expr> callee);
 		
 		//parsing statements;
 		Scope<Stmt> statement();
@@ -56,6 +59,7 @@ namespace DXX
 		Scope<Stmt> breakStatement();
 		Scope<Stmt> continueStatement();
 		Scope<Stmt> varDeclaration(bool consumeSemicolon = true); //var statement;
+		Scope<Stmt> functionDeclaration();
 		std::vector<Scope<Stmt>> block();
 
 		//helper functions;
