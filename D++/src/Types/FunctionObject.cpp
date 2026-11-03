@@ -8,7 +8,7 @@
 namespace DXX
 {
 
-	FunctionObject::FunctionObject(const Ref<FunctionStmt>& decl, const Ref<Environment>& closure)
+	FunctionObject::FunctionObject(Ref<FunctionStmt> decl, const Ref<Environment>& closure)
 		: m_Declaration{ decl }, m_Closure{ closure } 
 	{
 	}

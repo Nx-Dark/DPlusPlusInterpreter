@@ -363,15 +363,13 @@ namespace DXX
 
 	void Interpreter::visitFunctionStmt(FunctionStmt& functionStmt)
 	{
-		Token fName{ functionStmt.m_Name };
+		auto fName{ functionStmt.m_Name };
 
-		Ref<FunctionStmt> refFuncStatement{
-			CreateRef<FunctionStmt>(std::move(functionStmt.m_Name), std::move(functionStmt.m_Body), std::move(functionStmt.m_Parameters))
-		};
+		auto refFuncStatement{ CreateRef<FunctionStmt>(std::move(functionStmt.m_Name), std::move(functionStmt.m_Body), std::move(functionStmt.m_Parameters)) };
 
-		Ref<FunctionObject> funcObj{ CreateRef<FunctionObject>(refFuncStatement, m_Environment) };
-
-		m_Environment->define(fName.m_Lexeme, funcObj);
+		m_Environment->define(fName.m_Lexeme, 
+			CreateRef<FunctionObject>(refFuncStatement, m_Environment)
+		);
 	}
 
 	//runtime error handling

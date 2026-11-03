@@ -16,7 +16,7 @@ namespace DXX
 		Ref<Environment> m_Closure{};
 
 	public:
-		FunctionObject(const Ref<FunctionStmt>& decl, const Ref<Environment>& closure);
+		FunctionObject(Ref<FunctionStmt> decl, const Ref<Environment>& closure);
 		virtual ~FunctionObject() = default;
 
 		//override;
