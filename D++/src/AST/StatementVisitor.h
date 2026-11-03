@@ -13,6 +13,7 @@ namespace DXX
 	class ForStmt;
 	class BreakStmt;
 	class ContinueStmt;
+	class ReturnStmt;
 	class FunctionStmt;
 
 	//statement visitor interface
@@ -31,6 +32,7 @@ namespace DXX
 		virtual void visitForStmt		(ForStmt& forStmt, Scope<Stmt>&				statement)	= 0;
 		virtual void visitBreakStmt		(BreakStmt& breakStmt, Scope<Stmt>&			statement)	= 0;
 		virtual void visitContinueStmt	(ContinueStmt& continueStmt, Scope<Stmt>&		statement)	= 0;
+		virtual void visitReturnStmt    (ReturnStmt& continueStmt, Scope<Stmt>& statement) = 0;
 		virtual void visitFunctionStmt	(FunctionStmt& functionStmt, Scope<Stmt>&		statement)	= 0;
 	};
 

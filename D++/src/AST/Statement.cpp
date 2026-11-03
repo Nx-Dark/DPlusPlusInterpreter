@@ -49,6 +49,10 @@ namespace DXX
 	{
 		visitor.visitContinueStmt(*this, self);
 	}
+	void ReturnStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
+	{
+		visitor.visitReturnStmt(*this, self);
+	}
 
 	void FunctionStmt::Accept(StmtVisitor& visitor, Scope<Stmt>& self)
 	{

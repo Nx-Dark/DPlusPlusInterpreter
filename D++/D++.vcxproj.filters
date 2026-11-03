@@ -86,6 +86,7 @@
     </ClInclude>
     <ClInclude Include="src\dpch.h" />
     <ClInclude Include="src\Types\Callable.h" />
+    <ClInclude Include="src\Types\FunctionObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AST\Expression.cpp">
@@ -122,5 +123,7 @@
       <Filter>Tokenizer</Filter>
     </ClCompile>
     <ClCompile Include="src\dpch.cpp" />
+    <ClCompile Include="src\Types\Literal.cpp" />
+    <ClCompile Include="src\Types\FunctionObject.cpp" />
   </ItemGroup>
 </Project>

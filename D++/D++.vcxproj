@@ -162,6 +162,7 @@
     <ClInclude Include="src\Source\SourceFile.h" />
     <ClInclude Include="src\Source\SourceManager.h" />
     <ClInclude Include="src\Types\Callable.h" />
+    <ClInclude Include="src\Types\FunctionObject.h" />
     <ClInclude Include="src\Types\Literal.h" />
     <ClInclude Include="src\Tokenizer\Token.h" />
     <ClInclude Include="src\Tokenizer\Tokenization.h" />
@@ -182,6 +183,8 @@
     <ClCompile Include="src\dpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Types\FunctionObject.cpp" />
+    <ClCompile Include="src\Types\Literal.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,8 @@
 #include "dpch.h"
 #include "Environment.h"
 
+#include "Interpreter.h"
+
 namespace DXX
 {
 
@@ -41,5 +43,18 @@ namespace DXX
 			return m_Enclosing->assign(name, std::move(value));
 
 		return false;
+	}
+
+	//environment guard;
+	EnvironmentGuard::EnvironmentGuard(Ref<Environment> previous, Interpreter& interpreter)
+		: m_Previous{ previous }, m_Interpreter{ interpreter }
+	{
+		Ref<Environment> newEnvironment{ CreateRef<Environment>(m_Previous) };
+		m_Interpreter.m_Environment = newEnvironment;
+	}
+
+	EnvironmentGuard::~EnvironmentGuard()
+	{
+		m_Interpreter.m_Environment = m_Previous;
 	}
 }

@@ -145,16 +145,31 @@ namespace DXX
 		virtual void Accept(StmtVisitor& visitor, Scope<Stmt>& self) override;
 	};
 
+	class ReturnStmt : public Stmt
+	{
+	public:
+		Token m_Keyword{};
+		Scope<Expr> m_Expr{};
+
+	public:
+		ReturnStmt(Token keyword, Scope<Expr> expr)
+			: m_Keyword{ std::move(keyword) }, m_Expr{ std::move(expr) }
+		{
+		}
+
+		virtual void Accept(StmtVisitor& visitor, Scope<Stmt>& self) override;
+	};
+
 	//functions
 	class FunctionStmt : public Stmt
 	{
 	public:
 		Token m_Name{};
-		Scope<BlockStmt> m_Body{};
+		Scope<Stmt> m_Body{};
 		std::vector<Token> m_Parameters{};
 
 	public:
-		FunctionStmt(Token name, Scope<BlockStmt> body, std::vector<Token> parameters = {})
+		FunctionStmt(Token name, Scope<Stmt> body, std::vector<Token> parameters = {})
 			: m_Name{ std::move(name) }, m_Body{ std::move(body) }, m_Parameters{ std::move(parameters) }
 		{
 		}

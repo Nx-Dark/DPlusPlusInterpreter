@@ -27,6 +27,7 @@ namespace DXX
 		Ref<Environment> m_Environment{};
 
 		friend class EnvironmentGuard;
+		friend class FunctionObject;
 
 	public:
 		Interpreter(DiagnosticEngine& engine);
@@ -57,6 +58,7 @@ namespace DXX
 		virtual void visitForStmt(ForStmt& forStmt, Scope<Stmt>& statement) override;
 		virtual void visitBreakStmt(BreakStmt& , Scope<Stmt>& statement) override;
 		virtual void visitContinueStmt(ContinueStmt&, Scope<Stmt>& statement) override;
+		virtual void visitReturnStmt(ReturnStmt& returnstmt, Scope<Stmt>& statement) override;
 		virtual void visitFunctionStmt(FunctionStmt& functionStmt, Scope<Stmt>& statement) override;
 
 	private:
@@ -65,6 +67,9 @@ namespace DXX
 		//break and continue internal signals;
 		struct BreakSignal {};
 		struct ContinueSignal {};
+		struct ReturnSignal {
+			Literal value{};
+		};
 	};
 
 }

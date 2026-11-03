@@ -25,6 +25,27 @@ namespace DXX
 		LoopDepthGuard& operator=(const LoopDepthGuard&) = delete;
 	};
 
+	struct FuncDepthGuard
+	{
+	private:
+		size_t& m_FuncDepth;
+
+	public:
+		explicit FuncDepthGuard(size_t& funcDepth)
+			: m_FuncDepth{ funcDepth }
+		{
+			++m_FuncDepth;
+		}
+
+		~FuncDepthGuard()
+		{
+			--m_FuncDepth;
+		}
+
+		FuncDepthGuard(const FuncDepthGuard&) = delete;
+		FuncDepthGuard& operator=(const FuncDepthGuard&) = delete;
+	};
+
 	Parser::Parser(Tokens tokens, DiagnosticEngine& diagnosticEngine, const std::string& srcName)
 		: m_Tokens{ std::move(tokens) }, m_DiagnosticEngine{ diagnosticEngine }, m_SourceName{ srcName }
 	{
@@ -281,6 +302,7 @@ namespace DXX
 			case TokenType::FOR: return forStatement();
 			case TokenType::BREAK: return breakStatement();
 			case TokenType::CONTINUE: return continueStatement();
+			case TokenType::RETURN: return returnStatement();
 			case TokenType::LEFT_BRACE: return CreateScope<BlockStmt>(std::move(block()));
 		}
 
@@ -404,6 +426,20 @@ namespace DXX
 		return CreateScope<ContinueStmt>();
 	}
 
+	Scope<Stmt> Parser::returnStatement()
+	{
+		Token token{ advance() };
+
+		Scope<Expr> expr{};
+
+		if(!check(TokenType::SEMICOLON))
+			expr = expression();
+
+		consume(TokenType::SEMICOLON, "Expected ';' after return.");
+
+		return CreateScope<ReturnStmt>(std::move(token), std::move(expr));
+	}
+
 	Scope<Stmt> Parser::varDeclaration(bool consumeSemicolon)
 	{
 		advance();
@@ -440,6 +476,8 @@ namespace DXX
 		Token bodyToken{ peek() };
 		if (!check(TokenType::LEFT_BRACE))
 			throw error(bodyToken, "Expected func body.");
+
+		FuncDepthGuard funcDepthGuard{ m_FunctionDepth };
 
 		funcBodyStmts = block();
 

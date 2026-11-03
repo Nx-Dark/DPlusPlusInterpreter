@@ -4,32 +4,10 @@
 #include "AST/Expression.h"
 #include "AST/Statement.h"
 
+#include "Types/FunctionObject.h"
+
 namespace DXX
 {
-
-	//environment guard to restore to previous env if runtime error gets thrown;
-	struct EnvironmentGuard
-	{
-	private:
-		Interpreter& m_Interpreter;
-		Ref<Environment> m_Previous{};
-
-	public:
-		EnvironmentGuard(Ref<Environment> previous, Interpreter& interpreter)
-			: m_Previous{ std::move(previous) },  m_Interpreter { interpreter }
-		{
-			Ref<Environment> newEnvironment{ CreateRef<Environment>(m_Previous) };
-			m_Interpreter.m_Environment = newEnvironment;
-		}
-
-		~EnvironmentGuard()
-		{
-			m_Interpreter.m_Environment = m_Previous;
-		}
-
-		EnvironmentGuard(const EnvironmentGuard&) = delete;
-		EnvironmentGuard& operator=(const EnvironmentGuard&) = delete;
-	};
 
 	static bool isTruthy(const Literal& literal)
 	{
@@ -235,6 +213,30 @@ namespace DXX
 
 	Literal Interpreter::visitCall(const CallExpr& callExpr)
 	{
+		Literal callee{ callExpr.m_Callee->Accept(*this) };
+
+		std::vector<Literal> arguments{};
+
+		for (auto& args : callExpr.m_Arguments)
+		{
+			arguments.push_back(args->Accept(*this));
+		}
+
+		auto functionObj{ std::get_if<Ref<Callable>>(&callee) };
+
+		if (functionObj)
+		{
+			size_t funcObjArity{ (*functionObj)->arity() };
+			size_t calleeArgCount{ callExpr.m_Arguments.size() };
+
+			if (funcObjArity != calleeArgCount)
+			{
+				throw error(callExpr.m_ClosingParen, "Expected " + std::to_string(funcObjArity) + " Arguments, but got " + std::to_string(calleeArgCount) + " Instead");
+			}
+
+			return (*functionObj)->Call(*this, arguments);
+		}
+
 		return Nil{};
 	}
 
@@ -350,9 +352,26 @@ namespace DXX
 		throw ContinueSignal{};
 	}
 
+	void Interpreter::visitReturnStmt(ReturnStmt& returnStmt, Scope<Stmt>& statement)
+	{
+		Literal returnVal{ Nil{} };
+		if (returnStmt.m_Expr)
+			returnVal = returnStmt.m_Expr->Accept(*this);
+
+		throw ReturnSignal{ returnVal };
+	}
+
 	void Interpreter::visitFunctionStmt(FunctionStmt& functionStmt, Scope<Stmt>& statement)
 	{
+		Token fName{ functionStmt.m_Name };
 
+		Ref<FunctionStmt> refFuncStatement{
+			CreateRef<FunctionStmt>(std::move(functionStmt.m_Name), std::move(functionStmt.m_Body), std::move(functionStmt.m_Parameters))
+		};
+
+		Ref<FunctionObject> funcObj{ CreateRef<FunctionObject>(refFuncStatement, m_Environment) };
+
+		m_Environment->define(fName.m_Lexeme, funcObj);
 	}
 
 	//runtime error handling

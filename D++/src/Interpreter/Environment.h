@@ -27,4 +27,22 @@ namespace DXX
 
 	};
 
+	class Interpreter;
+
+	//environment guard to restore to previous env if runtime error gets thrown;
+	class EnvironmentGuard
+	{
+	private:
+		Ref<Environment> m_Previous{};
+		Interpreter& m_Interpreter;
+
+	public:
+		EnvironmentGuard(Ref<Environment> previous, Interpreter& interpreter);
+
+		~EnvironmentGuard();
+
+		EnvironmentGuard(const EnvironmentGuard&) = delete;
+		EnvironmentGuard& operator=(const EnvironmentGuard&) = delete;
+	};
+
 }
