@@ -14,6 +14,7 @@ namespace DXX
 	struct Token;
 
 	struct RuntimeError {};
+	struct NativeRuntimeError { std::string msg; };
 
 	class Interpreter : public EvaluatorVisitor, public StmtVisitor
 	{
@@ -24,10 +25,15 @@ namespace DXX
 		std::string m_SourceName{};
 
 		//environment;
+		const Ref<Environment> m_GlobalEnv{};
 		Ref<Environment> m_Environment{};
+
+		//locals
+		std::unordered_map<const Expr*, int> m_Locals{};
 
 		friend class EnvironmentGuard;
 		friend class FunctionObject;
+		friend class Callable;
 
 	public:
 		Interpreter(DiagnosticEngine& engine);
@@ -61,8 +67,16 @@ namespace DXX
 		virtual void visitReturnStmt(ReturnStmt& returnstmt) override;
 		virtual void visitFunctionStmt(FunctionStmt& functionStmt) override;
 
+		//resolve for resolver
+		inline void Resolve(const Expr& expr, int depth) { m_Locals[&expr] = depth; }
+
+		NativeRuntimeError nativeError(const std::string& msg);
 	private:
 		RuntimeError error(const Token& tk, const std::string& msg);
+
+		Literal lookUpVariable(Token name, const Expr& expr);
+
+		void DefineNativeFunctions();
 
 		//break and continue internal signals;
 		struct BreakSignal {};

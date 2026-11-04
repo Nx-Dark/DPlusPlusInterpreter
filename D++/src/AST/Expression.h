@@ -8,6 +8,7 @@ namespace DXX
 {
 	class ExprVisitor;
 	class EvaluatorVisitor;
+	class ExprResolverVisitor;
 
 	//base expression interface
 	class Expr
@@ -17,6 +18,7 @@ namespace DXX
 
 		virtual std::string Accept(ExprVisitor& visitor) const = 0;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const = 0;
+		virtual void Accept(ExprResolverVisitor& visitor) const = 0;
 	};
 
 	//literal expression
@@ -31,6 +33,7 @@ namespace DXX
 
 		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+		virtual void Accept(ExprResolverVisitor& visitor) const override;
 	};
 	
 	//unary expression
@@ -46,6 +49,7 @@ namespace DXX
 
 		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+		virtual void Accept(ExprResolverVisitor& visitor) const override;
 	};
 
 	//binary expression
@@ -62,6 +66,7 @@ namespace DXX
 
 		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+		virtual void Accept(ExprResolverVisitor& visitor) const override;
 
 	};
 
@@ -77,6 +82,7 @@ namespace DXX
 
 		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+		virtual void Accept(ExprResolverVisitor& visitor) const override;
 	};
 
 	//more stuff
@@ -91,6 +97,7 @@ namespace DXX
 
 		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+		virtual void Accept(ExprResolverVisitor& visitor) const override;
 	};
 
 	class AssignExpr : public Expr
@@ -107,6 +114,7 @@ namespace DXX
 
 		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+		virtual void Accept(ExprResolverVisitor& visitor) const override;
 	};
 
 	class CallExpr : public Expr
@@ -124,6 +132,7 @@ namespace DXX
 
 		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+		virtual void Accept(ExprResolverVisitor& visitor) const override;
 	};
 
 }

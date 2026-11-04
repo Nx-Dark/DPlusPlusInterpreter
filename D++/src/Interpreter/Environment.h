@@ -25,6 +25,13 @@ namespace DXX
 		std::optional<Literal> get(const std::string& name) const;
 		bool assign(const std::string& name, Literal value);
 
+		std::optional<Literal> getAt(int distance, const std::string& name) const;
+		bool assignAt(int distance, const std::string& name, const Literal& value);
+
+	private:
+
+		Ref<Environment> getAncestor(int distance) const;
+
 	};
 
 	class Interpreter;

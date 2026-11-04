@@ -147,8 +147,10 @@
   <ItemGroup>
     <ClInclude Include="src\AST\EvaluatorVisitor.h" />
     <ClInclude Include="src\AST\Expression.h" />
+    <ClInclude Include="src\AST\ExpressionResolverVisitor.h" />
     <ClInclude Include="src\AST\ExpressionVisitor.h" />
     <ClInclude Include="src\AST\Statement.h" />
+    <ClInclude Include="src\AST\StatementResolverVisitor.h" />
     <ClInclude Include="src\AST\StatementVisitor.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\Core.h" />
@@ -156,13 +158,15 @@
     <ClInclude Include="src\Diagnostics\Diagnostic.h" />
     <ClInclude Include="src\Diagnostics\DiagnosticEngine.h" />
     <ClInclude Include="src\Diagnostics\DiagnosticReporter.h" />
+    <ClInclude Include="src\Functions\NativeFunctions\NativeFunctions.h" />
     <ClInclude Include="src\Interpreter\Environment.h" />
     <ClInclude Include="src\Interpreter\Interpreter.h" />
     <ClInclude Include="src\Parser\Parser.h" />
+    <ClInclude Include="src\Resolver\Resolver.h" />
     <ClInclude Include="src\Source\SourceFile.h" />
     <ClInclude Include="src\Source\SourceManager.h" />
-    <ClInclude Include="src\Types\Callable.h" />
-    <ClInclude Include="src\Types\FunctionObject.h" />
+    <ClInclude Include="src\Functions\Callable.h" />
+    <ClInclude Include="src\Functions\FunctionObject.h" />
     <ClInclude Include="src\Types\Literal.h" />
     <ClInclude Include="src\Tokenizer\Token.h" />
     <ClInclude Include="src\Tokenizer\Tokenization.h" />
@@ -175,15 +179,17 @@
     <ClCompile Include="src\Core\main.cpp" />
     <ClCompile Include="src\Diagnostics\DiagnosticEngine.cpp" />
     <ClCompile Include="src\Diagnostics\DiagnosticReporter.cpp" />
+    <ClCompile Include="src\Functions\NativeFunctions\NativeFunctions.cpp" />
     <ClCompile Include="src\Interpreter\Environment.cpp" />
     <ClCompile Include="src\Interpreter\Interpreter.cpp" />
     <ClCompile Include="src\Parser\Parser.cpp" />
+    <ClCompile Include="src\Resolver\Resolver.cpp" />
     <ClCompile Include="src\Source\SourceManager.cpp" />
     <ClCompile Include="src\Tokenizer\Tokenization.cpp" />
     <ClCompile Include="src\dpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Types\FunctionObject.cpp" />
+    <ClCompile Include="src\Functions\FunctionObject.cpp" />
     <ClCompile Include="src\Types\Literal.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

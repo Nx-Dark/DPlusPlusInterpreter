@@ -7,6 +7,7 @@ namespace DXX
 	//statement class containing all types of statements the lang supports;
 
 	class StmtVisitor;
+	class StmtResolverVisitor;
 
 	class Stmt
 	{
@@ -14,6 +15,7 @@ namespace DXX
 		virtual ~Stmt() = default;
 
 		virtual void Accept(StmtVisitor& visitor) = 0;
+		virtual void Accept(StmtResolverVisitor& visitor) = 0;
 	};
 
 	//expressionstmt
@@ -29,6 +31,7 @@ namespace DXX
 		}
 
 		virtual void Accept(StmtVisitor& visitor) override;
+		virtual void Accept(StmtResolverVisitor& visitor) override;
 
 	};
 
@@ -45,6 +48,7 @@ namespace DXX
 		}
 
 		virtual void Accept(StmtVisitor& visitor) override;
+		virtual void Accept(StmtResolverVisitor& visitor) override;
 	};
 
 	//var stmt
@@ -61,6 +65,7 @@ namespace DXX
 		}
 
 		virtual void Accept(StmtVisitor& visitor) override;
+		virtual void Accept(StmtResolverVisitor& visitor) override;
 
 	};
 
@@ -77,6 +82,7 @@ namespace DXX
 		}
 
 		virtual void Accept(StmtVisitor& visitor) override;
+		virtual void Accept(StmtResolverVisitor& visitor) override;
 	};
 
 	//conditional statements
@@ -93,6 +99,7 @@ namespace DXX
 		{ }
 
 		virtual void Accept(StmtVisitor& visitor) override;
+		virtual void Accept(StmtResolverVisitor& visitor) override;
 	};
 
 	class WhileStmt : public Stmt
@@ -108,6 +115,7 @@ namespace DXX
 		}
 
 		virtual void Accept(StmtVisitor& visitor) override;
+		virtual void Accept(StmtResolverVisitor& visitor) override;
 	};
 
 	class ForStmt : public Stmt
@@ -124,6 +132,7 @@ namespace DXX
 		{ }
 
 		virtual void Accept(StmtVisitor& visitor) override;
+		virtual void Accept(StmtResolverVisitor& visitor) override;
 	};
 
 	//control statements;
@@ -134,6 +143,7 @@ namespace DXX
 	public:
 
 		virtual void Accept(StmtVisitor& visitor) override;
+		virtual void Accept(StmtResolverVisitor& visitor) override;
 	};
 
 	class ContinueStmt : public Stmt
@@ -143,6 +153,7 @@ namespace DXX
 	public:
 
 		virtual void Accept(StmtVisitor& visitor) override;
+		virtual void Accept(StmtResolverVisitor& visitor) override;
 	};
 
 	class ReturnStmt : public Stmt
@@ -158,6 +169,7 @@ namespace DXX
 		}
 
 		virtual void Accept(StmtVisitor& visitor) override;
+		virtual void Accept(StmtResolverVisitor& visitor) override;
 	};
 
 	//functions
@@ -175,6 +187,7 @@ namespace DXX
 		}
 
 		virtual void Accept(StmtVisitor& visitor) override;
+		virtual void Accept(StmtResolverVisitor& visitor) override;
 	};
 
 

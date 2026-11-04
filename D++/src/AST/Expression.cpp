@@ -2,6 +2,7 @@
 #include "Expression.h"
 #include "ExpressionVisitor.h"
 #include "EvaluatorVisitor.h"
+#include "ExpressionResolverVisitor.h"
 
 namespace DXX
 {
@@ -77,6 +78,42 @@ namespace DXX
 	}
 
 	Literal CallExpr::Accept(EvaluatorVisitor& visitor) const
+	{
+		return visitor.visitCall(*this);
+	}
+
+	//for resolver, returns nothing(void);
+	void LiteralExpr::Accept(ExprResolverVisitor& visitor) const
+	{
+		return visitor.visitLiteral(*this);
+	}
+
+	void UnaryExpr::Accept(ExprResolverVisitor& visitor) const
+	{
+		return visitor.visitUnary(*this);
+	}
+
+	void BinaryExpr::Accept(ExprResolverVisitor& visitor) const
+	{
+		return visitor.visitBinary(*this);
+	}
+
+	void GroupingExpr::Accept(ExprResolverVisitor& visitor) const
+	{
+		return visitor.visitGrouping(*this);
+	}
+
+	void VariableExpr::Accept(ExprResolverVisitor& visitor) const
+	{
+		return visitor.visitVariable(*this);
+	}
+
+	void AssignExpr::Accept(ExprResolverVisitor& visitor) const
+	{
+		return visitor.visitAssignment(*this);
+	}
+
+	void CallExpr::Accept(ExprResolverVisitor& visitor) const
 	{
 		return visitor.visitCall(*this);
 	}

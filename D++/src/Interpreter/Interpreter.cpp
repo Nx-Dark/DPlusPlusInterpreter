@@ -4,7 +4,8 @@
 #include "AST/Expression.h"
 #include "AST/Statement.h"
 
-#include "Types/FunctionObject.h"
+#include "Functions/FunctionObject.h"
+#include "Functions/NativeFunctions/NativeFunctions.h"
 
 namespace DXX
 {
@@ -18,8 +19,9 @@ namespace DXX
 	}
 
 	Interpreter::Interpreter(DiagnosticEngine& engine)
-		: m_DiagnosticEngine{ engine }, m_Environment{ CreateRef<Environment>() }
+		: m_DiagnosticEngine{ engine }, m_GlobalEnv{ CreateRef<Environment>() }, m_Environment{ m_GlobalEnv }
 	{
+		DefineNativeFunctions();
 	}
 
 	void Interpreter::Interpret(const Expr& expr)
@@ -86,7 +88,7 @@ namespace DXX
 		const Token& op{ binaryExpr.m_Operator };
 		Literal leftOperand{ binaryExpr.m_LeftExpr->Accept(*this) };
 
-		//for evalutaing 'and' and 'or' logical operators;
+		//for evalutaing 'and' and 'or' logical operators; also called short-circuiting;
 		if (op.m_Type == TokenType::AND)
 		{
 			if (!isTruthy(leftOperand)) return leftOperand;
@@ -191,24 +193,32 @@ namespace DXX
 
 	Literal Interpreter::visitVariable(const VariableExpr& variableExpr)
 	{
-		const auto& varName{ variableExpr.m_Token.m_Lexeme };
-
-		const auto& varLiteral{ m_Environment->get(varName) };
-
-		if (varLiteral)
-			return varLiteral.value();
-
-		throw error(variableExpr.m_Token, "Undefined Variable.");
+		return lookUpVariable(variableExpr.m_Token, variableExpr);
 	}
 
 	Literal Interpreter::visitAssignment(const AssignExpr& assignExpr)
 	{
 		Literal value{ assignExpr.m_Expr->Accept(*this) };
 
-		if (m_Environment->assign(assignExpr.m_Identifier.m_Lexeme, value))
-			return value;
-		
-		throw error(assignExpr.m_Identifier, "Undefined Variable.");
+		//if (m_Environment->assign(assignExpr.m_Identifier.m_Lexeme, value))
+		//	return value;
+		//
+		//throw error(assignExpr.m_Identifier, "Undefined Variable.");
+
+		auto it{ m_Locals.find(&assignExpr) };
+
+		if (it != m_Locals.end())
+		{
+			int distance{ it->second };
+			m_Environment->assignAt(distance, assignExpr.m_Identifier.m_Lexeme, value);
+		}
+
+		else
+		{
+			m_GlobalEnv->assign(assignExpr.m_Identifier.m_Lexeme, value);
+		}
+
+		return value;
 	}
 
 	Literal Interpreter::visitCall(const CallExpr& callExpr)
@@ -229,12 +239,20 @@ namespace DXX
 			size_t funcObjArity{ (*functionObj)->arity() };
 			size_t calleeArgCount{ callExpr.m_Arguments.size() };
 
-			if (funcObjArity != calleeArgCount)
+			if (funcObjArity != VARIADIC_ARITY && funcObjArity != calleeArgCount)
 			{
 				throw error(callExpr.m_ClosingParen, "Expected " + std::to_string(funcObjArity) + " Arguments, but got " + std::to_string(calleeArgCount) + " Instead");
 			}
 
-			return (*functionObj)->Call(*this, arguments);
+			try 
+			{
+				return (*functionObj)->Call(*this, arguments);
+			}
+
+			catch (const NativeRuntimeError& nre)
+			{
+				throw error(callExpr.m_ClosingParen, nre.msg);
+			}
 		}
 
 		return Nil{};
@@ -372,6 +390,42 @@ namespace DXX
 		);
 	}
 
+	Literal Interpreter::lookUpVariable(Token token, const Expr& expr)
+	{
+		auto it{ m_Locals.find(&expr) };
+
+		if (it != m_Locals.end())
+		{
+			int distance{ it->second };
+			return m_Environment->getAt(distance, token.m_Lexeme).value();
+		}
+
+		auto value{ m_GlobalEnv->get(token.m_Lexeme) };
+		
+		if (!value)
+			throw error(token, "Undefined Variable " + token.m_Lexeme + ".");
+
+		return value.value();
+	}
+
+	void Interpreter::DefineNativeFunctions()
+	{
+		//registering nativ functions
+		//native clock func
+		m_GlobalEnv->define("clock", CreateRef<ClockFunction>());
+
+		//native print func
+		m_GlobalEnv->define("println", CreateRef<PrintFunction>());
+		//nativ pow func
+		m_GlobalEnv->define("pow", CreateRef<PowFunc>());
+		//nativ max func
+		m_GlobalEnv->define("max", CreateRef<MaxFunc>());
+		//nativ sqrt func
+		m_GlobalEnv->define("sqrt", CreateRef<SqrtFunc>());
+		//nativ min func
+		m_GlobalEnv->define("min", CreateRef<MinFunc>());
+	}
+
 	//runtime error handling
 	RuntimeError Interpreter::error(const Token& tk, const std::string& msg)
 	{
@@ -385,5 +439,19 @@ namespace DXX
 		m_DiagnosticEngine.Report(std::move(diag));
 
 		return RuntimeError{};
+	}
+
+	NativeRuntimeError Interpreter::nativeError(const std::string& msg)
+	{
+		Diagnostic diag{
+			DiagnosticSeverity::ERROR,
+			DiagnosticPhase::RUNTIME,
+			msg,
+			{ }
+		};
+
+		m_DiagnosticEngine.Report(std::move(diag));
+
+		return NativeRuntimeError{};
 	}
 }

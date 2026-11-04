@@ -1,0 +1,228 @@
+#include "dpch.h"
+#include "Resolver.h"
+
+#include "AST/Statement.h"
+#include "AST/Expression.h"
+
+#include "Interpreter/Interpreter.h"
+
+namespace DXX
+{
+
+	Resolver::Resolver(DiagnosticEngine& diagnosticEngine, Interpreter& interpreter)
+		: m_DiagnosticEngine{ diagnosticEngine }, m_Interpreter{ interpreter }
+	{
+
+	}
+
+	Resolver::~Resolver()
+	{
+
+	}
+
+	void Resolver::Resolve(const std::vector<Scope<Stmt>>& statements)
+	{
+
+		try
+		{
+			for (const auto& stmt : statements)
+			{
+				Resolve(stmt);
+			}
+		}
+		catch (const ResolveError&)
+		{
+			return;
+		}
+	}
+
+	void Resolver::Resolve(const Expr& expr)
+	{
+		expr.Accept(*this);
+	}
+
+	void Resolver::Resolve(const Scope<Stmt>& stmt)
+	{
+		stmt->Accept(*this);
+	}
+
+	void Resolver::ResolveLocal(const Expr& expr, Token name)
+	{
+		for (int i{ (int)m_Scopes.size() - 1 }; i >= 0; i--)
+		{
+			if (m_Scopes._Get_container().at(i).contains(name.m_Lexeme))
+			{
+				m_Interpreter.Resolve(expr, m_Scopes.size() - 1 - i);
+				return;
+			}
+		}
+	}
+
+	void Resolver::ResolveFunction(FunctionStmt& functionStmt)
+	{
+		BeginScope();
+		for (const auto& tkn : functionStmt.m_Parameters)
+		{
+			Declare(tkn);
+			Define(tkn);
+		}
+
+		Resolve(functionStmt.m_Body);
+		EndScope();
+	}
+
+	//resolving expressions;
+	void Resolver::visitUnary(const UnaryExpr& unaryExpr)
+	{
+		Resolve(*unaryExpr.m_Expr);
+	}
+
+	void Resolver::visitBinary(const BinaryExpr& binaryExpr)
+	{
+		Resolve(*binaryExpr.m_LeftExpr);
+		Resolve(*binaryExpr.m_RightExpr);
+	}
+
+	void Resolver::visitVariable(const VariableExpr& varExpr)
+	{
+		if (!m_Scopes.empty())
+		{
+
+			auto& scope{ m_Scopes.top() };
+
+			auto it{ scope.find(varExpr.m_Token.m_Lexeme) };
+
+			if (it != scope.end() && !it->second)
+				throw error(varExpr.m_Token, "Can't read local variable in its own initializer.");
+
+		}
+
+		ResolveLocal(varExpr, varExpr.m_Token);
+	}
+
+	void Resolver::visitAssignment(const AssignExpr& assignExpr)
+	{
+		Resolve(*assignExpr.m_Expr);
+		ResolveLocal(assignExpr, assignExpr.m_Identifier);
+	}
+
+	void Resolver::visitCall(const CallExpr& callExpr)
+	{
+		Resolve(*callExpr.m_Callee);
+
+		for (const auto& arg : callExpr.m_Arguments)
+		{
+			Resolve(*arg);
+		}
+	}
+
+	void Resolver::visitGrouping(const GroupingExpr& groupingExpr)
+	{
+		Resolve(*groupingExpr.m_Expr);
+	}
+
+	//resolving statements;
+	void Resolver::visitPrintStmt(PrintStmt& printStmt)
+	{
+		Resolve(*printStmt.m_Expr);
+	}
+
+	void Resolver::visitExpressionStmt(ExpressionStmt& expressionStmt)
+	{
+		expressionStmt.m_Expr->Accept(*this);
+	}
+
+	void Resolver::visitVarStmt(VarStmt& varStmt)
+	{
+		Declare(varStmt.m_Token);
+		if (varStmt.m_InitializerExpr) Resolve(*varStmt.m_InitializerExpr);
+		Define(varStmt.m_Token);
+	}
+
+	void Resolver::visitIfStmt(IfStmt& ifStmt)
+	{
+		Resolve(*ifStmt.m_Condition);
+		Resolve(ifStmt.m_ThenBranch);
+		if (ifStmt.m_ElseBranch) Resolve(ifStmt.m_ElseBranch);
+	}
+
+	void Resolver::visitBlockStmt(BlockStmt& blockStmt)
+	{
+		BeginScope();
+		Resolve(blockStmt.m_Statements);
+		EndScope();
+	}
+
+	void Resolver::visitWhileStmt(WhileStmt& whileStmt)
+	{
+		Resolve(*whileStmt.m_Condition);
+		Resolve(whileStmt.m_ThenBranch);
+	}
+
+	void Resolver::visitForStmt(ForStmt& forStmt)
+	{
+		if (forStmt.m_Initializer) Resolve(forStmt.m_Initializer);
+		if (forStmt.m_Condition) Resolve(*forStmt.m_Condition);
+		if (forStmt.m_Increment) Resolve(*forStmt.m_Increment);
+
+		Resolve(forStmt.m_Body);
+	}
+
+	void Resolver::visitFunctionStmt(FunctionStmt& functionStmt)
+	{
+		Declare(functionStmt.m_Name);
+		Define(functionStmt.m_Name);
+
+		ResolveFunction(functionStmt);
+	}
+
+	void Resolver::visitReturnStmt(ReturnStmt& returnStmt)
+	{
+		if (returnStmt.m_Expr) Resolve(*returnStmt.m_Expr);
+	}
+
+	//helper stuff
+	void Resolver::BeginScope()
+	{
+		m_Scopes.push(std::unordered_map<std::string, bool>{});
+	}
+
+	void Resolver::EndScope()
+	{
+		m_Scopes.pop();
+	}
+
+	void Resolver::Declare(const Token& name)
+	{
+		if (m_Scopes.empty()) return;
+
+		auto& scope{ m_Scopes.top() };
+
+		if (scope.contains(name.m_Lexeme))
+			throw error(name, "A Variable with the same name exists in this scope");
+
+		m_Scopes.top()[name.m_Lexeme] = false;
+	}
+
+	void Resolver::Define(const Token& name)
+	{
+		if (m_Scopes.empty()) return;
+
+		m_Scopes.top()[name.m_Lexeme] = true;
+	}
+
+	//erroir handling
+	ResolveError Resolver::error(Token token, const std::string& msg)
+	{
+		Diagnostic diag{
+			DiagnosticSeverity::ERROR,
+			DiagnosticPhase::RESOLVING,
+			msg,
+			{ m_SourceName, token.m_Line, token.m_Column, 0 }
+		};
+
+		m_DiagnosticEngine.Report(std::move(diag));
+
+		return ResolveError{};
+	}
+}

@@ -85,8 +85,12 @@
       <Filter>Tokenizer</Filter>
     </ClInclude>
     <ClInclude Include="src\dpch.h" />
-    <ClInclude Include="src\Types\Callable.h" />
-    <ClInclude Include="src\Types\FunctionObject.h" />
+    <ClInclude Include="src\Functions\Callable.h" />
+    <ClInclude Include="src\Functions\FunctionObject.h" />
+    <ClInclude Include="src\Functions\NativeFunctions\NativeFunctions.h" />
+    <ClInclude Include="src\AST\ExpressionResolverVisitor.h" />
+    <ClInclude Include="src\AST\StatementResolverVisitor.h" />
+    <ClInclude Include="src\Resolver\Resolver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AST\Expression.cpp">
@@ -124,6 +128,8 @@
     </ClCompile>
     <ClCompile Include="src\dpch.cpp" />
     <ClCompile Include="src\Types\Literal.cpp" />
-    <ClCompile Include="src\Types\FunctionObject.cpp" />
+    <ClCompile Include="src\Functions\FunctionObject.cpp" />
+    <ClCompile Include="src\Functions\NativeFunctions\NativeFunctions.cpp" />
+    <ClCompile Include="src\Resolver\Resolver.cpp" />
   </ItemGroup>
 </Project>

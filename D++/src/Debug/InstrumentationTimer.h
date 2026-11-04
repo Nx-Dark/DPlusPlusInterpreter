@@ -30,7 +30,7 @@ namespace DXX::Debug
 		{
 			const auto endTime{ std::chrono::high_resolution_clock::now() };
 
-			const auto duration{ std::chrono::duration_cast<std::chrono::milliseconds>(endTime - m_StartTime) };
+			const auto duration{ std::chrono::duration_cast<std::chrono::microseconds>(endTime - m_StartTime) };
 
 			std::println("Elapsed Time: {0}ms", duration.count());
 

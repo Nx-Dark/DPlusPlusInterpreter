@@ -3,6 +3,7 @@
 
 #include "Tokenizer/Tokenization.h"
 #include "Parser/Parser.h"
+#include "Resolver/Resolver.h"
 
 //debug stuff
 #include "Debug/InstrumentationTimer.h"
@@ -79,7 +80,20 @@ namespace DXX {
 		//return if there are lexing or parsing errors
 		if (m_DiagnosticEngine.HasErrors()) return;
 
-		//clearing diagnostic data before runtime error;
+		//clearing diagnostic data before runtime;
+		m_DiagnosticEngine.Clear();
+
+		Resolver resolver{ m_DiagnosticEngine, m_Interpreter };
+		resolver.SetSourceName(sourceName);
+		resolver.Resolve(statements);
+
+		//reporting diagnostic data;
+		m_DiagnosticReporter.ReportDiagnostics();
+
+		//return if there are resolving errors;
+		if (m_DiagnosticEngine.HasErrors()) return;
+
+		//clearing diagnostic data before runtime;
 		m_DiagnosticEngine.Clear();
 
 		//interpreting the statements;

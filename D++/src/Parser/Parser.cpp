@@ -430,6 +430,9 @@ namespace DXX
 	{
 		Token token{ advance() };
 
+		if (m_FunctionDepth == 0)
+			throw error(token, "Unexpected return outside of function.");
+
 		Scope<Expr> expr{};
 
 		if(!check(TokenType::SEMICOLON))

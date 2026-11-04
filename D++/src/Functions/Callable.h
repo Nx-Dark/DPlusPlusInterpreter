@@ -1,10 +1,12 @@
 #pragma once
 
 #include <vector>
-#include "Literal.h"
+#include "Types/Literal.h"
 
 namespace DXX
 {
+
+	static constexpr uint32_t VARIADIC_ARITY{ UINT32_MAX };
 
 	class Interpreter;
 

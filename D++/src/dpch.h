@@ -19,5 +19,6 @@
 #include <cstddef>
 #include <type_traits>
 #include <expected>
+#include <stack>
 
 #include "Core/Core.h"

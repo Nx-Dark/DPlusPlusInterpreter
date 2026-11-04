@@ -45,6 +45,31 @@ namespace DXX
 		return false;
 	}
 
+	std::optional<Literal> Environment::getAt(int distance, const std::string& name) const
+	{
+		Ref<Environment> env{ getAncestor(distance) };
+
+		return env->m_Values[name];
+	}
+
+	bool Environment::assignAt(int distance, const std::string& name, const Literal& value)
+	{
+		Ref<Environment> env{ getAncestor(distance) };
+		env->m_Values[name] = value;
+
+		return true;
+	}
+
+	Ref<Environment> Environment::getAncestor(int distance) const
+	{
+		Ref<Environment> env{ CreateRef<Environment>(*this) };
+
+		for (int i{}; i < distance; i++)
+			env = env->m_Enclosing;
+
+		return env;
+	}
+
 	//environment guard;
 	EnvironmentGuard::EnvironmentGuard(Ref<Environment> previous, Interpreter& interpreter)
 		: m_Previous{ previous }, m_Interpreter{ interpreter }

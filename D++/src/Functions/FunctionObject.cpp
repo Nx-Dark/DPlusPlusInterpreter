@@ -42,6 +42,6 @@ namespace DXX
 
 	std::string FunctionObject::ToString() const
 	{
-		return m_Declaration->m_Name.m_Lexeme;
+		return "<fucn " + m_Declaration->m_Name.m_Lexeme + ">";
 	}
 }
