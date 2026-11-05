@@ -8,6 +8,8 @@
 
 #include "Environment.h"
 
+#include "AST/IdType.h"
+
 namespace DXX
 {
 
@@ -28,8 +30,8 @@ namespace DXX
 		const Ref<Environment> m_GlobalEnv{};
 		Ref<Environment> m_Environment{};
 
-		//locals
-		std::unordered_map<const Expr*, int> m_Locals{};
+		//locals(expressions)
+		std::unordered_map<ExprID, int> m_Locals{}; //int the depth, where a particular statement with this expression id is located
 
 		friend class EnvironmentGuard;
 		friend class FunctionObject;
@@ -43,7 +45,7 @@ namespace DXX
 
 		//entry point to the evalutaion
 		void Interpret(const Expr& expr);
-		void Interpret(std::vector<Scope<Stmt>> stmts);
+		void Interpret(std::vector<Ref<Stmt>> stmts);
 
 		//expression visitor functions
 		virtual Literal visitLiteral(const LiteralExpr& literalExpr) override;
@@ -68,7 +70,7 @@ namespace DXX
 		virtual void visitFunctionStmt(FunctionStmt& functionStmt) override;
 
 		//resolve for resolver
-		inline void Resolve(const Expr& expr, int depth) { m_Locals[&expr] = depth; }
+		void Resolve(const Expr& expr, int depth);
 
 		NativeRuntimeError nativeError(const std::string& msg);
 	private:

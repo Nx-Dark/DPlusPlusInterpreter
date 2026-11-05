@@ -36,7 +36,7 @@ namespace DXX
 		}
 	}
 
-	void Interpreter::Interpret(std::vector<Scope<Stmt>> stmts)
+	void Interpreter::Interpret(std::vector<Ref<Stmt>> stmts)
 	{
 		try {
 			for (const auto& stmt : stmts)
@@ -200,23 +200,22 @@ namespace DXX
 	{
 		Literal value{ assignExpr.m_Expr->Accept(*this) };
 
-		//if (m_Environment->assign(assignExpr.m_Identifier.m_Lexeme, value))
-		//	return value;
-		//
-		//throw error(assignExpr.m_Identifier, "Undefined Variable.");
-
-		auto it{ m_Locals.find(&assignExpr) };
+		auto it{ m_Locals.find(assignExpr.GetID()) };
+		bool assigned{};
 
 		if (it != m_Locals.end())
 		{
 			int distance{ it->second };
-			m_Environment->assignAt(distance, assignExpr.m_Identifier.m_Lexeme, value);
+			assigned = m_Environment->assignAt(distance, assignExpr.m_Identifier.m_Lexeme, value);
+
 		}
 
 		else
 		{
-			m_GlobalEnv->assign(assignExpr.m_Identifier.m_Lexeme, value);
+			assigned = m_GlobalEnv->assign(assignExpr.m_Identifier.m_Lexeme, value);
 		}
+
+		if (!assigned) throw error(assignExpr.m_Identifier, "Undefine Variable " + assignExpr.m_Identifier.m_Lexeme + ".");
 
 		return value;
 	}
@@ -390,9 +389,14 @@ namespace DXX
 		);
 	}
 
+	void Interpreter::Resolve(const Expr& expr, int depth)
+	{
+		m_Locals[expr.GetID()] = depth;
+	}
+
 	Literal Interpreter::lookUpVariable(Token token, const Expr& expr)
 	{
-		auto it{ m_Locals.find(&expr) };
+		auto it{ m_Locals.find(expr.GetID()) };
 
 		if (it != m_Locals.end())
 		{

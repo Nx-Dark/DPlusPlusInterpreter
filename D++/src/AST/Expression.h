@@ -4,8 +4,12 @@
 
 #include "Core/Core.h"
 
+#include "IdType.h"
+
 namespace DXX
+
 {
+
 	class ExprVisitor;
 	class EvaluatorVisitor;
 	class ExprResolverVisitor;
@@ -13,12 +17,19 @@ namespace DXX
 	//base expression interface
 	class Expr
 	{
+		ExprID m_ID{};
+
+		inline static ExprID s_NextID{ 0 };
+
 	public:
+		Expr();
 		virtual ~Expr() = default;
 
 		virtual std::string Accept(ExprVisitor& visitor) const = 0;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const = 0;
 		virtual void Accept(ExprResolverVisitor& visitor) const = 0;
+
+		inline ExprID GetID() const { return m_ID; }
 	};
 
 	//literal expression
@@ -41,11 +52,11 @@ namespace DXX
 	{
 	public:
 		Token m_Operator;
-		Scope<Expr> m_Expr{};
+		Ref<Expr> m_Expr{};
 
 	public:
-		UnaryExpr(Token op, Scope<Expr> expr)
-			: m_Expr{ std::move(expr) }, m_Operator{ std::move(op) } { }
+		UnaryExpr(Token op, Ref<Expr> expr)
+			: m_Expr{ expr }, m_Operator{ std::move(op) } { }
 
 		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
@@ -56,13 +67,13 @@ namespace DXX
 	class BinaryExpr : public Expr
 	{
 	public:
-		Scope<Expr> m_LeftExpr{};
+		Ref<Expr> m_LeftExpr{};
 		Token m_Operator;
-		Scope<Expr> m_RightExpr{};
+		Ref<Expr> m_RightExpr{};
 
 	public:
-		BinaryExpr(Scope<Expr> leftExpr, Token op, Scope<Expr> rightExpr)
-			: m_LeftExpr{ std::move(leftExpr) }, m_Operator{ std::move(op) }, m_RightExpr{ std::move(rightExpr) } { }
+		BinaryExpr(Ref<Expr> leftExpr, Token op, Ref<Expr> rightExpr)
+			: m_LeftExpr{ leftExpr }, m_Operator{ std::move(op) }, m_RightExpr{ rightExpr } { }
 
 		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
@@ -74,11 +85,11 @@ namespace DXX
 	class GroupingExpr : public Expr
 	{
 	public:
-		Scope<Expr> m_Expr{};
+		Ref<Expr> m_Expr{};
 
 	public:
-		GroupingExpr(Scope<Expr> expr)
-			: m_Expr{ std::move(expr) } { }
+		GroupingExpr(Ref<Expr> expr)
+			: m_Expr{ expr } { }
 
 		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
@@ -104,11 +115,11 @@ namespace DXX
 	{
 	public:
 		Token m_Identifier;
-		Scope<Expr> m_Expr{};
+		Ref<Expr> m_Expr{};
 
 	public:
-		AssignExpr(Token identifier, Scope<Expr> expr)
-			: m_Identifier{ std::move(identifier) }, m_Expr{ std::move(expr) } 
+		AssignExpr(Token identifier, Ref<Expr> expr)
+			: m_Identifier{ std::move(identifier) }, m_Expr{ expr } 
 		{
 		}
 
@@ -120,13 +131,13 @@ namespace DXX
 	class CallExpr : public Expr
 	{
 	public:
-		Scope<Expr> m_Callee{};
-		std::vector<Scope<Expr>> m_Arguments{};
+		Ref<Expr> m_Callee{};
+		std::vector<Ref<Expr>> m_Arguments{};
 		Token m_ClosingParen{};
 
 	public:
-		CallExpr(Scope<Expr> callee, std::vector<Scope<Expr>> args, Token closingParen)
-			: m_Callee{ std::move(callee) }, m_Arguments{ std::move(args) }, m_ClosingParen{ std::move(closingParen) }
+		CallExpr(Ref<Expr> callee, std::vector<Ref<Expr>> args, Token closingParen)
+			: m_Callee{ callee }, m_Arguments{ std::move(args) }, m_ClosingParen{ std::move(closingParen) }
 		{
 		}
 

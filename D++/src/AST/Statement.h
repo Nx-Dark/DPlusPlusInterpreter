@@ -1,5 +1,6 @@
 #pragma once
 
+#include "IdType.h"
 #include "Expression.h"
 
 namespace DXX
@@ -11,22 +12,29 @@ namespace DXX
 
 	class Stmt
 	{
+		StmtID m_ID{};
+
+		inline static StmtID s_NextID{ 0 };
+
 	public:
+		Stmt();
 		virtual ~Stmt() = default;
 
 		virtual void Accept(StmtVisitor& visitor) = 0;
 		virtual void Accept(StmtResolverVisitor& visitor) = 0;
+
+		inline StmtID GetID() const { return m_ID; }
 	};
 
 	//expressionstmt
 	class ExpressionStmt : public Stmt
 	{
 	public:
-		Scope<Expr> m_Expr{};
+		Ref<Expr> m_Expr{};
 
 	public:
-		ExpressionStmt(Scope<Expr> expr)
-			: m_Expr{ std::move(expr) } 
+		ExpressionStmt(Ref<Expr> expr)
+			: m_Expr{ expr } 
 		{
 		}
 
@@ -39,11 +47,11 @@ namespace DXX
 	class PrintStmt : public Stmt
 	{
 	public:
-		Scope<Expr> m_Expr{};
+		Ref<Expr> m_Expr{};
 
 	public:
-		PrintStmt(Scope<Expr> expr)
-			: m_Expr{ std::move(expr) }
+		PrintStmt(Ref<Expr> expr)
+			: m_Expr{ expr }
 		{
 		}
 
@@ -56,11 +64,11 @@ namespace DXX
 	{
 	public:
 		Token m_Token{};
-		Scope<Expr> m_InitializerExpr{};
+		Ref<Expr> m_InitializerExpr{};
 
 	public:
-		VarStmt(Token token, Scope<Expr> initializerExpr = nullptr)
-			: m_Token{ std::move(token) }, m_InitializerExpr{ std::move(initializerExpr) }
+		VarStmt(Token token, Ref<Expr> initializerExpr = nullptr)
+			: m_Token{ std::move(token) }, m_InitializerExpr{ initializerExpr }
 		{
 		}
 
@@ -73,10 +81,10 @@ namespace DXX
 	class BlockStmt : public Stmt
 	{
 	public:
-		std::vector<Scope<Stmt>> m_Statements{};
+		std::vector<Ref<Stmt>> m_Statements{};
 
 	public:
-		BlockStmt(std::vector<Scope<Stmt>> statements)
+		BlockStmt(std::vector<Ref<Stmt>> statements)
 			: m_Statements{ std::move(statements) } 
 		{
 		}
@@ -89,13 +97,13 @@ namespace DXX
 	class IfStmt : public Stmt
 	{
 	public:
-		Scope<Expr> m_Condition{};
-		Scope<Stmt> m_ThenBranch{};
-		Scope<Stmt> m_ElseBranch{};
+		Ref<Expr> m_Condition{};
+		Ref<Stmt> m_ThenBranch{};
+		Ref<Stmt> m_ElseBranch{};
 
 	public:
-		IfStmt(Scope<Expr> condition, Scope<Stmt> thenBranch, Scope<Stmt> elseBranch)
-			: m_Condition{ std::move(condition) }, m_ThenBranch{ std::move(thenBranch) }, m_ElseBranch{ std::move(elseBranch) }
+		IfStmt(Ref<Expr> condition, Ref<Stmt> thenBranch, Ref<Stmt> elseBranch)
+			: m_Condition{ condition }, m_ThenBranch{ thenBranch }, m_ElseBranch{ elseBranch }
 		{ }
 
 		virtual void Accept(StmtVisitor& visitor) override;
@@ -105,12 +113,12 @@ namespace DXX
 	class WhileStmt : public Stmt
 	{
 	public:
-		Scope<Expr> m_Condition{};
-		Scope<Stmt> m_ThenBranch{};
+		Ref<Expr> m_Condition{};
+		Ref<Stmt> m_ThenBranch{};
 
 	public:
-		WhileStmt(Scope<Expr> condition, Scope<Stmt> thenBranch)
-			: m_Condition{ std::move(condition) }, m_ThenBranch{ std::move(thenBranch) }
+		WhileStmt(Ref<Expr> condition, Ref<Stmt> thenBranch)
+			: m_Condition{ condition }, m_ThenBranch{ thenBranch }
 		{
 		}
 
@@ -121,14 +129,14 @@ namespace DXX
 	class ForStmt : public Stmt
 	{
 	public:
-		Scope<Stmt> m_Initializer{};
-		Scope<Expr> m_Condition{};
-		Scope<Expr> m_Increment{};
-		Scope<Stmt> m_Body{};
+		Ref<Stmt> m_Initializer{};
+		Ref<Expr> m_Condition{};
+		Ref<Expr> m_Increment{};
+		Ref<Stmt> m_Body{};
 
 	public:
-		ForStmt(Scope<Stmt> initializer, Scope<Expr> condition, Scope<Expr> increment, Scope<Stmt> body)
-			: m_Initializer{ std::move(initializer) }, m_Condition{ std::move(condition) }, m_Increment{ std::move(increment) }, m_Body{ std::move(body) }
+		ForStmt(Ref<Stmt> initializer, Ref<Expr> condition, Ref<Expr> increment, Ref<Stmt> body)
+			: m_Initializer{ initializer }, m_Condition{ condition }, m_Increment{ increment }, m_Body{ body }
 		{ }
 
 		virtual void Accept(StmtVisitor& visitor) override;
@@ -160,11 +168,11 @@ namespace DXX
 	{
 	public:
 		Token m_Keyword{};
-		Scope<Expr> m_Expr{};
+		Ref<Expr> m_Expr{};
 
 	public:
-		ReturnStmt(Token keyword, Scope<Expr> expr)
-			: m_Keyword{ std::move(keyword) }, m_Expr{ std::move(expr) }
+		ReturnStmt(Token keyword, Ref<Expr> expr)
+			: m_Keyword{ std::move(keyword) }, m_Expr{ expr }
 		{
 		}
 
@@ -177,12 +185,12 @@ namespace DXX
 	{
 	public:
 		Token m_Name{};
-		Scope<Stmt> m_Body{};
+		Ref<Stmt> m_Body{};
 		std::vector<Token> m_Parameters{};
 
 	public:
-		FunctionStmt(Token name, Scope<Stmt> body, std::vector<Token> parameters = {})
-			: m_Name{ std::move(name) }, m_Body{ std::move(body) }, m_Parameters{ std::move(parameters) }
+		FunctionStmt(Token name, Ref<Stmt> body, std::vector<Token> parameters = {})
+			: m_Name{ std::move(name) }, m_Body{ body }, m_Parameters{ std::move(parameters) }
 		{
 		}
 

@@ -5,6 +5,11 @@
 
 namespace DXX
 {
+	Stmt::Stmt()
+		: m_ID{ s_NextID++ }
+	{
+	}
+
 	//statement visitor/interpreter
 	void ExpressionStmt::Accept(StmtVisitor& visitor)
 	{

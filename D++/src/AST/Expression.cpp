@@ -6,6 +6,11 @@
 
 namespace DXX
 {
+	//unique id for every expression
+	Expr::Expr()
+		: m_ID{ s_NextID++ }
+	{
+	}
 
 	//for AstPrinter, returns string;
 	std::string LiteralExpr::Accept(ExprVisitor& visitor) const

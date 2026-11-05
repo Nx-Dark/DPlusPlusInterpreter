@@ -51,9 +51,9 @@ namespace DXX
 	{
 	}
 
-	std::vector<Scope<Stmt>> Parser::Parse()
+	std::vector<Ref<Stmt>> Parser::Parse()
 	{
-		std::vector<Scope<Stmt>> statements{};
+		std::vector<Ref<Stmt>> statements{};
 
 		while (!isAtEnd())
 		{
@@ -72,14 +72,14 @@ namespace DXX
 	}
 
 	//defining functions for grammar rules for the parser
-	Scope<Expr> Parser::expression()
+	Ref<Expr> Parser::expression()
 	{
 		return assignment();
 	}
 
-	Scope<Expr> Parser::assignment()
+	Ref<Expr> Parser::assignment()
 	{
-		Scope<Expr> expr{ logicalOr() };
+		Ref<Expr> expr{ logicalOr() };
 
 		if (match(TokenType::EQUAL, TokenType::PLUS_EQUAL, TokenType::MINUS_EQUAL, TokenType::STAR_EQUAL, TokenType::SLASH_EQUAL))
 		{
@@ -95,7 +95,7 @@ namespace DXX
 				case TokenType::SLASH_EQUAL : binaryOp.m_Type = TokenType::SLASH; break;
 			}
 
-			Scope<Expr> rightExpr{ assignment() };
+			Ref<Expr> rightExpr{ assignment() };
 
 			VariableExpr* variableExpr{ dynamic_cast<VariableExpr*>(expr.get()) };
 			if (variableExpr)
@@ -103,10 +103,10 @@ namespace DXX
 				Token name { variableExpr->m_Token };
 				if (op.m_Type != TokenType::EQUAL)
 				{
-					Scope<Expr> binaryExpr{ CreateScope<BinaryExpr>(std::move(CreateScope<VariableExpr>(name)), binaryOp, std::move(rightExpr)) };
-					return CreateScope<AssignExpr>(std::move(name), std::move(binaryExpr));
+					Ref<Expr> binaryExpr{ CreateRef<BinaryExpr>(CreateRef<VariableExpr>(std::move(name)), std::move(binaryOp), rightExpr) };
+					return CreateRef<AssignExpr>(std::move(name), binaryExpr);
 				}
-				return CreateScope<AssignExpr>(std::move(name), std::move(rightExpr));
+				return CreateRef<AssignExpr>(std::move(name), rightExpr);
 			}
 
 			throw error(op, "Invalid Assignment target.");
@@ -115,135 +115,135 @@ namespace DXX
 		return expr;
 	}
 
-	Scope<Expr> Parser::logicalOr()
+	Ref<Expr> Parser::logicalOr()
 	{
-		Scope<Expr> expr{ logicalAnd() };
+		Ref<Expr> expr{ logicalAnd() };
 
 		while (check(TokenType::OR))
 		{
 			Token op{ advance() };
 
-			Scope<Expr> rightExpr{ logicalAnd() };
+			Ref<Expr> rightExpr{ logicalAnd() };
 
-			expr = CreateScope<BinaryExpr>(std::move(expr), std::move(op), std::move(rightExpr));
+			expr = CreateRef<BinaryExpr>(expr, std::move(op), rightExpr);
 		}
 
 		return expr;
 	}
 
-	Scope<Expr> Parser::logicalAnd()
+	Ref<Expr> Parser::logicalAnd()
 	{
-		Scope<Expr> expr{ equality() };
+		Ref<Expr> expr{ equality() };
 
 		while (check(TokenType::AND))
 		{
 			Token op{ advance() };
 
-			Scope<Expr> rightExpr{ equality() };
+			Ref<Expr> rightExpr{ equality() };
 
-			expr = CreateScope<BinaryExpr>(std::move(expr), std::move(op), std::move(rightExpr));
+			expr = CreateRef<BinaryExpr>(expr, std::move(op), rightExpr);
 		}
 
 		return expr;
 	}
 
-	Scope<Expr> Parser::equality()
+	Ref<Expr> Parser::equality()
 	{
 
-		Scope<Expr> expr{ comparison() };
+		Ref<Expr> expr{ comparison() };
 
 		while (check(TokenType::BANG_EQUAL) || check(TokenType::EQUAL_EQUAL))
 		{
 
 			Token op{ advance() };
 
-			Scope<Expr> rightExpr{ comparison() };
+			Ref<Expr> rightExpr{ comparison() };
 
-			expr = CreateScope<BinaryExpr>(std::move(expr), std::move(op), std::move(rightExpr));
+			expr = CreateRef<BinaryExpr>(expr, std::move(op), rightExpr);
 
 		}
 
 		return expr;
 	}
 
-	Scope<Expr> Parser::comparison()
+	Ref<Expr> Parser::comparison()
 	{
-		Scope<Expr> expr{ term() };
+		Ref<Expr> expr{ term() };
 
 		while (check(TokenType::GREATER_EQUAL) || check(TokenType::LESS_EQUAL) || check(TokenType::GREATER) || check(TokenType::LESS))
 		{
 
 			Token op{ advance() };
 
-			Scope<Expr> rightExpr{ term() };
+			Ref<Expr> rightExpr{ term() };
 
-			expr = CreateScope<BinaryExpr>(std::move(expr), std::move(op), std::move(rightExpr));
+			expr = CreateRef<BinaryExpr>(expr, std::move(op), rightExpr);
 		}
 
 		return expr;
 	}
 
-	Scope<Expr> Parser::term()
+	Ref<Expr> Parser::term()
 	{
-		Scope<Expr> expr{ factor() };
+		Ref<Expr> expr{ factor() };
 
 		while (check(TokenType::PLUS) || check(TokenType::MINUS))
 		{
 			Token op{ advance() };
 
-			Scope<Expr> rightExpr{ factor() };
+			Ref<Expr> rightExpr{ factor() };
 
-			expr = CreateScope<BinaryExpr>(std::move(expr), std::move(op), std::move(rightExpr));
+			expr = CreateRef<BinaryExpr>(expr, std::move(op), rightExpr);
 		}
 
 		return expr;
 	}
 
-	Scope<Expr> Parser::factor()
+	Ref<Expr> Parser::factor()
 	{
-		Scope<Expr> expr{ unary() };
+		Ref<Expr> expr{ unary() };
 
 		while (check(TokenType::STAR) || check(TokenType::SLASH))
 		{
 			Token op{ advance() };
 
-			Scope<Expr> rightExpr{ unary() };
+			Ref<Expr> rightExpr{ unary() };
 
-			expr = CreateScope<BinaryExpr>(std::move(expr), std::move(op), std::move(rightExpr));
+			expr = CreateRef<BinaryExpr>(expr, std::move(op), rightExpr);
 		}
 
 		return expr;
 	}
 
-	Scope<Expr> Parser::unary()
+	Ref<Expr> Parser::unary()
 	{
 		Token op{ peek() };
 
 		if (check(TokenType::BANG) || check(TokenType::MINUS))
 		{
 			advance();
-			Scope<Expr> rightExpr{ unary() };
-			return CreateScope<UnaryExpr>(std::move(op), std::move(rightExpr));
+			Ref<Expr> rightExpr{ unary() };
+			return CreateRef<UnaryExpr>(std::move(op), rightExpr);
 		}
 
 		return call();
 	}
 
-	Scope<Expr> Parser::call()
+	Ref<Expr> Parser::call()
 	{
-		Scope<Expr> callee{ primary() };
+		Ref<Expr> callee{ primary() };
 
 		while(match(TokenType::LEFT_PAREN))
 		{
-			callee = finishCall(std::move(callee));
+			callee = finishCall(callee);
 		}
 
 		return callee;
 	}
 
-	Scope<Expr> Parser::finishCall(Scope<Expr> callee)
+	Ref<Expr> Parser::finishCall(Ref<Expr> callee)
 	{
-		std::vector<Scope<Expr>> arguments{};
+		std::vector<Ref<Expr>> arguments{};
 
 		while (!check(TokenType::RIGHT_PAREN)) 
 		{
@@ -253,10 +253,10 @@ namespace DXX
 
 		Token closingParen{ consume(TokenType::RIGHT_PAREN, "Expected ')' after function call.") };
 
-		return CreateScope<CallExpr>(std::move(callee), std::move(arguments), std::move(closingParen));
+		return CreateRef<CallExpr>(callee, std::move(arguments), std::move(closingParen));
 	}
 
-	Scope<Expr> Parser::primary()
+	Ref<Expr> Parser::primary()
 	{
 		//check for primary data and construct Expressions for it
 		//such as LiteralExpr(NUMBER, STRING, NIL) and GroupedExpr, enclosing in '()', which might contain an expression in it;
@@ -269,18 +269,18 @@ namespace DXX
 			case TokenType::STRING:
 			case TokenType::NIL   :
 			case TokenType::TRUE  :
-			case TokenType::FALSE : return CreateScope<LiteralExpr>(std::move(token.m_Literal));
-			case TokenType::IDENTIFIER: return CreateScope<VariableExpr>(std::move(token));
+			case TokenType::FALSE : return CreateRef<LiteralExpr>(std::move(token.m_Literal));
+			case TokenType::IDENTIFIER: return CreateRef<VariableExpr>(std::move(token));
 			
 			case TokenType::LEFT_PAREN:
 			{
-				Scope<Expr> expr{ expression() };
+				Ref<Expr> expr{ expression() };
 				if (!check(TokenType::RIGHT_PAREN)) {
 					throw error(peek(), "Expected ')' after Expression.");
 				}
 
 				advance();
-				return CreateScope<GroupingExpr>(std::move(expr));
+				return CreateRef<GroupingExpr>(expr);
 			}
 			default:
 				throw error(token, "Expected an Expression.");
@@ -290,7 +290,7 @@ namespace DXX
 	}
 	
 	//parsing statements
-	Scope<Stmt> Parser::statement()
+	Ref<Stmt> Parser::statement()
 	{
 		Token token{ peek() };
 
@@ -303,13 +303,13 @@ namespace DXX
 			case TokenType::BREAK: return breakStatement();
 			case TokenType::CONTINUE: return continueStatement();
 			case TokenType::RETURN: return returnStatement();
-			case TokenType::LEFT_BRACE: return CreateScope<BlockStmt>(std::move(block()));
+			case TokenType::LEFT_BRACE: return CreateRef<BlockStmt>(block());
 		}
 
 		return expressionStatement();
 	}
 
-	Scope<Stmt> Parser::declaration()
+	Ref<Stmt> Parser::declaration()
 	{
 		Token token{ peek() };
 
@@ -322,76 +322,76 @@ namespace DXX
 		return statement();
 	}
 
-	Scope<Stmt> Parser::expressionStatement()
+	Ref<Stmt> Parser::expressionStatement()
 	{
-		Scope<Expr> expr{ expression() };
+		Ref<Expr> expr{ expression() };
 		consume(TokenType::SEMICOLON, "Expected ';' after Statement.");
-		return CreateScope<ExpressionStmt>(std::move(expr));
+		return CreateRef<ExpressionStmt>(expr);
 	}
 
-	Scope<Stmt> Parser::ifStatement()
+	Ref<Stmt> Parser::ifStatement()
 	{
 		advance();
 
 		consume(TokenType::LEFT_PAREN, "Expected '(' after if.");
-		Scope<Expr> condition{ expression() };
+		Ref<Expr> condition{ expression() };
 		consume(TokenType::RIGHT_PAREN, "Expected ')' after if condition.");
 
-		Scope<Stmt> thenBranch{ statement() };
-		Scope<Stmt> elseBranch{ nullptr };
+		Ref<Stmt> thenBranch{ statement() };
+		Ref<Stmt> elseBranch{ nullptr };
 
 		if (match(TokenType::ELSE))
 			elseBranch = statement();
 
-		return CreateScope<IfStmt>(std::move(condition), std::move(thenBranch), std::move(elseBranch));
+		return CreateRef<IfStmt>(condition, thenBranch, elseBranch);
 	}
 
-	Scope<Stmt> Parser::printStatement()
+	Ref<Stmt> Parser::printStatement()
 	{
 		advance();
 
-		Scope<Expr> expr{ expression() };
+		Ref<Expr> expr{ expression() };
 		consume(TokenType::SEMICOLON, "Expected ';' after Statement.");
-		return CreateScope<PrintStmt>(std::move(expr));
+		return CreateRef<PrintStmt>(expr);
 	}
 
-	Scope<Stmt> Parser::whileStatement()
+	Ref<Stmt> Parser::whileStatement()
 	{
 		advance();
 
 		consume(TokenType::LEFT_PAREN, "Expected '(' after while.");
-		Scope<Expr> condition{ expression() };
+		Ref<Expr> condition{ expression() };
 		consume(TokenType::RIGHT_PAREN, "Expected ')' after while condition.");
 
 		LoopDepthGuard loopdepthGuard{ m_LoopDepth };
 
-		Scope<Stmt> body{ statement() };
+		Ref<Stmt> body{ statement() };
 
-		return CreateScope<WhileStmt>(std::move(condition), std::move(body));
+		return CreateRef<WhileStmt>(condition, body);
 	}
 
-	Scope<Stmt> Parser::forStatement()
+	Ref<Stmt> Parser::forStatement()
 	{
 		advance();
 
 		consume(TokenType::LEFT_PAREN, "Expected '(' after for.");
-		Scope<Stmt> initializer{ nullptr };
+		Ref<Stmt> initializer{ nullptr };
 		if (check(TokenType::VAR))
 			initializer = varDeclaration(false);
 		else if (check(TokenType::SEMICOLON))
 			initializer = nullptr;
 		else
-			initializer = CreateScope<ExpressionStmt>(expression());
+			initializer = CreateRef<ExpressionStmt>(expression());
 
 		consume(TokenType::SEMICOLON, "Expected ';' after initializer.");
 
-		Scope<Expr> condition{ nullptr };
+		Ref<Expr> condition{ nullptr };
 		if (!check(TokenType::SEMICOLON))
 			condition = expression();
 
 		consume(TokenType::SEMICOLON, "Expected ';' after condition.");
 
-		Scope<Expr> increment{ nullptr };
+		Ref<Expr> increment{ nullptr };
 		if (!check(TokenType::RIGHT_PAREN))
 			increment = expression();
 
@@ -399,12 +399,12 @@ namespace DXX
 
 		LoopDepthGuard loopdepthGuard{ m_LoopDepth };
 
-		Scope<Stmt> body{ statement() };
+		Ref<Stmt> body{ statement() };
 
-		return CreateScope<ForStmt>(std::move(initializer), std::move(condition), std::move(increment), std::move(body));
+		return CreateRef<ForStmt>(initializer, condition, increment, body);
 	}
 
-	Scope<Stmt> Parser::breakStatement()
+	Ref<Stmt> Parser::breakStatement()
 	{
 		Token token{ advance() };
 
@@ -412,10 +412,10 @@ namespace DXX
 			throw error(token, "Unexpected break outside of loop.");
 
 		consume(TokenType::SEMICOLON, "Expected ';' after break.");
-		return CreateScope<BreakStmt>();
+		return CreateRef<BreakStmt>();
 	}
 
-	Scope<Stmt> Parser::continueStatement()
+	Ref<Stmt> Parser::continueStatement()
 	{
 		Token token{ advance() };
 
@@ -423,32 +423,32 @@ namespace DXX
 			throw error(token, "Unexpected continue outside of loop.");
 
 		consume(TokenType::SEMICOLON, "Expected ';' after continue.");
-		return CreateScope<ContinueStmt>();
+		return CreateRef<ContinueStmt>();
 	}
 
-	Scope<Stmt> Parser::returnStatement()
+	Ref<Stmt> Parser::returnStatement()
 	{
 		Token token{ advance() };
 
 		if (m_FunctionDepth == 0)
 			throw error(token, "Unexpected return outside of function.");
 
-		Scope<Expr> expr{};
+		Ref<Expr> expr{};
 
 		if(!check(TokenType::SEMICOLON))
 			expr = expression();
 
 		consume(TokenType::SEMICOLON, "Expected ';' after return.");
 
-		return CreateScope<ReturnStmt>(std::move(token), std::move(expr));
+		return CreateRef<ReturnStmt>(std::move(token), expr);
 	}
 
-	Scope<Stmt> Parser::varDeclaration(bool consumeSemicolon)
+	Ref<Stmt> Parser::varDeclaration(bool consumeSemicolon)
 	{
 		advance();
 		Token identifier{ consume(TokenType::IDENTIFIER, "Expected an Identifier.") };
 
-		Scope<Expr> expr{nullptr};
+		Ref<Expr> expr{nullptr};
 
 		if (match(TokenType::EQUAL))
 		{
@@ -456,10 +456,10 @@ namespace DXX
 		}
 
 		if(consumeSemicolon) consume(TokenType::SEMICOLON, "Expected ';' after Statement.");
-		return CreateScope<VarStmt>(std::move(identifier), std::move(expr));
+		return CreateRef<VarStmt>(std::move(identifier), expr);
 	}
 
-	Scope<Stmt> Parser::functionDeclaration()
+	Ref<Stmt> Parser::functionDeclaration()
 	{
 		advance();
 
@@ -475,7 +475,7 @@ namespace DXX
 
 		consume(TokenType::RIGHT_PAREN, "Expected an ')' after func decl.");
 
-		std::vector<Scope<Stmt>> funcBodyStmts{};
+		std::vector<Ref<Stmt>> funcBodyStmts{};
 		Token bodyToken{ peek() };
 		if (!check(TokenType::LEFT_BRACE))
 			throw error(bodyToken, "Expected func body.");
@@ -484,17 +484,17 @@ namespace DXX
 
 		funcBodyStmts = block();
 
-		Scope<BlockStmt> funcBody{ CreateScope<BlockStmt>(std::move(funcBodyStmts)) };
+		Ref<BlockStmt> funcBody{ CreateRef<BlockStmt>(std::move(funcBodyStmts)) };
 
-		return CreateScope<FunctionStmt>(std::move(identifier), std::move(funcBody), std::move(parameters));
+		return CreateRef<FunctionStmt>(std::move(identifier), funcBody, std::move(parameters));
 
 	}
 	
-	std::vector<Scope<Stmt>> Parser::block()
+	std::vector<Ref<Stmt>> Parser::block()
 	{
 		advance(); //consuming the '{' left brace;
 
-		std::vector<Scope<Stmt>> statements{};
+		std::vector<Ref<Stmt>> statements{};
 
 		while (!check(TokenType::RIGHT_BRACE) && !isAtEnd())
 		{

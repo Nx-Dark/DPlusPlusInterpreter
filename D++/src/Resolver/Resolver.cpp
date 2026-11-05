@@ -20,7 +20,7 @@ namespace DXX
 
 	}
 
-	void Resolver::Resolve(const std::vector<Scope<Stmt>>& statements)
+	void Resolver::Resolve(const std::vector<Ref<Stmt>>& statements)
 	{
 
 		try
@@ -41,7 +41,7 @@ namespace DXX
 		expr.Accept(*this);
 	}
 
-	void Resolver::Resolve(const Scope<Stmt>& stmt)
+	void Resolver::Resolve(const Ref<Stmt>& stmt)
 	{
 		stmt->Accept(*this);
 	}

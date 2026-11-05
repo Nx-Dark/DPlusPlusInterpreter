@@ -31,7 +31,7 @@ namespace DXX
 		inline void SetSourceName(const std::string& sourceName) { m_SourceName = sourceName; }
 		virtual ~Resolver();
 
-		void Resolve(const std::vector<Scope<Stmt>>& statements);
+		void Resolve(const std::vector<Ref<Stmt>>& statements);
 
 		//visiting expressions
 		virtual void visitLiteral(const LiteralExpr& literalExpr)  override {};
@@ -60,7 +60,7 @@ namespace DXX
 		ResolveError error(Token token, const std::string& msg);
 
 		void Resolve(const Expr& expr);
-		void Resolve(const Scope<Stmt>& stmt);
+		void Resolve(const Ref<Stmt>& stmt);
 		void ResolveLocal(const Expr& expr, Token name); //to resolve local variables inside a scope;
 		void ResolveFunction(FunctionStmt& functionStmt);
 

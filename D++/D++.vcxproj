@@ -149,6 +149,7 @@
     <ClInclude Include="src\AST\Expression.h" />
     <ClInclude Include="src\AST\ExpressionResolverVisitor.h" />
     <ClInclude Include="src\AST\ExpressionVisitor.h" />
+    <ClInclude Include="src\AST\IdType.h" />
     <ClInclude Include="src\AST\Statement.h" />
     <ClInclude Include="src\AST\StatementResolverVisitor.h" />
     <ClInclude Include="src\AST\StatementVisitor.h" />

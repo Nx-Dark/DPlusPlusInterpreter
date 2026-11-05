@@ -72,7 +72,7 @@ namespace DXX {
 
 		//creating the parser
 		Parser parser{ std::move(tokens), m_DiagnosticEngine, sourceName };
-		std::vector<Scope<Stmt>> statements { parser.Parse() };
+		std::vector<Ref<Stmt>> statements { parser.Parse() };
 
 		//reporting diagnostic data;
 		m_DiagnosticReporter.ReportDiagnostics();

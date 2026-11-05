@@ -91,6 +91,7 @@
     <ClInclude Include="src\AST\ExpressionResolverVisitor.h" />
     <ClInclude Include="src\AST\StatementResolverVisitor.h" />
     <ClInclude Include="src\Resolver\Resolver.h" />
+    <ClInclude Include="src\AST\IdType.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AST\Expression.cpp">

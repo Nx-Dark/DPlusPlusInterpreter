@@ -7,7 +7,7 @@ namespace DXX
 {
 
 	Environment::Environment(Ref<Environment> enclosing)
-		: m_Enclosing{ enclosing } 
+		: m_Enclosing{ enclosing }
 	{
 	}
 
@@ -55,9 +55,14 @@ namespace DXX
 	bool Environment::assignAt(int distance, const std::string& name, const Literal& value)
 	{
 		Ref<Environment> env{ getAncestor(distance) };
-		env->m_Values[name] = value;
 
-		return true;
+		if (env->m_Values.contains(name))
+		{
+			env->m_Values[name] = value;
+			return true;
+		}
+		
+		return false;
 	}
 
 	Ref<Environment> Environment::getAncestor(int distance) const

@@ -30,39 +30,39 @@ namespace DXX
 		Parser(const Parser&) = delete;
 		~Parser() = default;
 
-		std::vector<Scope<Stmt>> Parse();
+		std::vector<Ref<Stmt>> Parse();
 
 	private:
 		//defining grammar rules for the parser;
 		//pasring expression
-		Scope<Expr> expression();
-		Scope<Expr> assignment();
-		Scope<Expr> logicalOr();
-		Scope<Expr> logicalAnd();
-		Scope<Expr> equality();
-		Scope<Expr> comparison();
-		Scope<Expr> term();
-		Scope<Expr> factor();
-		Scope<Expr> unary();
-		Scope<Expr> call();
-		Scope<Expr> primary();
+		Ref<Expr> expression();
+		Ref<Expr> assignment();
+		Ref<Expr> logicalOr();
+		Ref<Expr> logicalAnd();
+		Ref<Expr> equality();
+		Ref<Expr> comparison();
+		Ref<Expr> term();
+		Ref<Expr> factor();
+		Ref<Expr> unary();
+		Ref<Expr> call();
+		Ref<Expr> primary();
 
-		Scope<Expr> finishCall(Scope<Expr> callee);
+		Ref<Expr> finishCall(Ref<Expr> callee);
 		
 		//parsing statements;
-		Scope<Stmt> statement();
-		Scope<Stmt> declaration(); //for variable decl, class decl, func decl and stuff
-		Scope<Stmt> expressionStatement();
-		Scope<Stmt> ifStatement();
-		Scope<Stmt> printStatement();
-		Scope<Stmt> whileStatement();
-		Scope<Stmt> forStatement();
-		Scope<Stmt> breakStatement();
-		Scope<Stmt> continueStatement();
-		Scope<Stmt> returnStatement();
-		Scope<Stmt> varDeclaration(bool consumeSemicolon = true); //var statement;
-		Scope<Stmt> functionDeclaration();
-		std::vector<Scope<Stmt>> block();
+		Ref<Stmt> statement();
+		Ref<Stmt> declaration(); //for variable decl, class decl, func decl and stuff
+		Ref<Stmt> expressionStatement();
+		Ref<Stmt> ifStatement();
+		Ref<Stmt> printStatement();
+		Ref<Stmt> whileStatement();
+		Ref<Stmt> forStatement();
+		Ref<Stmt> breakStatement();
+		Ref<Stmt> continueStatement();
+		Ref<Stmt> returnStatement();
+		Ref<Stmt> varDeclaration(bool consumeSemicolon = true); //var statement;
+		Ref<Stmt> functionDeclaration();
+		std::vector<Ref<Stmt>> block();
 
 		//helper functions;
 		//to easily navigate in the token collection;
