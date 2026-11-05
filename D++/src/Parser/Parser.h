@@ -61,7 +61,8 @@ namespace DXX
 		Ref<Stmt> continueStatement();
 		Ref<Stmt> returnStatement();
 		Ref<Stmt> varDeclaration(bool consumeSemicolon = true); //var statement;
-		Ref<Stmt> functionDeclaration();
+		Ref<Stmt> classDeclaraton();
+		Ref<Stmt> functionDeclaration(const std::string& kind);
 		std::vector<Ref<Stmt>> block();
 
 		//helper functions;

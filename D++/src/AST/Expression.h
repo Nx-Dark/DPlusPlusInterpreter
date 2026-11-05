@@ -25,7 +25,6 @@ namespace DXX
 		Expr();
 		virtual ~Expr() = default;
 
-		virtual std::string Accept(ExprVisitor& visitor) const = 0;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const = 0;
 		virtual void Accept(ExprResolverVisitor& visitor) const = 0;
 
@@ -42,7 +41,6 @@ namespace DXX
 		LiteralExpr(Literal literal)
 			: m_Literal{ std::move(literal) } {}
 
-		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
 		virtual void Accept(ExprResolverVisitor& visitor) const override;
 	};
@@ -58,7 +56,6 @@ namespace DXX
 		UnaryExpr(Token op, Ref<Expr> expr)
 			: m_Expr{ expr }, m_Operator{ std::move(op) } { }
 
-		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
 		virtual void Accept(ExprResolverVisitor& visitor) const override;
 	};
@@ -75,7 +72,6 @@ namespace DXX
 		BinaryExpr(Ref<Expr> leftExpr, Token op, Ref<Expr> rightExpr)
 			: m_LeftExpr{ leftExpr }, m_Operator{ std::move(op) }, m_RightExpr{ rightExpr } { }
 
-		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
 		virtual void Accept(ExprResolverVisitor& visitor) const override;
 
@@ -91,7 +87,6 @@ namespace DXX
 		GroupingExpr(Ref<Expr> expr)
 			: m_Expr{ expr } { }
 
-		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
 		virtual void Accept(ExprResolverVisitor& visitor) const override;
 	};
@@ -106,7 +101,6 @@ namespace DXX
 		VariableExpr(Token token)
 			: m_Token{ std::move(token) } { }
 
-		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
 		virtual void Accept(ExprResolverVisitor& visitor) const override;
 	};
@@ -123,7 +117,6 @@ namespace DXX
 		{
 		}
 
-		virtual std::string Accept(ExprVisitor& visitor) const override;
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
 		virtual void Accept(ExprResolverVisitor& visitor) const override;
 	};
@@ -141,7 +134,39 @@ namespace DXX
 		{
 		}
 
-		virtual std::string Accept(ExprVisitor& visitor) const override;
+		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+		virtual void Accept(ExprResolverVisitor& visitor) const override;
+	};
+
+	class GetExpr : public Expr
+	{
+	public:
+		Ref<Expr> m_Object{};
+		Token m_Identifier{};
+
+	public:
+		GetExpr(Ref<Expr> obj, Token identifier)
+			: m_Object{ obj }, m_Identifier{ std::move(identifier) }
+		{
+		}
+
+		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+		virtual void Accept(ExprResolverVisitor& visitor) const override;
+	};
+
+	class SetExpr : public Expr
+	{
+	public:
+		Ref<Expr> m_Object{};
+		Token m_Identifier{};
+		Ref<Expr> m_Value{};
+
+	public:
+		SetExpr(Ref<Expr> obj, const Token& identifier, Ref<Expr> value)
+			: m_Object{ obj }, m_Identifier{ identifier }, m_Value{ value }
+		{
+		}
+
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
 		virtual void Accept(ExprResolverVisitor& visitor) const override;
 	};

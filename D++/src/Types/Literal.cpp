@@ -1,6 +1,7 @@
 #include "dpch.h"
 #include "Literal.h"
-#include "Functions/Callable.h"
+#include "Callable/Callable.h"
+#include "Callable/Classes/ClassInstance.h"
 
 namespace DXX
 {
@@ -18,6 +19,8 @@ namespace DXX
 			else if constexpr (std::is_same_v<T, bool>) return value ? "True" : "False";
 
 			else if constexpr (std::is_same_v<T, Ref<Callable>>) return value ? value->ToString() : "NIL";
+
+			else if constexpr (std::is_same_v<T, Ref<ClassInstance>>) return value ? value->ToString() : "NIL";
 
 			else { std::ostringstream stream; stream << value; return stream.str(); }
 

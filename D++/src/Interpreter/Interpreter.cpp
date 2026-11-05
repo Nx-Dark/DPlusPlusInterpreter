@@ -4,8 +4,10 @@
 #include "AST/Expression.h"
 #include "AST/Statement.h"
 
-#include "Functions/FunctionObject.h"
-#include "Functions/NativeFunctions/NativeFunctions.h"
+#include "Callable/Functions/FunctionObject.h"
+#include "Callable/NativeFunctions/NativeFunctions.h"
+#include "Callable/Classes/ClassObject.h"
+#include "Callable/Classes/ClassInstance.h"
 
 namespace DXX
 {
@@ -207,7 +209,6 @@ namespace DXX
 		{
 			int distance{ it->second };
 			assigned = m_Environment->assignAt(distance, assignExpr.m_Identifier.m_Lexeme, value);
-
 		}
 
 		else
@@ -254,7 +255,42 @@ namespace DXX
 			}
 		}
 
-		return Nil{};
+		throw error(callExpr.m_ClosingParen, "Only Callables are Allowed to be Called.");
+	}
+
+	Literal Interpreter::visitGet(const GetExpr& getExpr)
+	{
+		Literal object{ getExpr.m_Object->Accept(*this) };
+
+		auto classInstanceObj{ std::get_if<Ref<ClassInstance>>(&object) };
+
+		std::optional<Literal> propertyVal{};
+
+		if (classInstanceObj)
+			propertyVal = (*classInstanceObj)->Get(getExpr.m_Identifier);
+		else 
+			throw error(getExpr.m_Identifier, "Properties can only be accesses on Instances");
+		
+		if (propertyVal)
+			return propertyVal.value();
+
+		throw error(getExpr.m_Identifier, "Undefined Property " + getExpr.m_Identifier.m_Lexeme + ".");
+	}
+
+	Literal Interpreter::visitSet(const SetExpr& setExpr)
+	{
+		Literal object{ setExpr.m_Object->Accept(*this) };
+
+		auto classInstanceObj{ std::get_if<Ref<ClassInstance>>(&object) };
+
+		if (classInstanceObj)
+		{
+			Literal value{ setExpr.m_Value->Accept(*this) };
+			(*classInstanceObj)->Set(setExpr.m_Identifier, value);
+			return value;
+		}
+
+		throw error(setExpr.m_Identifier, "Only Instances have fields.");
 	}
 
 	//------------------------------------------------------------------
@@ -382,13 +418,35 @@ namespace DXX
 	{
 		auto fName{ functionStmt.m_Name };
 
-		auto refFuncStatement{ CreateRef<FunctionStmt>(std::move(functionStmt.m_Name), std::move(functionStmt.m_Body), std::move(functionStmt.m_Parameters)) };
+		auto refFuncStatement{ CreateRef<FunctionStmt>(std::move(functionStmt.m_Name), functionStmt.m_Body, std::move(functionStmt.m_Parameters)) };
 
 		m_Environment->define(fName.m_Lexeme, 
 			CreateRef<FunctionObject>(refFuncStatement, m_Environment)
 		);
 	}
 
+	void Interpreter::visitClassStmt(ClassStmt& classStmt)
+	{
+		m_Environment->define(classStmt.m_Name.m_Lexeme, Nil{});
+
+		std::unordered_map<std::string, Ref<Callable>> methods{};
+
+		for (auto& method : classStmt.m_Methods)
+		{
+			Ref<FunctionStmt> methodFunc{ std::dynamic_pointer_cast<FunctionStmt>(method) };
+
+			if (methodFunc)
+			{
+				Ref<Callable> funcObj{ CreateRef<FunctionObject>(methodFunc, m_Environment) };
+				methods[methodFunc->m_Name.m_Lexeme] = funcObj;
+			}
+		}
+
+		Ref<ClassObject> classObj{ CreateRef<ClassObject>(classStmt.m_Name.m_Lexeme, std::move(methods)) };
+
+		m_Environment->assign(classStmt.m_Name.m_Lexeme, classObj);
+	}
+	
 	void Interpreter::Resolve(const Expr& expr, int depth)
 	{
 		m_Locals[expr.GetID()] = depth;

@@ -25,6 +25,16 @@ namespace DXX
 
 		std::stack<std::unordered_map<std::string, bool>> m_Scopes{};
 
+		//function type enum
+		enum class FunctionType
+		{
+			NONE = 0,
+			FUNCTION,
+			METHOD
+		};
+
+		FunctionType m_CurrentFunction{ FunctionType::NONE };
+
 	public:
 
 		Resolver(DiagnosticEngine& diagnosticEngine, Interpreter& interpreter);
@@ -41,6 +51,8 @@ namespace DXX
 		virtual void visitVariable(const VariableExpr& variableExpr)  override;
 		virtual void visitAssignment(const AssignExpr& assignExpr)  override;
 		virtual void visitCall(const CallExpr& callExpr)  override;
+		virtual void visitGet(const GetExpr& getExpr) override;
+		virtual void visitSet(const SetExpr& getExpr) override;
 
 		//visitng statements;
 		virtual void visitExpressionStmt(ExpressionStmt& expressionStmt)  override;
@@ -53,7 +65,8 @@ namespace DXX
 		virtual void visitBreakStmt(BreakStmt& breakStmt)  override {};
 		virtual void visitContinueStmt(ContinueStmt& continueStmt)  override {};
 		virtual void visitReturnStmt(ReturnStmt& continueStmt)  override;
-		virtual void visitFunctionStmt(FunctionStmt& functionStmt)  override;
+		virtual void visitFunctionStmt(FunctionStmt& functionStmt) override;
+		virtual void visitClassStmt(ClassStmt& classStmt) override;
 
 	private:
 
@@ -62,7 +75,7 @@ namespace DXX
 		void Resolve(const Expr& expr);
 		void Resolve(const Ref<Stmt>& stmt);
 		void ResolveLocal(const Expr& expr, Token name); //to resolve local variables inside a scope;
-		void ResolveFunction(FunctionStmt& functionStmt);
+		void ResolveFunction(FunctionStmt& functionStmt, FunctionType funcType);
 
 		void BeginScope();
 		void EndScope();

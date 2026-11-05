@@ -33,9 +33,6 @@
     <ClInclude Include="src\AST\Expression.h">
       <Filter>AST</Filter>
     </ClInclude>
-    <ClInclude Include="src\AST\ExpressionVisitor.h">
-      <Filter>AST</Filter>
-    </ClInclude>
     <ClInclude Include="src\AST\Statement.h">
       <Filter>AST</Filter>
     </ClInclude>
@@ -85,13 +82,15 @@
       <Filter>Tokenizer</Filter>
     </ClInclude>
     <ClInclude Include="src\dpch.h" />
-    <ClInclude Include="src\Functions\Callable.h" />
-    <ClInclude Include="src\Functions\FunctionObject.h" />
-    <ClInclude Include="src\Functions\NativeFunctions\NativeFunctions.h" />
+    <ClInclude Include="src\Callable\Functions\FunctionObject.h" />
+    <ClInclude Include="src\Callable\NativeFunctions\NativeFunctions.h" />
     <ClInclude Include="src\AST\ExpressionResolverVisitor.h" />
     <ClInclude Include="src\AST\StatementResolverVisitor.h" />
     <ClInclude Include="src\Resolver\Resolver.h" />
     <ClInclude Include="src\AST\IdType.h" />
+    <ClInclude Include="src\Callable\Callable.h" />
+    <ClInclude Include="src\Callable\Classes\ClassObject.h" />
+    <ClInclude Include="src\Callable\Classes\ClassInstance.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AST\Expression.cpp">
@@ -129,8 +128,10 @@
     </ClCompile>
     <ClCompile Include="src\dpch.cpp" />
     <ClCompile Include="src\Types\Literal.cpp" />
-    <ClCompile Include="src\Functions\FunctionObject.cpp" />
-    <ClCompile Include="src\Functions\NativeFunctions\NativeFunctions.cpp" />
+    <ClCompile Include="src\Callable\Functions\FunctionObject.cpp" />
+    <ClCompile Include="src\Callable\NativeFunctions\NativeFunctions.cpp" />
     <ClCompile Include="src\Resolver\Resolver.cpp" />
+    <ClCompile Include="src\Callable\Classes\ClassObject.cpp" />
+    <ClCompile Include="src\Callable\Classes\ClassInstance.cpp" />
   </ItemGroup>
 </Project>

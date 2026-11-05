@@ -55,6 +55,8 @@ namespace DXX
 		virtual Literal visitVariable(const VariableExpr& variableExpr) override;
 		virtual Literal visitAssignment(const AssignExpr& assignExpr) override;
 		virtual Literal visitCall(const CallExpr& callExpr) override;
+		virtual Literal visitGet(const GetExpr& getExpr) override;
+		virtual Literal visitSet(const SetExpr& getExpr) override;
 
 		//statement visitor functions;
 		virtual void visitExpressionStmt(ExpressionStmt& expressionStmt) override;
@@ -68,6 +70,7 @@ namespace DXX
 		virtual void visitContinueStmt(ContinueStmt&) override;
 		virtual void visitReturnStmt(ReturnStmt& returnstmt) override;
 		virtual void visitFunctionStmt(FunctionStmt& functionStmt) override;
+		virtual void visitClassStmt(ClassStmt& classStmt) override;
 
 		//resolve for resolver
 		void Resolve(const Expr& expr, int depth);

@@ -98,6 +98,7 @@ namespace DXX
 			Ref<Expr> rightExpr{ assignment() };
 
 			VariableExpr* variableExpr{ dynamic_cast<VariableExpr*>(expr.get()) };
+			GetExpr* getExpr{ dynamic_cast<GetExpr*>(expr.get()) };
 			if (variableExpr)
 			{
 				Token name { variableExpr->m_Token };
@@ -107,6 +108,10 @@ namespace DXX
 					return CreateRef<AssignExpr>(std::move(name), binaryExpr);
 				}
 				return CreateRef<AssignExpr>(std::move(name), rightExpr);
+			}
+			else if (getExpr)
+			{
+				return CreateRef<SetExpr>(getExpr->m_Object, getExpr->m_Identifier, rightExpr);
 			}
 
 			throw error(op, "Invalid Assignment target.");
@@ -231,14 +236,23 @@ namespace DXX
 
 	Ref<Expr> Parser::call()
 	{
-		Ref<Expr> callee{ primary() };
+		Ref<Expr> expr{ primary() }; //this is the callee expression we are expecting; or to be more precise, the identifier of the function or class
 
-		while(match(TokenType::LEFT_PAREN))
+		while(true)
 		{
-			callee = finishCall(callee);
+			if (match(TokenType::LEFT_PAREN))
+				expr = finishCall(expr);
+			else if (match(TokenType::DOT))
+			{
+				//for now only properties;, name is the property name;
+				Token name{ consume(TokenType::IDENTIFIER, "Expected property name after '.'.") };
+				expr = CreateRef<GetExpr>(expr, std::move(name));
+			}
+			else
+				break;
 		}
 
-		return callee;
+		return expr;
 	}
 
 	Ref<Expr> Parser::finishCall(Ref<Expr> callee)
@@ -315,8 +329,9 @@ namespace DXX
 
 		switch (token.m_Type)
 		{
+			case TokenType::CLASS: return classDeclaraton();
 			case TokenType::VAR: return varDeclaration();
-			case TokenType::FUNC: return functionDeclaration();
+			case TokenType::FUNC: return functionDeclaration("function");
 		}
 
 		return statement();
@@ -459,16 +474,35 @@ namespace DXX
 		return CreateRef<VarStmt>(std::move(identifier), expr);
 	}
 
-	Ref<Stmt> Parser::functionDeclaration()
+	Ref<Stmt> Parser::classDeclaraton()
 	{
 		advance();
 
-		Token identifier{ consume(TokenType::IDENTIFIER, "Expected an Identifier after func.") };
+		Token identifier{ consume(TokenType::IDENTIFIER, "Expected an Identifier after class.") };
+		consume(TokenType::LEFT_BRACE, "Expected '{' before class body.");
+
+		std::vector<Ref<Stmt>> methods{};
+
+		while (!check(TokenType::RIGHT_BRACE) && !isAtEnd())
+		{
+			methods.push_back(functionDeclaration("method"));
+		}
+
+		consume(TokenType::RIGHT_BRACE, "Expected '}' after class body.");
+
+		return CreateRef<ClassStmt>(std::move(identifier), std::move(methods));
+	}
+
+	Ref<Stmt> Parser::functionDeclaration(const std::string& kind)
+	{
+		if(kind != "method") advance();
+
+		Token identifier{ consume(TokenType::IDENTIFIER, "Expected a " + kind + " Identifier.") };
 		consume(TokenType::LEFT_PAREN, "Expected an '(' after Identifier.");
 
 		std::vector<Token> parameters{};
 		while (check(TokenType::IDENTIFIER))
-		{
+		{	
 			parameters.push_back(advance());
 			if(!check(TokenType::RIGHT_PAREN)) consume(TokenType::COMMA, "Expected ',' after parameter names.");
 		}

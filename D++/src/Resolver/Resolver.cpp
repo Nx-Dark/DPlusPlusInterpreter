@@ -58,8 +58,11 @@ namespace DXX
 		}
 	}
 
-	void Resolver::ResolveFunction(FunctionStmt& functionStmt)
+	void Resolver::ResolveFunction(FunctionStmt& functionStmt, FunctionType funcType)
 	{
+		FunctionType enclosingFunction{ m_CurrentFunction };
+		m_CurrentFunction = funcType;
+
 		BeginScope();
 		for (const auto& tkn : functionStmt.m_Parameters)
 		{
@@ -69,6 +72,7 @@ namespace DXX
 
 		Resolve(functionStmt.m_Body);
 		EndScope();
+		m_CurrentFunction = enclosingFunction;
 	}
 
 	//resolving expressions;
@@ -87,7 +91,6 @@ namespace DXX
 	{
 		if (!m_Scopes.empty())
 		{
-
 			auto& scope{ m_Scopes.top() };
 
 			auto it{ scope.find(varExpr.m_Token.m_Lexeme) };
@@ -114,6 +117,17 @@ namespace DXX
 		{
 			Resolve(*arg);
 		}
+	}
+
+	void Resolver::visitGet(const GetExpr& getExpr)
+	{
+		Resolve(*getExpr.m_Object);
+	}
+
+	void Resolver::visitSet(const SetExpr& setExpr)
+	{
+		Resolve(*setExpr.m_Object);
+		Resolve(*setExpr.m_Value);
 	}
 
 	void Resolver::visitGrouping(const GroupingExpr& groupingExpr)
@@ -173,7 +187,20 @@ namespace DXX
 		Declare(functionStmt.m_Name);
 		Define(functionStmt.m_Name);
 
-		ResolveFunction(functionStmt);
+		ResolveFunction(functionStmt, m_CurrentFunction);
+	}
+	
+	void Resolver::visitClassStmt(ClassStmt& classStmt)
+	{
+		Declare(classStmt.m_Name);
+		Define(classStmt.m_Name);
+
+		for (const auto& method : classStmt.m_Methods)
+		{
+			FunctionType decl{ FunctionType::METHOD };
+			auto funcStmt{ dynamic_cast<FunctionStmt*>(&(*method)) };
+			if(funcStmt) ResolveFunction(*funcStmt, decl);
+		}
 	}
 
 	void Resolver::visitReturnStmt(ReturnStmt& returnStmt)

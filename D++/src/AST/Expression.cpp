@@ -1,6 +1,5 @@
 #include "dpch.h"
 #include "Expression.h"
-#include "ExpressionVisitor.h"
 #include "EvaluatorVisitor.h"
 #include "ExpressionResolverVisitor.h"
 
@@ -11,44 +10,6 @@ namespace DXX
 		: m_ID{ s_NextID++ }
 	{
 	}
-
-	//for AstPrinter, returns string;
-	std::string LiteralExpr::Accept(ExprVisitor& visitor) const
-	{
-		return visitor.visitLiteral(*this);
-	}
-
-	std::string UnaryExpr::Accept(ExprVisitor& visitor) const
-	{
-		return visitor.visitUnary(*this);
-	}
-
-	std::string BinaryExpr::Accept(ExprVisitor& visitor) const
-	{
-		return visitor.visitBinary(*this);
-	}
-
-	std::string GroupingExpr::Accept(ExprVisitor& visitor) const
-	{
-		return visitor.visitGrouping(*this);
-	}
-
-	std::string VariableExpr::Accept(ExprVisitor& visitor) const
-	{
-		return visitor.visitVariable(*this);
-	}
-
-	std::string AssignExpr::Accept(ExprVisitor& visitor) const
-	{
-		return visitor.visitAssignment(*this);
-	}
-
-	std::string CallExpr::Accept(ExprVisitor& visitor) const
-	{
-		return visitor.visitCall(*this);
-	}
-
-	//------------------------------------------------------------------------//
 
 	//for Evaluator, returns Literal;
 	Literal LiteralExpr::Accept(EvaluatorVisitor& visitor) const
@@ -87,6 +48,16 @@ namespace DXX
 		return visitor.visitCall(*this);
 	}
 
+	Literal GetExpr::Accept(EvaluatorVisitor& visitor) const
+	{
+		return visitor.visitGet(*this);
+	}
+
+	Literal SetExpr::Accept(EvaluatorVisitor& visitor) const
+	{
+		return visitor.visitSet(*this);
+	}
+
 	//for resolver, returns nothing(void);
 	void LiteralExpr::Accept(ExprResolverVisitor& visitor) const
 	{
@@ -121,5 +92,15 @@ namespace DXX
 	void CallExpr::Accept(ExprResolverVisitor& visitor) const
 	{
 		return visitor.visitCall(*this);
+	}
+
+	void GetExpr::Accept(ExprResolverVisitor& visitor) const
+	{
+		return visitor.visitGet(*this);
+	}
+
+	void SetExpr::Accept(ExprResolverVisitor& visitor) const
+	{
+		return visitor.visitSet(*this);
 	}
 }

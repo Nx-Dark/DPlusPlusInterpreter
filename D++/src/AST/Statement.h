@@ -198,5 +198,20 @@ namespace DXX
 		virtual void Accept(StmtResolverVisitor& visitor) override;
 	};
 
+	class ClassStmt : public Stmt
+	{
+	public:
+		Token m_Name{};
+		std::vector<Ref<Stmt>> m_Methods{};
+
+	public:
+		ClassStmt(Token name, std::vector<Ref<Stmt>> methods)
+			: m_Name{ std::move(name) }, m_Methods{ std::move(methods) }
+		{
+		}
+
+		virtual void Accept(StmtVisitor& visitor) override;
+		virtual void Accept(StmtResolverVisitor& visitor) override;
+	};
 
 }

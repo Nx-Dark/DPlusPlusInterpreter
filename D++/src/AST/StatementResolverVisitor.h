@@ -15,6 +15,7 @@ namespace DXX
 	class ContinueStmt;
 	class ReturnStmt;
 	class FunctionStmt;
+	class ClassStmt;
 
 	//statement visitor interface
 	class StmtResolverVisitor
@@ -34,6 +35,7 @@ namespace DXX
 		virtual void visitContinueStmt(ContinueStmt& continueStmt) = 0;
 		virtual void visitReturnStmt(ReturnStmt& continueStmt) = 0;
 		virtual void visitFunctionStmt(FunctionStmt& functionStmt) = 0;
+		virtual void visitClassStmt(ClassStmt& classStmt) = 0;
 	};
 
 }

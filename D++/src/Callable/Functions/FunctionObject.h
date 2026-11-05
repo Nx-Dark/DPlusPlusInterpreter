@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Callable.h"
+#include "Callable/Callable.h"
 
 namespace DXX
 {
@@ -20,11 +20,11 @@ namespace DXX
 		virtual ~FunctionObject() = default;
 
 		//override;
-		Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
+		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
 
-		uint32_t arity() const override;
+		virtual uint32_t arity() const override;
 
-		std::string ToString() const override;
+		virtual std::string ToString() const override;
 
 	};
 

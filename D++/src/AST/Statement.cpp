@@ -65,6 +65,11 @@ namespace DXX
 		visitor.visitFunctionStmt(*this);
 	}
 
+	void ClassStmt::Accept(StmtVisitor& visitor)
+	{
+		visitor.visitClassStmt(*this);
+	}
+
 	//statement resolver visitor/resolver
 	void ExpressionStmt::Accept(StmtResolverVisitor& visitor)
 	{
@@ -118,6 +123,11 @@ namespace DXX
 	void FunctionStmt::Accept(StmtResolverVisitor& visitor)
 	{
 		visitor.visitFunctionStmt(*this);
+	}
+
+	void ClassStmt::Accept(StmtResolverVisitor& visitor)
+	{
+		visitor.visitClassStmt(*this);
 	}
 
 
