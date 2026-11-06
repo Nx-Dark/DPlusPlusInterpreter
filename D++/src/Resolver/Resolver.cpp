@@ -206,6 +206,12 @@ namespace DXX
 		Declare(classStmt.m_Name);
 		Define(classStmt.m_Name);
 
+		if (classStmt.m_SuperClass && classStmt.m_Name.m_Lexeme == classStmt.m_SuperClass->m_Token.m_Lexeme)
+			throw error(classStmt.m_SuperClass->m_Token, "A Class cannot inherit from itself.");
+
+		if (classStmt.m_SuperClass)
+			Resolve(*classStmt.m_SuperClass);
+
 		BeginScope();
 		m_Scopes.top()["this"] = true;
 

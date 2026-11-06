@@ -449,6 +449,23 @@ namespace DXX
 
 	void Interpreter::visitClassStmt(ClassStmt& classStmt)
 	{
+
+		Literal superClassLiteral{ Nil{} };
+		Ref<ClassObject> superClass{ nullptr };
+
+		if (classStmt.m_SuperClass)
+		{
+			superClassLiteral = classStmt.m_SuperClass->Accept(*this);
+			auto callable{ std::get_if<Ref<Callable>>(&superClassLiteral) };
+			if (!callable)
+				throw error(classStmt.m_SuperClass->m_Token, "Superclass must be class.");
+
+			superClass = std::dynamic_pointer_cast<ClassObject>(*callable);
+
+			if(!superClass)
+				throw error(classStmt.m_SuperClass->m_Token, "Superclass must be class.");
+		}
+
 		m_Environment->define(classStmt.m_Name.m_Lexeme, Nil{});
 
 		std::unordered_map<std::string, Ref<Callable>> methods{};
@@ -464,7 +481,7 @@ namespace DXX
 			}
 		}
 
-		Ref<Callable> classObj{ CreateRef<ClassObject>(classStmt.m_Name.m_Lexeme, std::move(methods)) };
+		Ref<Callable> classObj{ CreateRef<ClassObject>(classStmt.m_Name.m_Lexeme, superClass, std::move(methods)) };
 
 		m_Environment->assign(classStmt.m_Name.m_Lexeme, classObj);
 	}

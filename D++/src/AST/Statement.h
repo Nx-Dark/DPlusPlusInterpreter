@@ -202,11 +202,12 @@ namespace DXX
 	{
 	public:
 		Token m_Name{};
+		Ref<VariableExpr> m_SuperClass{}; //this is a variable expr, which stores the identifier of the superclass
 		std::vector<Ref<Stmt>> m_Methods{};
 
 	public:
-		ClassStmt(Token name, std::vector<Ref<Stmt>> methods)
-			: m_Name{ std::move(name) }, m_Methods{ std::move(methods) }
+		ClassStmt(Token name, Ref<VariableExpr> superClass, std::vector<Ref<Stmt>> methods)
+			: m_Name{ std::move(name) }, m_SuperClass{ superClass }, m_Methods{ std::move(methods) }
 		{
 		}
 

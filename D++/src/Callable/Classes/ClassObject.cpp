@@ -8,8 +8,8 @@
 namespace DXX
 {
 
-	ClassObject::ClassObject(const std::string& name, std::unordered_map<std::string, Ref<Callable>> methods)
-		: m_Name{ name }, m_Methods{ std::move(methods) }
+	ClassObject::ClassObject(const std::string& name, Ref<ClassObject> superClass, std::unordered_map<std::string, Ref<Callable>> methods)
+		: m_Name{ name }, m_SuperClass{ superClass }, m_Methods{ std::move(methods) }
 	{
 	}
 
@@ -43,6 +43,9 @@ namespace DXX
 
 		if (it != m_Methods.end())
 			return it->second;
+
+		if (m_SuperClass)
+			return m_SuperClass->FindMethod(name.m_Lexeme);
 
 		return nullptr;
 	}

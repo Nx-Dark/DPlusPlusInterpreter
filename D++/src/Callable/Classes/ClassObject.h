@@ -15,12 +15,13 @@ namespace DXX
 	private:
 
 		std::string m_Name{};
+		Ref<ClassObject> m_SuperClass{};
 		std::unordered_map<std::string, Ref<Callable>> m_Methods{}; //the Callable is a FunctionObject;
 
 		friend class ClassInstance;
 
 	public:
-		ClassObject(const std::string& name, std::unordered_map<std::string, Ref<Callable>> methods);
+		ClassObject(const std::string& name, Ref<ClassObject> superClass, std::unordered_map<std::string, Ref<Callable>> methods);
 		virtual ~ClassObject() = default;
 		
 		//when Call is called, it should return a Ref<ClassInstance> which is the runtime object;

@@ -480,6 +480,14 @@ namespace DXX
 		advance();
 
 		Token identifier{ consume(TokenType::IDENTIFIER, "Expected an Identifier after class.") };
+
+		Ref<VariableExpr> superClass{ nullptr };
+		if (match(TokenType::LESS))
+		{
+			Token superClassName{ consume(TokenType::IDENTIFIER, "Expected a Super Class Identifier after '<'") };
+			superClass = CreateRef<VariableExpr>(superClassName);
+		}
+
 		consume(TokenType::LEFT_BRACE, "Expected '{' before class body.");
 
 		std::vector<Ref<Stmt>> methods{};
@@ -491,7 +499,7 @@ namespace DXX
 
 		consume(TokenType::RIGHT_BRACE, "Expected '}' after class body.");
 
-		return CreateRef<ClassStmt>(std::move(identifier), std::move(methods));
+		return CreateRef<ClassStmt>(std::move(identifier), superClass, std::move(methods));
 	}
 
 	Ref<Stmt> Parser::functionDeclaration(const std::string& kind)

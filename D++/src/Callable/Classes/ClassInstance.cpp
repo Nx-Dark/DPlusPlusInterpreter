@@ -28,15 +28,6 @@ namespace DXX
 
 	bool ClassInstance::Set(Token name, const Literal& value)
 	{
-		//auto it{ m_Fields.find(name.m_Lexeme) };
-
-		//if (it != m_Fields.end()) {
-		//	m_Fields[name.m_Lexeme] = value;
-		//	return true;
-		//}
-
-		//return false;
-
 		m_Fields[name.m_Lexeme] = value;
 		return true;
 	}
