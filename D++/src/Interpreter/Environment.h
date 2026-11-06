@@ -6,7 +6,7 @@
 namespace DXX
 {
 
-	class Environment
+	class Environment : public std::enable_shared_from_this<Environment>
 	{
 
 	private:
@@ -25,12 +25,12 @@ namespace DXX
 		std::optional<Literal> get(const std::string& name) const;
 		bool assign(const std::string& name, Literal value);
 
-		std::optional<Literal> getAt(int distance, const std::string& name) const;
+		std::optional<Literal> getAt(int distance, const std::string& name) ;
 		bool assignAt(int distance, const std::string& name, const Literal& value);
 
 	private:
 
-		Ref<Environment> getAncestor(int distance) const;
+		Ref<Environment> getAncestor(int distance);
 
 	};
 
@@ -40,13 +40,16 @@ namespace DXX
 	class EnvironmentGuard
 	{
 	private:
-		Ref<Environment> m_Previous{};
 		Interpreter& m_Interpreter;
+		Ref<Environment> m_Previous{};
+		Ref<Environment> m_Current{};
 
 	public:
 		EnvironmentGuard(Ref<Environment> previous, Interpreter& interpreter);
 
 		~EnvironmentGuard();
+
+		inline Ref<Environment> GetCurrent() const { return m_Current; }
 
 		EnvironmentGuard(const EnvironmentGuard&) = delete;
 		EnvironmentGuard& operator=(const EnvironmentGuard&) = delete;

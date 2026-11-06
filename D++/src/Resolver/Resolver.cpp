@@ -61,7 +61,7 @@ namespace DXX
 	void Resolver::ResolveFunction(FunctionStmt& functionStmt, FunctionType funcType)
 	{
 		FunctionType enclosingFunction{ m_CurrentFunction };
-		m_CurrentFunction = funcType;
+		m_CurrentFunction = funcType;	
 
 		BeginScope();
 		for (const auto& tkn : functionStmt.m_Parameters)
@@ -212,8 +212,13 @@ namespace DXX
 		for (const auto& method : classStmt.m_Methods)
 		{
 			FunctionType decl{ FunctionType::METHOD };
-			auto funcStmt{ dynamic_cast<FunctionStmt*>(&(*method)) };
-			if(funcStmt) ResolveFunction(*funcStmt, decl);
+			Ref<FunctionStmt> funcStmt{ std::dynamic_pointer_cast<FunctionStmt>(method) };
+			if (funcStmt)
+			{
+				if (funcStmt->m_Name.m_Lexeme == "construct")
+					decl = FunctionType::INITIALIZER;
+				ResolveFunction(*funcStmt, decl);
+			}
 		}
 
 		EndScope();
@@ -223,7 +228,13 @@ namespace DXX
 
 	void Resolver::visitReturnStmt(ReturnStmt& returnStmt)
 	{
-		if (returnStmt.m_Expr) Resolve(*returnStmt.m_Expr);
+		if (returnStmt.m_Expr)
+		{
+			if (m_CurrentFunction == FunctionType::INITIALIZER)
+				throw error(returnStmt.m_Keyword, "return not allowed inside an initializer.");
+
+			Resolve(*returnStmt.m_Expr);
+		}
 	}
 
 	//helper stuff

@@ -9,8 +9,8 @@
 namespace DXX
 {
 
-	FunctionObject::FunctionObject(Ref<FunctionStmt> decl, const Ref<Environment>& closure)
-		: m_Declaration{ decl }, m_Closure{ closure } 
+	FunctionObject::FunctionObject(Ref<FunctionStmt> decl, const Ref<Environment>& closure, bool initializer)
+		: m_Declaration{ decl }, m_Closure{ closure }, m_IsInitializer{ initializer }
 	{
 	}
 
@@ -18,7 +18,7 @@ namespace DXX
 	{
 		Ref<Environment> env{ CreateRef<Environment>(m_Closure) };
 		env->define("this", classInstance);
-		return CreateRef<FunctionObject>(m_Declaration, env);
+		return CreateRef<FunctionObject>(m_Declaration, env, m_IsInitializer);
 	}
 
 	Literal FunctionObject::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
@@ -37,8 +37,14 @@ namespace DXX
 		}
 		catch (const Interpreter::ReturnSignal& signal)
 		{
+			if (m_IsInitializer)
+				return m_Closure->getAt(0, "this").value();
+
 			return signal.value;
 		}
+
+		if (m_IsInitializer)
+			return m_Closure->getAt(0, "this").value();
 
 		return Nil{};
 	}

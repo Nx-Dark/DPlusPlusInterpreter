@@ -15,8 +15,10 @@ namespace DXX
 		Ref<FunctionStmt> m_Declaration{};
 		Ref<Environment> m_Closure{};
 
+		bool m_IsInitializer{}; //to see if this function is an initializer inside a class body;
+
 	public:
-		FunctionObject(Ref<FunctionStmt> decl, const Ref<Environment>& closure);
+		FunctionObject(Ref<FunctionStmt> decl, const Ref<Environment>& closure, bool initializer = false);
 		virtual ~FunctionObject() = default;
 
 		Ref<Callable> Bind(Ref<ClassInstance> classInstance);

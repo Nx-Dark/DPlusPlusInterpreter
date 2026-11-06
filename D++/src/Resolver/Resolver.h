@@ -30,6 +30,7 @@ namespace DXX
 		{
 			NONE = 0,
 			FUNCTION,
+			INITIALIZER,
 			METHOD
 		};
 

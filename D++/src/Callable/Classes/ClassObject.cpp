@@ -15,13 +15,21 @@ namespace DXX
 
 	Literal ClassObject::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
 	{
-		auto instance{ CreateRef<ClassInstance>(shared_from_this()) };
+		Ref<ClassInstance> instance{ CreateRef<ClassInstance>(shared_from_this()) };
+
+		//initializer
+		Ref<FunctionObject> initializerMethod{ std::dynamic_pointer_cast<FunctionObject>(FindMethod("construct")) };
+		if (initializerMethod)
+			initializerMethod->Bind(instance)->Call(interpreter, arguments);
+
 		return instance;
 	}
 
 	uint32_t ClassObject::arity() const
 	{
-		return 0u;
+		Ref<Callable> initializerMethod{ FindMethod("construct") };
+		if (!initializerMethod) return 0;
+		return initializerMethod->arity();
 	}
 
 	std::string ClassObject::ToString() const
@@ -32,6 +40,16 @@ namespace DXX
 	Ref<Callable> ClassObject::FindMethod(const Token& name) const 
 	{
 		auto it{ m_Methods.find(name.m_Lexeme) };
+
+		if (it != m_Methods.end())
+			return it->second;
+
+		return nullptr;
+	}
+
+	Ref<Callable> ClassObject::FindMethod(const std::string& name) const
+	{
+		auto it{ m_Methods.find(name) };
 
 		if (it != m_Methods.end())
 			return it->second;

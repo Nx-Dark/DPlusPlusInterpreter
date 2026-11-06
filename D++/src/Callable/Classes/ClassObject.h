@@ -29,6 +29,7 @@ namespace DXX
 		virtual std::string ToString() const;
 
 		Ref<Callable> FindMethod(const Token& name) const;
+		Ref<Callable> FindMethod(const std::string& name) const;
 	};
 
 }

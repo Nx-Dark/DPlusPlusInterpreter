@@ -317,7 +317,6 @@ namespace DXX
 
 	void Interpreter::visitVarStmt(VarStmt& varStmt)
 	{
-
 		Literal value{ Nil{} };
 
 		if (varStmt.m_InitializerExpr)
@@ -443,7 +442,7 @@ namespace DXX
 
 			if (methodFuncStmt)
 			{
-				Ref<Callable> methodFuncObj{ CreateRef<FunctionObject>(methodFuncStmt, m_Environment) };
+				Ref<Callable> methodFuncObj{ CreateRef<FunctionObject>(methodFuncStmt, m_Environment, methodFuncStmt->m_Name.m_Lexeme == "construct")};
 				methods[methodFuncStmt->m_Name.m_Lexeme] = methodFuncObj;
 			}
 		}
@@ -460,6 +459,7 @@ namespace DXX
 
 	Literal Interpreter::lookUpVariable(Token token, const Expr& expr)
 	{
+
 		auto it{ m_Locals.find(expr.GetID()) };
 
 		if (it != m_Locals.end())
@@ -469,7 +469,7 @@ namespace DXX
 		}
 
 		auto value{ m_GlobalEnv->get(token.m_Lexeme) };
-		
+
 		if (!value)
 			throw error(token, "Undefined Variable " + token.m_Lexeme + ".");
 

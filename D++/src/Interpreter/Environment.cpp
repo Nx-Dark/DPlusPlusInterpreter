@@ -45,11 +45,16 @@ namespace DXX
 		return false;
 	}
 
-	std::optional<Literal> Environment::getAt(int distance, const std::string& name) const
+	std::optional<Literal> Environment::getAt(int distance, const std::string& name)
 	{
-		Ref<Environment> env{ getAncestor(distance) };
+		Ref<Environment> env{ getAncestor(distance) };;
 
-		return env->m_Values[name];
+		auto it{ env->m_Values.find(name) };
+
+		if (it != env->m_Values.end())
+			return it->second;
+
+		return std::nullopt;;
 	}
 
 	bool Environment::assignAt(int distance, const std::string& name, const Literal& value)
@@ -65,9 +70,9 @@ namespace DXX
 		return false;
 	}
 
-	Ref<Environment> Environment::getAncestor(int distance) const
+	Ref<Environment> Environment::getAncestor(int distance)
 	{
-		Ref<Environment> env{ CreateRef<Environment>(*this) };
+		Ref<Environment> env{ shared_from_this() };
 
 		for (int i{}; i < distance; i++)
 			env = env->m_Enclosing;
@@ -77,10 +82,10 @@ namespace DXX
 
 	//environment guard;
 	EnvironmentGuard::EnvironmentGuard(Ref<Environment> previous, Interpreter& interpreter)
-		: m_Previous{ previous }, m_Interpreter{ interpreter }
+		: m_Interpreter{ interpreter }, m_Previous{ interpreter.m_Environment }
 	{
-		Ref<Environment> newEnvironment{ CreateRef<Environment>(m_Previous) };
-		m_Interpreter.m_Environment = newEnvironment;
+		m_Current = CreateRef<Environment>(previous);
+		m_Interpreter.m_Environment = m_Current;
 	}
 
 	EnvironmentGuard::~EnvironmentGuard()
