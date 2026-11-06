@@ -9,7 +9,7 @@ namespace DXX
 	Literal ClockFunction::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
 	{
 		auto timeNow{ std::chrono::system_clock::now() };
-		uint64_t seconds{ (uint64_t)std::chrono::duration_cast<std::chrono::seconds>(timeNow.time_since_epoch()).count() };
+		double seconds{ (double)std::chrono::duration_cast<std::chrono::seconds>(timeNow.time_since_epoch()).count() };
 
 		return seconds;
 	}
@@ -39,8 +39,8 @@ namespace DXX
 
 		if (std::holds_alternative<float>(arg1))
 			return std::sqrtf(std::get<float>(arg1));
-		else if (std::holds_alternative<uint64_t>(arg1))
-			return std::sqrtf(std::get<uint64_t>(arg1));
+		else if (std::holds_alternative<double>(arg1))
+			return std::sqrt(std::get<double>(arg1));
 		else throw interpreter.nativeError("Unsupported Type as argument");
 
 		return Nil{};
@@ -55,8 +55,8 @@ namespace DXX
 
 		if (std::holds_alternative<float>(arg1) && std::holds_alternative<float>(arg2))
 			return std::powf(std::get<float>(arg1), std::get<float>(arg2));
-		else if (std::holds_alternative<uint64_t>(arg1) && std::holds_alternative<uint64_t>(arg2))
-			return std::powf(std::get<uint64_t>(arg1), std::get<uint64_t>(arg2));
+		else if (std::holds_alternative<double>(arg1) && std::holds_alternative<double>(arg2))
+			return std::powf(std::get<double>(arg1), std::get<double>(arg2));
 		else throw interpreter.nativeError("Unsupported Type as argument");
 
 		return Nil{};
@@ -72,8 +72,8 @@ namespace DXX
 			return std::max(std::get<float>(arg1), std::get<float>(arg2));
 		else if (std::holds_alternative<std::string>(arg1) && std::holds_alternative<std::string>(arg2))
 			return std::max(std::get<std::string>(arg1), std::get<std::string>(arg2));
-		else if (std::holds_alternative<uint64_t>(arg1) && std::holds_alternative<uint64_t>(arg2))
-			return std::max(std::get<uint64_t>(arg1), std::get<uint64_t>(arg2));
+		else if (std::holds_alternative<double>(arg1) && std::holds_alternative<double>(arg2))
+			return std::max(std::get<double>(arg1), std::get<double>(arg2));
 		else throw interpreter.nativeError("Unsupported Type as argument");
 
 		return Nil{};
@@ -88,8 +88,8 @@ namespace DXX
 			return std::min(std::get<float>(arg1), std::get<float>(arg2));
 		else if (std::holds_alternative<std::string>(arg1) && std::holds_alternative<std::string>(arg2))
 			return std::min(std::get<std::string>(arg1), std::get<std::string>(arg2));
-		else if (std::holds_alternative<uint64_t>(arg1) && std::holds_alternative<uint64_t>(arg2))
-			return std::min(std::get<uint64_t>(arg1), std::get<uint64_t>(arg2));
+		else if (std::holds_alternative<double>(arg1) && std::holds_alternative<double>(arg2))
+			return std::min(std::get<double>(arg1), std::get<double>(arg2));
 		else throw interpreter.nativeError("Unsupported Type as argument");
 
 		return Nil{};

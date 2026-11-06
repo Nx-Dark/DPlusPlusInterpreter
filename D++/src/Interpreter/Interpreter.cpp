@@ -17,6 +17,7 @@ namespace DXX
 		if (std::holds_alternative<Nil>(literal)) return false;
 		else if (std::holds_alternative<bool>(literal)) return std::get<bool>(literal);
 		else if (std::holds_alternative<float>(literal) && std::get<float>(literal) == 0.0f) return false;
+		else if (std::holds_alternative<double>(literal) && std::get<double>(literal) == 0.0f) return false;
 		else return true;
 	}
 
@@ -110,6 +111,8 @@ namespace DXX
 			{
 				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
 					return std::get<float>(leftOperand) + std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) + std::get<double>(rightOperand);
 				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
 					return std::get<std::string>(leftOperand) + std::get<std::string>(rightOperand);
 				
@@ -119,6 +122,8 @@ namespace DXX
 			{
 				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
 					return std::get<float>(leftOperand) - std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) - std::get<double>(rightOperand);
 				
 				throw error(op, "Operation must be done on a number.");
 			}
@@ -126,6 +131,8 @@ namespace DXX
 			{
 				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
 					return std::get<float>(leftOperand) * std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) * std::get<double>(rightOperand);
 				
 				throw error(op, "Operation must be done on a number.");
 			}
@@ -133,6 +140,8 @@ namespace DXX
 			{
 				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
 					return std::get<float>(leftOperand) / std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) / std::get<double>(rightOperand);
 				
 				throw error(op, "Operation must be done on a number.");
 			}
@@ -142,6 +151,8 @@ namespace DXX
 			{
 				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
 					return std::get<float>(leftOperand) > std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) > std::get<double>(rightOperand);
 				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
 					return std::get<std::string>(leftOperand) > std::get<std::string>(rightOperand);
 
@@ -151,6 +162,8 @@ namespace DXX
 			{
 				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
 					return std::get<float>(leftOperand) < std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) < std::get<double>(rightOperand);
 				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
 					return std::get<std::string>(leftOperand) < std::get<std::string>(rightOperand);
 
@@ -160,6 +173,8 @@ namespace DXX
 			{
 				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
 					return std::get<float>(leftOperand) >= std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) >= std::get<double>(rightOperand);
 				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
 					return std::get<std::string>(leftOperand) >= std::get<std::string>(rightOperand);
 				
@@ -169,6 +184,8 @@ namespace DXX
 			{
 				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
 					return std::get<float>(leftOperand) <= std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) <= std::get<double>(rightOperand);
 				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
 					return std::get<std::string>(leftOperand) <= std::get<std::string>(rightOperand);
 				
