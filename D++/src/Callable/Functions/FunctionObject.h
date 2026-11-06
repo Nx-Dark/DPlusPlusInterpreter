@@ -19,6 +19,8 @@ namespace DXX
 		FunctionObject(Ref<FunctionStmt> decl, const Ref<Environment>& closure);
 		virtual ~FunctionObject() = default;
 
+		Ref<Callable> Bind(Ref<ClassInstance> classInstance);
+
 		//override;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
 

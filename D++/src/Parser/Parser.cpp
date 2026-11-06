@@ -285,6 +285,7 @@ namespace DXX
 			case TokenType::TRUE  :
 			case TokenType::FALSE : return CreateRef<LiteralExpr>(std::move(token.m_Literal));
 			case TokenType::IDENTIFIER: return CreateRef<VariableExpr>(std::move(token));
+			case TokenType::THIS: return CreateRef<ThisExpr>(std::move(token));
 			
 			case TokenType::LEFT_PAREN:
 			{

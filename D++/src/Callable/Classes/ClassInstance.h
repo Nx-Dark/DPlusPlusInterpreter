@@ -5,7 +5,7 @@
 namespace DXX
 {
 
-	class ClassInstance
+	class ClassInstance : public std::enable_shared_from_this<ClassInstance>
 	{
 	private:
 
@@ -17,8 +17,8 @@ namespace DXX
 		ClassInstance(Ref<ClassObject> classObj);
 		~ClassInstance() = default;
 
-		std::optional<Literal> Get(Token name) const;
-		void Set(Token name, const Literal& value);
+		std::optional<Literal> Get(Token name);
+		bool Set(Token name, const Literal& value);
 
 		std::string ToString() const;
 	};

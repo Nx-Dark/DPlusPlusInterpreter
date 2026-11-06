@@ -33,7 +33,16 @@ namespace DXX
 			METHOD
 		};
 
+		//class type enum
+
+		enum class ClassType
+		{
+			NONE = 0,
+			CLASS
+		};
+
 		FunctionType m_CurrentFunction{ FunctionType::NONE };
+		ClassType m_CurrentClass{ ClassType::NONE };
 
 	public:
 
@@ -53,6 +62,7 @@ namespace DXX
 		virtual void visitCall(const CallExpr& callExpr)  override;
 		virtual void visitGet(const GetExpr& getExpr) override;
 		virtual void visitSet(const SetExpr& getExpr) override;
+		virtual void visitThis(const ThisExpr& thisExpr) override;
 
 		//visitng statements;
 		virtual void visitExpressionStmt(ExpressionStmt& expressionStmt)  override;

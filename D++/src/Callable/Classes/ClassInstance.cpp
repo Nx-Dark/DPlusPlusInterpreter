@@ -2,6 +2,7 @@
 #include "ClassInstance.h"
 
 #include "Tokenizer/Token.h"
+#include "Callable/Functions/FunctionObject.h"
 
 namespace DXX
 {
@@ -11,23 +12,33 @@ namespace DXX
 	{
 	}
 
-	std::optional<Literal> ClassInstance::Get(Token name) const
+	std::optional<Literal> ClassInstance::Get(Token name)
 	{
 		auto field{ m_Fields.find(name.m_Lexeme) };
 
 		if (field != m_Fields.end())
 			return field->second;
 
-		Ref<Callable> method{ m_ClassObject->FindMethod(name) };
+		Ref<FunctionObject> method{ std::dynamic_pointer_cast<FunctionObject>(m_ClassObject->FindMethod(name)) };
 		if (method)
-			return method;
+			return method->Bind(shared_from_this());
 
 		return std::nullopt;
 	}
 
-	void ClassInstance::Set(Token name, const Literal& value)
+	bool ClassInstance::Set(Token name, const Literal& value)
 	{
+		//auto it{ m_Fields.find(name.m_Lexeme) };
+
+		//if (it != m_Fields.end()) {
+		//	m_Fields[name.m_Lexeme] = value;
+		//	return true;
+		//}
+
+		//return false;
+
 		m_Fields[name.m_Lexeme] = value;
+		return true;
 	}
 
 	std::string ClassInstance::ToString() const

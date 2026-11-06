@@ -232,21 +232,21 @@ namespace DXX
 			arguments.push_back(args->Accept(*this));
 		}
 
-		auto functionObj{ std::get_if<Ref<Callable>>(&callee) };
+		auto callableObject{ std::get_if<Ref<Callable>>(&callee) };
 
-		if (functionObj)
+		if (callableObject)
 		{
-			size_t funcObjArity{ (*functionObj)->arity() };
+			size_t callableObjArity{ (*callableObject)->arity() };
 			size_t calleeArgCount{ callExpr.m_Arguments.size() };
 
-			if (funcObjArity != VARIADIC_ARITY && funcObjArity != calleeArgCount)
+			if (callableObjArity != VARIADIC_ARITY && callableObjArity != calleeArgCount)
 			{
-				throw error(callExpr.m_ClosingParen, "Expected " + std::to_string(funcObjArity) + " Arguments, but got " + std::to_string(calleeArgCount) + " Instead");
+				throw error(callExpr.m_ClosingParen, "Expected " + std::to_string(callableObjArity) + " Arguments, but got " + std::to_string(calleeArgCount) + " Instead");
 			}
 
 			try 
 			{
-				return (*functionObj)->Call(*this, arguments);
+				return (*callableObject)->Call(*this, arguments);
 			}
 
 			catch (const NativeRuntimeError& nre)
@@ -274,7 +274,7 @@ namespace DXX
 		if (propertyVal)
 			return propertyVal.value();
 
-		throw error(getExpr.m_Identifier, "Undefined Property " + getExpr.m_Identifier.m_Lexeme + ".");
+		throw error(getExpr.m_Identifier, (*classInstanceObj)->ToString() + " Undefined property/field named " + getExpr.m_Identifier.m_Lexeme + ".");
 	}
 
 	Literal Interpreter::visitSet(const SetExpr& setExpr)
@@ -286,11 +286,17 @@ namespace DXX
 		if (classInstanceObj)
 		{
 			Literal value{ setExpr.m_Value->Accept(*this) };
-			(*classInstanceObj)->Set(setExpr.m_Identifier, value);
+			bool assigned{ (*classInstanceObj)->Set(setExpr.m_Identifier, value) };
+			if (!assigned) throw error(setExpr.m_Identifier, (*classInstanceObj)->ToString() + " Undefined property/field named " + setExpr.m_Identifier.m_Lexeme + ".");
 			return value;
 		}
 
 		throw error(setExpr.m_Identifier, "Only Instances have fields.");
+	}
+
+	Literal Interpreter::visitThis(const ThisExpr& thisExpr)
+	{
+		return lookUpVariable(thisExpr.m_Keyword, thisExpr);
 	}
 
 	//------------------------------------------------------------------
@@ -433,16 +439,16 @@ namespace DXX
 
 		for (auto& method : classStmt.m_Methods)
 		{
-			Ref<FunctionStmt> methodFunc{ std::dynamic_pointer_cast<FunctionStmt>(method) };
+			Ref<FunctionStmt> methodFuncStmt{ std::dynamic_pointer_cast<FunctionStmt>(method) };
 
-			if (methodFunc)
+			if (methodFuncStmt)
 			{
-				Ref<Callable> funcObj{ CreateRef<FunctionObject>(methodFunc, m_Environment) };
-				methods[methodFunc->m_Name.m_Lexeme] = funcObj;
+				Ref<Callable> methodFuncObj{ CreateRef<FunctionObject>(methodFuncStmt, m_Environment) };
+				methods[methodFuncStmt->m_Name.m_Lexeme] = methodFuncObj;
 			}
 		}
 
-		Ref<ClassObject> classObj{ CreateRef<ClassObject>(classStmt.m_Name.m_Lexeme, std::move(methods)) };
+		Ref<Callable> classObj{ CreateRef<ClassObject>(classStmt.m_Name.m_Lexeme, std::move(methods)) };
 
 		m_Environment->assign(classStmt.m_Name.m_Lexeme, classObj);
 	}

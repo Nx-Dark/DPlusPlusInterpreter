@@ -58,6 +58,11 @@ namespace DXX
 		return visitor.visitSet(*this);
 	}
 
+	Literal ThisExpr::Accept(EvaluatorVisitor& visitor) const
+	{
+		return visitor.visitThis(*this);
+	}
+
 	//for resolver, returns nothing(void);
 	void LiteralExpr::Accept(ExprResolverVisitor& visitor) const
 	{
@@ -102,5 +107,10 @@ namespace DXX
 	void SetExpr::Accept(ExprResolverVisitor& visitor) const
 	{
 		return visitor.visitSet(*this);
+	}
+
+	void ThisExpr::Accept(ExprResolverVisitor& visitor) const
+	{
+		return visitor.visitThis(*this);
 	}
 }

@@ -130,6 +130,14 @@ namespace DXX
 		Resolve(*setExpr.m_Value);
 	}
 
+	void Resolver::visitThis(const ThisExpr& thisExpr)
+	{
+		if (m_CurrentClass == ClassType::NONE)
+			throw error(thisExpr.m_Keyword, "Unexpected 'this' outside of class methods.");
+
+		ResolveLocal(thisExpr, thisExpr.m_Keyword);
+	}
+
 	void Resolver::visitGrouping(const GroupingExpr& groupingExpr)
 	{
 		Resolve(*groupingExpr.m_Expr);
@@ -192,8 +200,14 @@ namespace DXX
 	
 	void Resolver::visitClassStmt(ClassStmt& classStmt)
 	{
+		ClassType enclosingClass{ m_CurrentClass };
+		m_CurrentClass = ClassType::CLASS;
+
 		Declare(classStmt.m_Name);
 		Define(classStmt.m_Name);
+
+		BeginScope();
+		m_Scopes.top()["this"] = true;
 
 		for (const auto& method : classStmt.m_Methods)
 		{
@@ -201,6 +215,10 @@ namespace DXX
 			auto funcStmt{ dynamic_cast<FunctionStmt*>(&(*method)) };
 			if(funcStmt) ResolveFunction(*funcStmt, decl);
 		}
+
+		EndScope();
+
+		m_CurrentClass = enclosingClass;
 	}
 
 	void Resolver::visitReturnStmt(ReturnStmt& returnStmt)

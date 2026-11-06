@@ -1,5 +1,6 @@
 #include "dpch.h"
 #include "FunctionObject.h"
+#include "Callable/Classes/ClassInstance.h"
 
 #include "AST/Statement.h"
 #include "Interpreter/Environment.h"
@@ -11,6 +12,13 @@ namespace DXX
 	FunctionObject::FunctionObject(Ref<FunctionStmt> decl, const Ref<Environment>& closure)
 		: m_Declaration{ decl }, m_Closure{ closure } 
 	{
+	}
+
+	Ref<Callable> FunctionObject::Bind(Ref<ClassInstance> classInstance)
+	{
+		Ref<Environment> env{ CreateRef<Environment>(m_Closure) };
+		env->define("this", classInstance);
+		return CreateRef<FunctionObject>(m_Declaration, env);
 	}
 
 	Literal FunctionObject::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)

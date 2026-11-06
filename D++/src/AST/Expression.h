@@ -162,8 +162,23 @@ namespace DXX
 		Ref<Expr> m_Value{};
 
 	public:
-		SetExpr(Ref<Expr> obj, const Token& identifier, Ref<Expr> value)
-			: m_Object{ obj }, m_Identifier{ identifier }, m_Value{ value }
+		SetExpr(Ref<Expr> obj, Token identifier, Ref<Expr> value)
+			: m_Object{ obj }, m_Identifier{ std::move(identifier) }, m_Value{ value }
+		{
+		}
+
+		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+		virtual void Accept(ExprResolverVisitor& visitor) const override;
+	};
+
+	class ThisExpr : public Expr
+	{
+	public:
+		Token m_Keyword{};
+
+	public:
+		ThisExpr(Token keyword)
+			: m_Keyword{std::move(keyword)}
 		{
 		}
 
