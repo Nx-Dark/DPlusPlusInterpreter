@@ -580,6 +580,7 @@ namespace DXX
 		m_GlobalEnv->define("str", CreateRef<StrCastFunc>());
 		m_GlobalEnv->define("float", CreateRef<FloatCastFunc>());
 		m_GlobalEnv->define("double", CreateRef<DoubleCastFunc>());
+		m_GlobalEnv->define("bool", CreateRef<BoolCastFunc>());
 
 		//native type check func
 		m_GlobalEnv->define("typeof", CreateRef<TypeCheckFunc>());

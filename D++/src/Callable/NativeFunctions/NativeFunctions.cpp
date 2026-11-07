@@ -107,6 +107,7 @@ namespace DXX
 			std::print("{0}", std::get<std::string>(prompt));
 			if (std::getline(std::cin, line))
 				return line;
+			return "";
 		}
 
 		else throw interpreter.nativeError("Unsupported Type as argument.");
@@ -144,7 +145,15 @@ namespace DXX
 		{
 			float val{};
 			try {
-				val = std::stof(std::get<std::string>(toCastValue));
+				std::string strValue{ std::get<std::string>(toCastValue) };
+				std::size_t parsedChar{};
+				val = std::stof(strValue, &parsedChar);
+
+				if(parsedChar != strValue.size())
+					throw interpreter.nativeError("Invalid cast: Cannot cast string to float.");
+				else if(strValue == "nan" || strValue == "inf")
+					throw interpreter.nativeError("Invalid cast: Cannot cast string to float.");
+
 				return val;
 			}
 			catch (const std::invalid_argument& e)
@@ -155,6 +164,8 @@ namespace DXX
 			{
 				throw interpreter.nativeError("String is too big to cast to float.");
 			}
+
+			return val;
 		}
 		else if (std::holds_alternative<float>(toCastValue))
 			return std::get<float>(toCastValue);
@@ -171,7 +182,7 @@ namespace DXX
 			throw interpreter.nativeError("Unsupported Type to Cast.");
 	}
 
-	//float cast
+	//double cast
 	Literal DoubleCastFunc::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
 	{
 		const Literal toCastValue{ arguments[0] };
@@ -180,7 +191,15 @@ namespace DXX
 		{
 			double val{};
 			try {
-				val = std::stod(std::get<std::string>(toCastValue));
+				std::string strValue{ std::get<std::string>(toCastValue) };
+				std::size_t parsedChar{};
+				val = std::stof(strValue, &parsedChar);
+
+				if (parsedChar != strValue.size())
+					throw interpreter.nativeError("Invalid cast: Cannot cast string to double.");
+				else if (strValue == "nan" || strValue == "inf")
+					throw interpreter.nativeError("Invalid cast: Cannot cast string to double.");
+
 				return val;
 			}
 			catch (const std::invalid_argument&)
@@ -205,6 +224,30 @@ namespace DXX
 			throw interpreter.nativeError("Invalid cast: cannot cast NIL to double.");
 		else
 			throw interpreter.nativeError("Unsupported Type to Cast.");
+	}
+
+	//bool cast;
+	Literal BoolCastFunc::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
+	{
+		const Literal toCastValue{ arguments[0] };
+
+		if (std::holds_alternative<std::string>(toCastValue))
+		{
+			if (std::get<std::string>(toCastValue).empty())
+				return false;
+			else return true;
+		}
+		else if (std::holds_alternative<float>(toCastValue))
+			return std::get<float>(toCastValue) == 0.0f ? false : true;
+		else if (std::holds_alternative<double>(toCastValue))
+			return std::get<double>(toCastValue) == 0.0 ? false : true;
+		else if (std::holds_alternative<bool>(toCastValue))
+			return std::get<bool>(toCastValue);
+		else if (std::holds_alternative<Nil>(toCastValue))
+			return false;
+		else
+			throw interpreter.nativeError("Unsupported Type to Cast.");
+
 	}
 
 	//type check
