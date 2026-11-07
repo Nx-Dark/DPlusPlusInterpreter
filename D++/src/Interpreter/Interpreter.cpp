@@ -8,6 +8,7 @@
 #include "Callable/NativeFunctions/NativeFunctions.h"
 #include "Callable/Classes/ClassObject.h"
 #include "Callable/Classes/ClassInstance.h"
+#include "Types/ListObject.h"
 
 namespace DXX
 {
@@ -353,6 +354,57 @@ namespace DXX
 				}
 			}
 		}
+	}
+
+	Literal Interpreter::visitList(const ListExpr& listExpr)
+	{
+		std::vector<Literal> elements{};
+
+		for (const auto& element : listExpr.m_Elements)
+		{
+			elements.push_back(element->Accept(*this));
+		}
+
+		return CreateRef<ListObject>(elements);
+	}
+
+	Literal Interpreter::visitIndex(const IndexExpr& indexExpr)
+	{
+		Literal objectLiteral{ indexExpr.m_Object->Accept(*this) };
+		Literal indexLiteral{ indexExpr.m_Index->Accept(*this) };
+
+		auto listObjectPtr{ std::get_if<Ref<ListObject>>(&objectLiteral) };
+		if (listObjectPtr)
+		{
+			Ref<ListObject> listObject{ *listObjectPtr };
+
+			auto indexPtr{ std::get_if<float>(&indexLiteral) };
+			if (indexPtr)
+			{
+				float index{ *indexPtr };
+
+				if (std::floor(index) != index)
+					throw error(indexExpr.m_keyword, "Index must be an Integer.");
+
+				if (index < 0.0f) throw error(indexExpr.m_keyword, "Index cannot be negative.");
+
+				std::size_t intIndex{ static_cast<std::size_t>(index) };
+
+				if (intIndex >= listObject->m_Elements.size())	throw error(indexExpr.m_keyword, "Index out of range.");
+
+				return listObject->m_Elements[intIndex];
+			}
+
+			throw error(indexExpr.m_keyword, "Index must be a Number.");
+		}
+
+		throw error(indexExpr.m_keyword, "Cannot Index types other than list.");
+
+	}
+
+	Literal Interpreter::visitIndexSet(const IndexSetExpr& indexSetExpr)
+	{
+		return Nil{};
 	}
 
 	//------------------------------------------------------------------

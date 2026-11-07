@@ -15,6 +15,9 @@ namespace DXX
 	class SetExpr;
 	class ThisExpr;
 	class SuperExpr;
+	class ListExpr;
+	class IndexExpr;
+	class IndexSetExpr;
 
 	//visitor interface for evaluator visitors;
 	class ExprResolverVisitor
@@ -33,6 +36,9 @@ namespace DXX
 		virtual void visitSet(const SetExpr & getExpr) = 0;
 		virtual void visitThis(const ThisExpr& thisExpr) = 0;
 		virtual void visitSuper(const SuperExpr& superExpr) = 0;
+		virtual void visitList(const ListExpr& listExpr) = 0;
+		virtual void visitIndex(const IndexExpr& indexExpr) = 0;
+		virtual void visitIndexSet(const IndexSetExpr& indexSetExpr) = 0;
 	};
 
 }

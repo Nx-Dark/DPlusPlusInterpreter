@@ -68,6 +68,21 @@ namespace DXX
 		return visitor.visitSuper(*this);
 	}
 
+	Literal ListExpr::Accept(EvaluatorVisitor& visitor) const
+	{
+		return visitor.visitList(*this);
+	}
+
+	Literal IndexExpr::Accept(EvaluatorVisitor& visitor) const
+	{
+		return visitor.visitIndex(*this);
+	}
+
+	Literal IndexSetExpr::Accept(EvaluatorVisitor& visitor) const
+	{
+		return visitor.visitIndexSet(*this);
+	}
+
 	//for resolver, returns nothing(void);
 	void LiteralExpr::Accept(ExprResolverVisitor& visitor) const
 	{
@@ -122,5 +137,20 @@ namespace DXX
 	void SuperExpr::Accept(ExprResolverVisitor& visitor) const
 	{
 		visitor.visitSuper(*this);
+	}
+
+	void ListExpr::Accept(ExprResolverVisitor& visitor) const
+	{
+		visitor.visitList(*this);
+	}
+
+	void IndexExpr::Accept(ExprResolverVisitor& visitor) const
+	{
+		visitor.visitIndex(*this);
+	}
+
+	void IndexSetExpr::Accept(ExprResolverVisitor& visitor) const
+	{
+		visitor.visitIndexSet(*this);
 	}
 }

@@ -66,6 +66,9 @@ namespace DXX
 		virtual void visitSet(const SetExpr& getExpr) override;
 		virtual void visitThis(const ThisExpr& thisExpr) override;
 		virtual void visitSuper(const SuperExpr& superExpr) override;
+		virtual void visitList(const ListExpr& listExpr) override;
+		virtual void visitIndex(const IndexExpr& indexExpr) override;
+		virtual void visitIndexSet(const IndexSetExpr& indexSetExpr) override;
 
 		//visitng statements;
 		virtual void visitExpressionStmt(ExpressionStmt& expressionStmt)  override;

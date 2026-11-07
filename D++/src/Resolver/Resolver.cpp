@@ -148,6 +148,28 @@ namespace DXX
 		ResolveLocal(superExpr, superExpr.m_Keyword);
 	}
 
+	void Resolver::visitList(const ListExpr& listExpr)
+	{
+		for (const auto& expr : listExpr.m_Elements)
+		{
+			if (expr)
+				Resolve(*expr);
+		}
+	}
+
+	void Resolver::visitIndex(const IndexExpr& indexExpr)
+	{
+		Resolve(*indexExpr.m_Object);
+		Resolve(*indexExpr.m_Index);
+	}
+
+	void Resolver::visitIndexSet(const IndexSetExpr& indexSetExpr)
+	{
+		Resolve(*indexSetExpr.m_Object);
+		Resolve(*indexSetExpr.m_Index);
+		Resolve(*indexSetExpr.m_Value);
+	}
+
 	void Resolver::visitGrouping(const GroupingExpr& groupingExpr)
 	{
 		Resolve(*groupingExpr.m_Expr);

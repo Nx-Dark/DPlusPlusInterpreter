@@ -36,6 +36,7 @@ namespace DXX
 		friend class EnvironmentGuard;
 		friend class FunctionObject;
 		friend class Callable;
+		friend class ListObject;
 
 	public:
 		Interpreter(DiagnosticEngine& engine);
@@ -59,6 +60,9 @@ namespace DXX
 		virtual Literal visitSet(const SetExpr& getExpr) override;
 		virtual Literal visitThis(const ThisExpr& thisExpr) override;
 		virtual Literal visitSuper(const SuperExpr& superExpr) override;
+		virtual Literal visitList(const ListExpr& listExpr) override;
+		virtual Literal visitIndex(const IndexExpr& indexExpr) override;
+		virtual Literal visitIndexSet(const IndexSetExpr& indexSetExpr) override;
 
 		//statement visitor functions;
 		virtual void visitExpressionStmt(ExpressionStmt& expressionStmt) override;

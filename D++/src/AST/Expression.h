@@ -160,10 +160,11 @@ namespace DXX
 		Ref<Expr> m_Object{};
 		Token m_Identifier{};
 		Ref<Expr> m_Value{};
+		Token m_Operator{};
 
 	public:
-		SetExpr(Ref<Expr> obj, Token identifier, Ref<Expr> value)
-			: m_Object{ obj }, m_Identifier{ std::move(identifier) }, m_Value{ value }
+		SetExpr(Ref<Expr> obj, Token identifier, Ref<Expr> value, Token op)
+			: m_Object{ obj }, m_Identifier{ std::move(identifier) }, m_Value{ value }, m_Operator{ std::move(op) }
 		{
 		}
 
@@ -195,6 +196,56 @@ namespace DXX
 	public:
 		SuperExpr(Token keyword, Token method)
 			: m_Keyword{ std::move(keyword) }, m_Method{ std::move(method) }
+		{
+		}
+
+		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+		virtual void Accept(ExprResolverVisitor& visitor) const override;
+	};
+
+	class ListExpr : public Expr
+	{
+	public:
+		std::vector<Ref<Expr>> m_Elements{};
+
+	public:
+		ListExpr(std::vector<Ref<Expr>> elements)
+			: m_Elements{ std::move(elements) }
+		{
+		}
+
+		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+		virtual void Accept(ExprResolverVisitor& visitor) const override;
+	};
+
+	class IndexExpr : public Expr
+	{
+	public:
+		Ref<Expr> m_Object{};
+		Ref<Expr> m_Index{};
+		Token m_keyword{}; //for error and stuff handling
+
+	public:
+		IndexExpr(Ref<Expr> object, Ref<Expr> index, Token keyword)
+			: m_Object{ object }, m_Index{ index }, m_keyword{ std::move(keyword) }
+		{
+		}
+
+		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+		virtual void Accept(ExprResolverVisitor& visitor) const override;
+	};
+
+	class IndexSetExpr : public Expr
+	{
+	public:
+		Ref<Expr> m_Object{};
+		Ref<Expr> m_Index{};
+		Ref<Expr> m_Value{};
+		Token m_Operator;
+
+	public:
+		IndexSetExpr(Ref<Expr> object, Ref<Expr> index, Ref<Expr> value, Token op)
+			: m_Object{ object }, m_Index{ index }, m_Value{ value }, m_Operator{ std::move(op) }
 		{
 		}
 

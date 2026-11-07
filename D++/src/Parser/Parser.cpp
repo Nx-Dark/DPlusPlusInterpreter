@@ -79,7 +79,7 @@ namespace DXX
 
 	Ref<Expr> Parser::assignment()
 	{
-		Ref<Expr> expr{ logicalOr() };
+		Ref<Expr> expr{ logicalOr() }; //lhs expression
 
 		if (match(TokenType::EQUAL, TokenType::PLUS_EQUAL, TokenType::MINUS_EQUAL, TokenType::STAR_EQUAL, TokenType::SLASH_EQUAL))
 		{
@@ -97,8 +97,9 @@ namespace DXX
 
 			Ref<Expr> rightExpr{ assignment() };
 
-			VariableExpr* variableExpr{ dynamic_cast<VariableExpr*>(expr.get()) };
-			GetExpr* getExpr{ dynamic_cast<GetExpr*>(expr.get()) };
+			Ref<VariableExpr> variableExpr{ std::dynamic_pointer_cast<VariableExpr>(expr) };
+			Ref<GetExpr> getExpr{ std::dynamic_pointer_cast<GetExpr>(expr) };
+			Ref<IndexExpr> indexExpr{ std::dynamic_pointer_cast<IndexExpr>(expr) };
 			if (variableExpr)
 			{
 				Token name { variableExpr->m_Token };
@@ -111,7 +112,11 @@ namespace DXX
 			}
 			else if (getExpr)
 			{
-				return CreateRef<SetExpr>(getExpr->m_Object, getExpr->m_Identifier, rightExpr);
+				return CreateRef<SetExpr>(getExpr->m_Object, getExpr->m_Identifier, rightExpr, std::move(op));
+			}
+			else if(indexExpr)
+			{
+				return CreateRef<IndexSetExpr>(indexExpr->m_Object, indexExpr->m_Index, rightExpr, std::move(op));
 			}
 
 			throw error(op, "Invalid Assignment target.");
@@ -244,9 +249,14 @@ namespace DXX
 				expr = finishCall(expr);
 			else if (match(TokenType::DOT))
 			{
-				//for now only properties;, name is the property name;
 				Token name{ consume(TokenType::IDENTIFIER, "Expected property name after '.'.") };
 				expr = CreateRef<GetExpr>(expr, std::move(name));
+			}
+			else if (match(TokenType::LEFT_SQ_BRACE))
+			{
+				Ref<Expr> indexExpr{ expression() };
+				Token keyword{ consume(TokenType::RIGHT_SQ_BRACE, "Expected ']' after index expression.") };
+				expr = CreateRef<IndexExpr>(expr, indexExpr, std::move(keyword));
 			}
 			else
 				break;
@@ -295,13 +305,28 @@ namespace DXX
 			case TokenType::LEFT_PAREN:
 			{
 				Ref<Expr> expr{ expression() };
-				if (!check(TokenType::RIGHT_PAREN)) {
-					throw error(peek(), "Expected ')' after Expression.");
-				}
 
-				advance();
+				consume(TokenType::RIGHT_PAREN, "Expected ')' after Expression.");
+
+				//advance();
 				return CreateRef<GroupingExpr>(expr);
 			}
+
+			case TokenType::LEFT_SQ_BRACE:
+			{
+				std::vector<Ref<Expr>> elements{};
+				while (!check(TokenType::RIGHT_SQ_BRACE) && !isAtEnd())
+				{
+					Ref<Expr> expr{ expression() };
+					elements.push_back(expr);
+					if (!check(TokenType::RIGHT_SQ_BRACE)) consume(TokenType::COMMA, "Expected ',' after element in list");
+				}
+
+				consume(TokenType::RIGHT_SQ_BRACE, "Expected ']' after list expression.");
+
+				return CreateRef<ListExpr>(std::move(elements));
+			}
+
 			default:
 				throw error(token, "Expected an Expression.");
 		}

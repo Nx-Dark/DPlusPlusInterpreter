@@ -169,6 +169,7 @@
     <ClInclude Include="src\Source\SourceFile.h" />
     <ClInclude Include="src\Source\SourceManager.h" />
     <ClInclude Include="src\Callable\Functions\FunctionObject.h" />
+    <ClInclude Include="src\Types\ListObject.h" />
     <ClInclude Include="src\Types\Literal.h" />
     <ClInclude Include="src\Tokenizer\Token.h" />
     <ClInclude Include="src\Tokenizer\Tokenization.h" />
@@ -194,6 +195,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Callable\Functions\FunctionObject.cpp" />
+    <ClCompile Include="src\Types\ListObject.cpp" />
     <ClCompile Include="src\Types\Literal.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
