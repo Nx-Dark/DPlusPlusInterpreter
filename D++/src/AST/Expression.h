@@ -186,4 +186,20 @@ namespace DXX
 		virtual void Accept(ExprResolverVisitor& visitor) const override;
 	};
 
+	class SuperExpr : public Expr
+	{
+	public:
+		Token m_Keyword{};
+		Token m_Method{};
+
+	public:
+		SuperExpr(Token keyword, Token method)
+			: m_Keyword{ std::move(keyword) }, m_Method{ std::move(method) }
+		{
+		}
+
+		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
+		virtual void Accept(ExprResolverVisitor& visitor) const override;
+	};
+
 }

@@ -316,6 +316,45 @@ namespace DXX
 		return lookUpVariable(thisExpr.m_Keyword, thisExpr);
 	}
 
+	Literal Interpreter::visitSuper(const SuperExpr& superExpr)
+	{
+		auto it{ m_Locals.find(superExpr.GetID()) };
+
+		int distance{};
+
+		if (it != m_Locals.end())
+			distance = it->second;
+
+		auto superClassLiteral{ m_Environment->getAt(distance, "super") };
+		auto objectLiteral{ m_Environment->getAt(distance - 1, "this") };
+
+		if (superClassLiteral)
+		{
+			auto superClassPtr{ std::get_if<Ref<Callable>>(&superClassLiteral.value()) };
+
+			if (superClassPtr)
+			{
+				Ref<ClassObject> superClass{ std::dynamic_pointer_cast<ClassObject>(*superClassPtr) };
+
+				if (superClass && objectLiteral)
+				{
+					auto objectPtr { std::get_if<Ref<ClassInstance>>(&objectLiteral.value()) };
+
+					if (objectPtr)
+					{
+						Ref<ClassInstance> objectInstance{ *objectPtr };
+
+						Ref<FunctionObject> method{ std::dynamic_pointer_cast<FunctionObject>(superClass->FindMethod(superExpr.m_Method.m_Lexeme)) };
+						if (!method)
+							throw error(superExpr.m_Method, "Undefined Property '" + superExpr.m_Method.m_Lexeme + "'.");
+
+						return method->Bind(objectInstance);
+					} 
+				}
+			}
+		}
+	}
+
 	//------------------------------------------------------------------
 	//visiting statements;
 
@@ -468,6 +507,12 @@ namespace DXX
 
 		m_Environment->define(classStmt.m_Name.m_Lexeme, Nil{});
 
+		if (superClass)
+		{
+			m_Environment = CreateRef<Environment>(m_Environment);
+			m_Environment->define("super", superClass);
+		}
+
 		std::unordered_map<std::string, Ref<Callable>> methods{};
 
 		for (auto& method : classStmt.m_Methods)
@@ -482,6 +527,9 @@ namespace DXX
 		}
 
 		Ref<Callable> classObj{ CreateRef<ClassObject>(classStmt.m_Name.m_Lexeme, superClass, std::move(methods)) };
+
+		if (superClass)
+			m_Environment = m_Environment->m_Enclosing;
 
 		m_Environment->assign(classStmt.m_Name.m_Lexeme, classObj);
 	}
@@ -526,6 +574,15 @@ namespace DXX
 		m_GlobalEnv->define("sqrt", CreateRef<SqrtFunc>());
 		//nativ min func
 		m_GlobalEnv->define("min", CreateRef<MinFunc>());
+		//native input func
+		m_GlobalEnv->define("input", CreateRef<InputFunc>());
+		//native type cast functions
+		m_GlobalEnv->define("str", CreateRef<StrCastFunc>());
+		m_GlobalEnv->define("float", CreateRef<FloatCastFunc>());
+		m_GlobalEnv->define("double", CreateRef<DoubleCastFunc>());
+
+		//native type check func
+		m_GlobalEnv->define("typeof", CreateRef<TypeCheckFunc>());
 	}
 
 	//runtime error handling

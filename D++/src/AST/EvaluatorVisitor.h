@@ -16,6 +16,7 @@ namespace DXX
 	class GetExpr;
 	class SetExpr;
 	class ThisExpr;
+	class SuperExpr;
 
 	//visitor interface for evaluator visitors;
 	class EvaluatorVisitor
@@ -31,8 +32,9 @@ namespace DXX
 		virtual Literal visitAssignment (const AssignExpr& assignExpr)     = 0;
 		virtual Literal visitCall       (const CallExpr& callExpr)	       = 0;
 		virtual Literal visitGet		(const GetExpr& getExpr)		   = 0;
-		virtual Literal visitSet		(const SetExpr& getExpr) = 0;
-		virtual Literal visitThis		(const ThisExpr& thisExpr) = 0;
+		virtual Literal visitSet		(const SetExpr& getExpr)		   = 0;
+		virtual Literal visitThis		(const ThisExpr& thisExpr)		   = 0;
+		virtual Literal visitSuper		(const SuperExpr& superExpr)	   = 0;
 	};
 
 }

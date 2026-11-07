@@ -63,54 +63,64 @@ namespace DXX
 		return visitor.visitThis(*this);
 	}
 
+	Literal SuperExpr::Accept(EvaluatorVisitor& visitor) const
+	{
+		return visitor.visitSuper(*this);
+	}
+
 	//for resolver, returns nothing(void);
 	void LiteralExpr::Accept(ExprResolverVisitor& visitor) const
 	{
-		return visitor.visitLiteral(*this);
+		visitor.visitLiteral(*this);
 	}
 
 	void UnaryExpr::Accept(ExprResolverVisitor& visitor) const
 	{
-		return visitor.visitUnary(*this);
+		visitor.visitUnary(*this);
 	}
 
 	void BinaryExpr::Accept(ExprResolverVisitor& visitor) const
 	{
-		return visitor.visitBinary(*this);
+		visitor.visitBinary(*this);
 	}
 
 	void GroupingExpr::Accept(ExprResolverVisitor& visitor) const
 	{
-		return visitor.visitGrouping(*this);
+		visitor.visitGrouping(*this);
 	}
 
 	void VariableExpr::Accept(ExprResolverVisitor& visitor) const
 	{
-		return visitor.visitVariable(*this);
+		visitor.visitVariable(*this);
 	}
 
 	void AssignExpr::Accept(ExprResolverVisitor& visitor) const
 	{
-		return visitor.visitAssignment(*this);
+		visitor.visitAssignment(*this);
 	}
 
 	void CallExpr::Accept(ExprResolverVisitor& visitor) const
 	{
-		return visitor.visitCall(*this);
+		visitor.visitCall(*this);
 	}
 
 	void GetExpr::Accept(ExprResolverVisitor& visitor) const
 	{
-		return visitor.visitGet(*this);
+		visitor.visitGet(*this);
 	}
 
 	void SetExpr::Accept(ExprResolverVisitor& visitor) const
 	{
-		return visitor.visitSet(*this);
+		visitor.visitSet(*this);
 	}
 
 	void ThisExpr::Accept(ExprResolverVisitor& visitor) const
 	{
-		return visitor.visitThis(*this);
+		visitor.visitThis(*this);
+	}
+
+	void SuperExpr::Accept(ExprResolverVisitor& visitor) const
+	{
+		visitor.visitSuper(*this);
 	}
 }

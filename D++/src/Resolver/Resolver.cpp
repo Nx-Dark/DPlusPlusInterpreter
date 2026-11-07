@@ -138,6 +138,16 @@ namespace DXX
 		ResolveLocal(thisExpr, thisExpr.m_Keyword);
 	}
 
+	void Resolver::visitSuper(const SuperExpr& superExpr)
+	{
+		if (m_CurrentClass == ClassType::NONE)
+			throw error(superExpr.m_Keyword, "Cannot use 'super' outside of class.");
+		else if (m_CurrentClass != ClassType::SUBCLASS)
+			throw error(superExpr.m_Keyword, "Cannot use 'super' in a class with no superclass.");
+
+		ResolveLocal(superExpr, superExpr.m_Keyword);
+	}
+
 	void Resolver::visitGrouping(const GroupingExpr& groupingExpr)
 	{
 		Resolve(*groupingExpr.m_Expr);
@@ -210,7 +220,13 @@ namespace DXX
 			throw error(classStmt.m_SuperClass->m_Token, "A Class cannot inherit from itself.");
 
 		if (classStmt.m_SuperClass)
+		{
+			m_CurrentClass = ClassType::SUBCLASS;
 			Resolve(*classStmt.m_SuperClass);
+
+			BeginScope();
+			m_Scopes.top()["super"] = true;
+		}
 
 		BeginScope();
 		m_Scopes.top()["this"] = true;
@@ -228,6 +244,9 @@ namespace DXX
 		}
 
 		EndScope();
+		
+		if (classStmt.m_SuperClass)
+			EndScope();
 
 		m_CurrentClass = enclosingClass;
 	}

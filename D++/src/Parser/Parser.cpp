@@ -286,6 +286,11 @@ namespace DXX
 			case TokenType::FALSE : return CreateRef<LiteralExpr>(std::move(token.m_Literal));
 			case TokenType::IDENTIFIER: return CreateRef<VariableExpr>(std::move(token));
 			case TokenType::THIS: return CreateRef<ThisExpr>(std::move(token));
+			case TokenType::SUPER: {
+				consume(TokenType::DOT, "Expected '.' after super.");
+				Token identifier{ consume(TokenType::IDENTIFIER, "Expected Identifier after super.") };
+				return CreateRef<SuperExpr>(std::move(token), std::move(identifier));
+			}
 			
 			case TokenType::LEFT_PAREN:
 			{

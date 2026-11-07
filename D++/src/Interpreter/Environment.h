@@ -15,6 +15,8 @@ namespace DXX
 
 		Ref<Environment> m_Enclosing{ nullptr };
 
+		friend class Interpreter;
+
 	public:
 		Environment() = default;
 		Environment(Ref<Environment> enclosing);

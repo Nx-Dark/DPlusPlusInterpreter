@@ -58,6 +58,7 @@ namespace DXX
 		virtual Literal visitGet(const GetExpr& getExpr) override;
 		virtual Literal visitSet(const SetExpr& getExpr) override;
 		virtual Literal visitThis(const ThisExpr& thisExpr) override;
+		virtual Literal visitSuper(const SuperExpr& superExpr) override;
 
 		//statement visitor functions;
 		virtual void visitExpressionStmt(ExpressionStmt& expressionStmt) override;

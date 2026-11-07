@@ -39,7 +39,8 @@ namespace DXX
 		enum class ClassType
 		{
 			NONE = 0,
-			CLASS
+			CLASS,
+			SUBCLASS
 		};
 
 		FunctionType m_CurrentFunction{ FunctionType::NONE };
@@ -64,6 +65,7 @@ namespace DXX
 		virtual void visitGet(const GetExpr& getExpr) override;
 		virtual void visitSet(const SetExpr& getExpr) override;
 		virtual void visitThis(const ThisExpr& thisExpr) override;
+		virtual void visitSuper(const SuperExpr& superExpr) override;
 
 		//visitng statements;
 		virtual void visitExpressionStmt(ExpressionStmt& expressionStmt)  override;
