@@ -1,0 +1,32 @@
+// ==========================================
+// BASIC CLOCK
+// ==========================================
+
+var start = clock();
+
+println(start);
+
+// ==========================================
+// CLOCK COMPARISON
+// ==========================================
+
+var first = clock();
+var second = clock();
+
+println(first);
+println(second);
+
+println(second >= first);
+
+// ==========================================
+// CLOCK IN EXPRESSIONS
+// ==========================================
+
+var before = clock();
+
+var result = pow(2, 20);
+
+var after = clock();
+
+println(result);
+println(after >= before);

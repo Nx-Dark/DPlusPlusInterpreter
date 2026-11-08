@@ -1,0 +1,42 @@
+// ==========================================
+// WRONG ARGUMENT COUNT
+// ==========================================
+
+sqrt();
+sqrt(1, 2);
+
+pow(2);
+pow(2, 3, 4);
+
+max(1);
+min(1, 2, 3);
+
+// ==========================================
+// WRONG ARGUMENT TYPES
+// ==========================================
+
+sqrt("hello");
+pow("hello", 2);
+max("hello", 10);
+min(10, "hello");
+
+// ==========================================
+// INVALID MATHEMATICAL INPUTS
+// ==========================================
+
+sqrt(-1);
+
+// ==========================================
+// CASTING ERRORS
+// ==========================================
+
+// Enable these only if your casting rules reject them.
+double("not a number");
+double("hello world");
+
+// ==========================================
+// INPUT ERRORS
+// ==========================================
+
+// Test only if your input function accepts arguments.
+input(10);

@@ -1,0 +1,52 @@
+// ==========================================
+// DOUBLE
+// ==========================================
+
+println(double(10));       // 10
+println(double(10.5));     // 10.5
+println(double(True));     // Depends on your conversion rules
+println(double(False));    // Depends on your conversion rules
+println(double("123.5"));  // If string parsing is supported
+
+// ==========================================
+// STR
+// ==========================================
+
+println(str(10));          // 10
+println(str(10.5));        // 10.5
+println(str(True));        // True
+println(str(False));       // False
+println(str(NIL));         // NIL
+println(str("Hello"));     // Hello
+
+// ==========================================
+// BOOL
+// ==========================================
+
+println(bool(True));       // True
+println(bool(False));      // False
+println(bool(1));          // Depends on truthiness rules
+println(bool(0));          // Depends on truthiness rules
+println(bool("hello"));    // Depends on truthiness rules
+println(bool(""));         // Depends on truthiness rules
+println(bool(NIL));        // Depends on truthiness rules
+
+// ==========================================
+// CASTING AND EXPRESSIONS
+// ==========================================
+
+var number = double(10);
+var text = str(number);
+var flag = bool(number);
+
+println(number);
+println(text);
+println(flag);
+
+// ==========================================
+// CASTING INSIDE NATIVE FUNCTIONS
+// ==========================================
+
+println(sqrt(double(16)));
+println(pow(double(2), double(5)));
+println(str(sqrt(25)));

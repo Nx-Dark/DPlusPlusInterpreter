@@ -1,0 +1,46 @@
+// ==========================================
+// BASIC INPUT
+// ==========================================
+
+println("Enter your name:");
+var name = input();
+
+println("Hello " + name);
+
+// ==========================================
+// MULTIPLE INPUTS
+// ==========================================
+
+println("Enter your age:");
+var age = input();
+
+println("Enter your favourite programming language:");
+var language = input();
+
+println("Name: " + name);
+println("Age: " + age);
+println("Language: " + language);
+
+// ==========================================
+// INPUT AND CASTING
+// ==========================================
+
+println("Enter a number:");
+var number = double(input());
+
+println("Double the number:");
+println(number * 2);
+
+// ==========================================
+// INPUT AND CONDITIONALS
+// ==========================================
+
+println("Enter a number:");
+var value = double(input());
+
+if (value > 0)
+    println("Positive");
+else if (value < 0)
+    println("Negative");
+else
+    println("Zero");

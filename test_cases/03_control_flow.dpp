@@ -1,0 +1,31 @@
+if (True)
+    println("true branch");
+
+if (False)
+    println("SHOULD NOT PRINT");
+else
+    println("else branch");
+
+// While loop
+var i = 0;
+
+while (i < 5)
+{
+    println(i); // 0 1 2 3 4
+    i += 1;
+}
+
+// For loop
+for (var j = 0; j < 5; j += 1)
+{
+    println(j); // 0 1 2 3 4
+}
+
+// Nested loops
+for (var a = 0; a < 2; a += 1)
+{
+    for (var b = 0; b < 2; b += 1)
+    {
+        println(a * 10 + b); // 0 1 10 11
+    }
+}

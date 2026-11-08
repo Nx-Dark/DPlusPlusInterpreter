@@ -1,0 +1,46 @@
+// Case conversion
+println("hello".upper());      // HELLO
+println("HELLO".lower());      // hello
+
+// Search
+println("hello world".contains("world")); // True
+println("hello world".contains("xyz"));   // False
+
+println("hello world".startsWith("hello")); // True
+println("hello world".endsWith("world"));  // True
+
+println("hello world".indexOf("world")); // 6
+println("hello world".indexOf("xyz"));   // -1
+
+// Replace
+println("banana".replace("a", "o")); // bonono
+println("hello".replace("l", "x")); // hexxo
+
+// Replacement edge cases
+println("aaaa".replace("a", "aa")); // aaaaaaaa
+println("hello".replace("xyz", "abc")); // hello
+println("hello".replace("hello", "world")); // world
+
+// Trim
+println("   hello   ".trim()); // hello
+println("hello".trim());       // hello
+println("       ".trim());     // ""
+println("".trim());            // ""
+
+// Reverse
+println("hello".reverse()); // olleh
+println("".reverse());      // ""
+
+// Substring
+println("Hello World".substring(0, 5));  // Hello
+println("Hello World".substring(6, 11)); // World
+println("Hello World".substring(0, 11)); // Hello World
+println("Hello World".substring(5, 5));  // ""
+
+// Split
+println("a,b,c".split(",")); // list: ["a", "b", "c"]
+println("hello world".split(" ")); // list: ["hello", "world"]
+
+// To list
+println("abc".toList()); // list: ["a", "b", "c"]
+println("".toList());    // empty list

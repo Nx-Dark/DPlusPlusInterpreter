@@ -1,0 +1,15 @@
+var text = "Hello World";
+
+println(text);       // Hello World
+println(text[0]);    // H
+println(text[1]);    // e
+println(text[10]);   // d
+
+println("hello" + " world"); // hello world
+
+println("hello" == "hello"); // True
+println("hello" == "world"); // False
+
+// String concatenation with variables
+var name = "D++";
+println("Welcome to " + name); // Welcome to D++

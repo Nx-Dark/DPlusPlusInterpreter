@@ -1,0 +1,21 @@
+var list = [];
+
+println(list.length()); // 0
+
+list.push(10);
+list.push(20);
+list.push(30);
+
+println(list.length()); // 3
+println(list[0]);       // 10
+println(list[1]);       // 20
+println(list[2]);       // 30
+
+var popped = list.pop();
+
+println(popped);        // 30
+println(list.length()); // 2
+
+println(list.pop());    // 20
+println(list.pop());    // 10
+println(list.length()); // 0

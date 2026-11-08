@@ -1,0 +1,38 @@
+var x = 10;
+println(x); // 10
+
+x = 20;
+println(x); // 20
+
+var name = "D++";
+println(name); // D++
+
+var nothing = NIL;
+
+//non defined variables are default initialized to NIL;
+var nothing_2;
+println(nothing); // NIL
+println(nothing_2); //NIL
+
+// Shadowing
+var value = 10;
+
+{
+    var value = 20;
+    println(value); // 20
+}
+
+println(value); // 10
+
+// Nested scope
+{
+    var outer = 100;
+
+    {
+        var inner = 200;
+        println(outer); // 100
+        println(inner); // 200
+    }
+
+    println(outer); // 100
+}

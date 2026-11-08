@@ -1,0 +1,42 @@
+// Variables
+var x = 10;
+
+x += 5;
+println(x); // 15
+
+x -= 3;
+println(x); // 12
+
+x *= 2;
+println(x); // 24
+
+x /= 4;
+println(x); // 6
+
+// List indexing
+var numbers = [10, 20, 30];
+
+numbers[0] += 5;
+numbers[1] -= 5;
+numbers[2] *= 2;
+
+println(numbers[0]); // 15
+println(numbers[1]); // 15
+println(numbers[2]); // 60
+
+// Class properties
+class Counter
+{
+    construct(value)
+    {
+        this.value = value;
+    }
+}
+
+var counter = Counter(10);
+
+counter.value += 5;
+println(counter.value); // 15
+
+counter.value *= 2;
+println(counter.value); // 30

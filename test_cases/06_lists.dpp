@@ -1,0 +1,59 @@
+// List creation
+var numbers = [10, 20, 30];
+
+println(numbers[0]); // 10
+println(numbers[1]); // 20
+println(numbers[2]); // 30
+
+// Assignment
+numbers[0] = 100;
+println(numbers[0]); // 100
+
+// Compound assignments
+numbers[1] += 5;
+println(numbers[1]); // 25
+
+numbers[1] -= 10;
+println(numbers[1]); // 15
+
+numbers[1] *= 2;
+println(numbers[1]); // 30
+
+numbers[1] /= 3;
+println(numbers[1]); // 10
+
+// Nested lists
+var matrix = [
+    [1, 2],
+    [3, 4]
+];
+
+println(matrix[0][0]); // 1
+println(matrix[0][1]); // 2
+println(matrix[1][0]); // 3
+println(matrix[1][1]); // 4
+
+matrix[1][0] = 99;
+println(matrix[1][0]); // 99
+
+// Mixed types
+var mixed = [1, "hello", True, NIL];
+
+println(mixed[0]); // 1
+println(mixed[1]); // hello
+println(mixed[2]); // True
+println(mixed[3]); // NIL
+
+// Lists containing instances
+class Box
+{
+    construct(value)
+    {
+        this.value = value;
+    }
+}
+
+var boxes = [Box(10), Box(20)];
+
+println(boxes[0].value); // 10
+println(boxes[1].value); // 20

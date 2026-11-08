@@ -1,0 +1,39 @@
+// Arithmetic
+println(1 + 2);       // 3
+println(10 - 3);      // 7
+println(4 * 5);       // 20
+println(20 / 4);      // 5
+//println(10 % 3);      // 1
+
+// Precedence
+println(2 + 3 * 4);   // 14
+println((2 + 3) * 4); // 20
+println(8 - 2 * 3);   // 2
+println(10 / 2 + 3);  // 8
+
+// Unary
+println(-5);          // -5
+println(!True);       // False
+println(!False);      // True
+
+// Comparison
+println(2 < 3);       // True
+println(3 <= 3);      // True
+println(4 > 3);       // True
+println(4 >= 5);      // False
+println(3 == 3);      // True
+println(3 != 4);      // True
+
+// Boolean logic
+println(True and False); // False
+println(True or False);  // True
+println(!True or True);  // True
+
+// Strings
+println("hello" + " world"); // hello world
+
+// Literals
+println(True);        // True
+println(False);       // False
+println(NIL);         // NIL
+println(123.456);     // 123.456

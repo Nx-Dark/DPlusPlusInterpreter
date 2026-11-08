@@ -1,0 +1,59 @@
+class Person
+{
+    construct(name, age)
+    {
+        this.name = name;
+        this.age = age;
+    }
+
+    greet()
+    {
+        return "Hello, I am " + this.name;
+    }
+
+    getAge()
+    {
+        return this.age;
+    }
+}
+
+var person = Person("Aaron", 20);
+
+println(person.name);       // Aaron
+println(person.age);        // 20
+println(person.greet());    // Hello, I am Aaron
+println(person.getAge());   // 20
+
+person.age = 25;
+println(person.age);        // 25
+
+// Inheritance
+class Student < Person
+{
+    construct(name, age, grade)
+    {
+        super.construct(name, age);
+        this.grade = grade;
+    }
+
+    getGrade()
+    {
+        return this.grade;
+    }
+
+    greet()
+    {
+        return super.greet() + " and I am a student";
+    }
+}
+
+var student = Student("Shrek", 17, 11);
+
+println(student.name);      // Bob
+println(student.age);       // 17
+println(student.grade);     // 11
+println(student.getAge());  // 17
+println(student.getGrade());// 11
+
+println(student.greet());
+// Hello, I am Shrek and I am a student

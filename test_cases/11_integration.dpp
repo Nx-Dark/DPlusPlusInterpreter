@@ -1,0 +1,69 @@
+class Entity
+{
+    construct(name, health)
+    {
+        this.name = name;
+        this.health = health;
+    }
+
+    damage(amount)
+    {
+        this.health -= amount;
+    }
+
+    describe()
+    {
+        return this.name + " has " + str(this.health) + " HP";
+    }
+}
+
+class Player < Entity
+{
+    construct(name, health, level)
+    {
+        super.construct(name, health);
+        this.level = level;
+    }
+
+    levelUp()
+    {
+        this.level += 1;
+    }
+
+    describe()
+    {
+        return super.describe() + " at level " + str(this.level);
+    }
+}
+
+var players = [
+    Player("Alice", 100, 1),
+    Player("Bob", 150, 2),
+    Player("Charlie", 200, 3)
+];
+
+players[0].damage(20);
+players[1].damage(50);
+players[2].levelUp();
+
+for (var i = 0; i < players.length(); i += 1)
+{
+    println(players[i].describe());
+}
+
+// String methods
+var title = "   D++ Exhibition   ";
+
+println(title.trim().upper());
+
+// Function
+func calculateAverage(a, b, c)
+{
+    return (a + b + c) / 3;
+}
+
+println(calculateAverage(
+    players[0].health,
+    players[1].health,
+    players[2].health
+));
