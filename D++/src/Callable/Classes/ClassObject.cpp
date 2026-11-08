@@ -25,11 +25,18 @@ namespace DXX
 		return instance;
 	}
 
-	uint32_t ClassObject::arity() const
+	uint32_t ClassObject::minArity() const
 	{
 		Ref<Callable> initializerMethod{ FindMethod("construct") };
 		if (!initializerMethod) return 0;
-		return initializerMethod->arity();
+		return initializerMethod->minArity();
+	}
+
+	uint32_t ClassObject::maxArity() const
+	{
+		Ref<Callable> initializerMethod{ FindMethod("construct") };
+		if (!initializerMethod) return 0;
+		return initializerMethod->maxArity();
 	}
 
 	std::string ClassObject::ToString() const

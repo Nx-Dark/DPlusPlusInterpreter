@@ -13,7 +13,8 @@ namespace DXX
 
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
 
-		inline virtual uint32_t arity() const override { return 0; }
+		inline virtual uint32_t minArity() const override { return 0; }
+		inline virtual uint32_t maxArity() const override { return 0; }
 
 		inline virtual std::string ToString() const override { return "<native clock func>"; }
 
@@ -25,7 +26,8 @@ namespace DXX
 		virtual ~PrintFunction() = default;
 
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return VARIADIC_ARITY; }
+		inline virtual uint32_t minArity() const override { return 0; }
+		inline virtual uint32_t maxArity() const override { return VARIADIC_ARITY; }
 		inline virtual std::string ToString() const override { return "<native println func>"; }
 	};
 
@@ -35,7 +37,8 @@ namespace DXX
 		virtual ~SqrtFunc() = default;
 
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 2; }
+		inline virtual uint32_t maxArity() const override { return 2; }
 		inline virtual std::string ToString() const override { return "<native sqrt func>"; }
 	};
 
@@ -45,7 +48,8 @@ namespace DXX
 		virtual ~PowFunc() = default;
 
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 2; }
+		inline virtual uint32_t minArity() const override { return 2; }
+		inline virtual uint32_t maxArity() const override { return 2; }
 		inline virtual std::string ToString() const override { return "<native pow func>"; }
 	};
 
@@ -55,7 +59,8 @@ namespace DXX
 		virtual ~MaxFunc() = default;
 
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 2; }
+		inline virtual uint32_t minArity() const override { return 2; }
+		inline virtual uint32_t maxArity() const override { return 2; }
 		inline virtual std::string ToString() const override { return "<native max func>"; }
 	};
 
@@ -65,7 +70,8 @@ namespace DXX
 		virtual ~MinFunc() = default;
 
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 2; }
+		inline virtual uint32_t minArity() const override { return 2; }
+		inline virtual uint32_t maxArity() const override { return 2; }
 		inline virtual std::string ToString() const override { return "<native min func>"; }
 	};
 
@@ -75,7 +81,8 @@ namespace DXX
 		virtual ~InputFunc() = default;
 
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native input func>"; }
 	};
 
@@ -86,7 +93,8 @@ namespace DXX
 		virtual ~StrCastFunc() = default;
 
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native str func>"; }
 
 	};
@@ -97,7 +105,8 @@ namespace DXX
 		virtual ~DoubleCastFunc() = default;
 
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native double func>"; }
 
 	};
@@ -108,7 +117,8 @@ namespace DXX
 		virtual ~BoolCastFunc() = default;
 
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native bool func>"; }
 	};
 
@@ -118,7 +128,8 @@ namespace DXX
 		virtual ~TypeCheckFunc() = default;
 
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native typeof func>"; }
 	};
 

@@ -133,27 +133,30 @@ namespace DXX
 	{
 		Literal callee{ callExpr.m_Callee->Accept(*this) };
 
-		std::vector<Literal> arguments{};
-
-		for (auto& args : callExpr.m_Arguments)
-		{
-			arguments.push_back(args->Accept(*this));
-		}
-
 		auto callableObject{ std::get_if<Ref<Callable>>(&callee) };
 
 		if (callableObject)
 		{
-			size_t callableObjArity{ (*callableObject)->arity() };
+			size_t callableObjMinArity{ (*callableObject)->minArity() };
+			size_t callableObjMaxArity{ (*callableObject)->maxArity() };
 			size_t calleeArgCount{ callExpr.m_Arguments.size() };
 
-			if (callableObjArity != VARIADIC_ARITY && callableObjArity != calleeArgCount)
+			if (calleeArgCount < callableObjMinArity || calleeArgCount > callableObjMaxArity)
 			{
-				throw error(callExpr.m_ClosingParen, "Expected " + std::to_string(callableObjArity) + " Arguments, but got " + std::to_string(calleeArgCount) + " Instead");
+				throw error(callExpr.m_ClosingParen, "Expected between " + std::to_string(callableObjMinArity) + " and " + std::to_string(callableObjMaxArity) +
+					" Arguments, but got " + std::to_string(calleeArgCount) + " Instead");
+			}
+
+			std::vector<Literal> arguments{};
+
+			for (auto& args : callExpr.m_Arguments)
+			{
+				arguments.push_back(args->Accept(*this));
 			}
 
 			try 
 			{
+
 				return (*callableObject)->Call(*this, arguments);
 			}
 
@@ -237,6 +240,10 @@ namespace DXX
 				return CreateRef<StringReverse>(strObject);
 			else if (methodName == "substring")
 				return CreateRef<StringSubstring>(strObject);
+			else if (methodName == "split")
+				return CreateRef<StringSplit>(strObject);
+			else if (methodName == "toList")
+				return CreateRef<StringToList>(strObject);
 
 			throw error(getExpr.m_Identifier, "Undefined str property/method " + getExpr.m_Identifier.m_Lexeme + ".");
 		}
@@ -782,13 +789,6 @@ namespace DXX
 
 	NativeRuntimeError Interpreter::nativeError(const std::string& msg)
 	{
-		Diagnostic diag{
-			DiagnosticSeverity::ERROR,
-			DiagnosticPhase::RUNTIME,
-			msg,
-			{ }
-		};
-
 		return NativeRuntimeError{ msg };
 	}
 }

@@ -15,7 +15,8 @@ namespace DXX
 		}
 		virtual ~StringLength() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 0; }
+		inline virtual uint32_t minArity() const override { return 0; }
+		inline virtual uint32_t maxArity() const override { return 0; }
 		inline virtual std::string ToString() const override { return "<native str method>"; }
 	};
 
@@ -29,7 +30,8 @@ namespace DXX
 		}
 		virtual ~StringIsEmtpy() = default;
 		inline virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override { return m_String.empty(); }
-		inline virtual uint32_t arity() const override { return 0; }
+		inline virtual uint32_t minArity() const override { return 0; }
+		inline virtual uint32_t maxArity() const override { return 0; }
 		inline virtual std::string ToString() const override { return "<native str method>"; }
 	};
 
@@ -43,7 +45,8 @@ namespace DXX
 		}
 		virtual ~StringUpper() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 0; }
+		inline virtual uint32_t minArity() const override { return 0; }
+		inline virtual uint32_t maxArity() const override { return 0; }
 		inline virtual std::string ToString() const override { return "<native str method>"; }
 	};
 
@@ -57,7 +60,8 @@ namespace DXX
 		}
 		virtual ~StringLower() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 0; }
+		inline virtual uint32_t minArity() const override { return 0; }
+		inline virtual uint32_t maxArity() const override { return 0; }
 		inline virtual std::string ToString() const override { return "<native str method>"; }
 	};
 
@@ -71,7 +75,8 @@ namespace DXX
 		}
 		virtual ~StringContains() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native str method>"; }
 	};
 
@@ -85,7 +90,8 @@ namespace DXX
 		}
 		virtual ~StringStartsWith() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native str method>"; }
 	};
 
@@ -99,7 +105,8 @@ namespace DXX
 		}
 		virtual ~StringEndsWith() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native str method>"; }
 	};
 
@@ -113,7 +120,8 @@ namespace DXX
 		}
 		virtual ~StringIndexOf() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native str method>"; }
 	};
 
@@ -127,7 +135,8 @@ namespace DXX
 		}
 		virtual ~StringReplace() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 2; }
+		inline virtual uint32_t minArity() const override { return 2; }
+		inline virtual uint32_t maxArity() const override { return 2; }
 		inline virtual std::string ToString() const override { return "<native str method>"; }
 	};
 
@@ -141,7 +150,8 @@ namespace DXX
 		}
 		virtual ~StringTrim() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 0; }
+		inline virtual uint32_t minArity() const override { return 0; }
+		inline virtual uint32_t maxArity() const override { return 0; }
 		inline virtual std::string ToString() const override { return "<native str method>"; }
 	};
 
@@ -155,7 +165,8 @@ namespace DXX
 		}
 		virtual ~StringReverse() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 0; }
+		inline virtual uint32_t minArity() const override { return 0; }
+		inline virtual uint32_t maxArity() const override { return 0; }
 		inline virtual std::string ToString() const override { return "<native str method>"; }
 	};
 
@@ -169,7 +180,38 @@ namespace DXX
 		}
 		virtual ~StringSubstring() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 2; }
+		inline virtual uint32_t minArity() const override { return 2; }
+		inline virtual uint32_t maxArity() const override { return 2; }
+		inline virtual std::string ToString() const override { return "<native str method>"; }
+	};
+
+	class StringSplit : public Callable
+	{
+		std::string m_String{};
+	public:
+		StringSplit(const std::string& string)
+			: m_String{ string }
+		{
+		}
+		virtual ~StringSplit() = default;
+		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
+		inline virtual std::string ToString() const override { return "<native str method>"; }
+	};
+
+	class StringToList : public Callable
+	{
+		std::string m_String{};
+	public:
+		StringToList(const std::string& string)
+			: m_String{ string }
+		{
+		}
+		virtual ~StringToList() = default;
+		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
+		inline virtual uint32_t minArity() const override { return 0; }
+		inline virtual uint32_t maxArity() const override { return 0; }
 		inline virtual std::string ToString() const override { return "<native str method>"; }
 	};
 

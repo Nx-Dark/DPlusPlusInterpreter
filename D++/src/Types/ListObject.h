@@ -43,7 +43,8 @@ namespace DXX
 		}
 		virtual ~ListPush() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native List method>"; }
 	};
 
@@ -58,7 +59,8 @@ namespace DXX
 		}
 		virtual ~ListPop() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 0; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native List method>"; }
 	};
 
@@ -73,7 +75,8 @@ namespace DXX
 		}
 		virtual ~ListLength() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 0; }
+		inline virtual uint32_t minArity() const override { return 0; }
+		inline virtual uint32_t maxArity() const override { return 0; }
 		inline virtual std::string ToString() const override { return "<native List method>"; }
 	};
 
@@ -88,7 +91,8 @@ namespace DXX
 		}
 		virtual ~ListClear() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 0; }
+		inline virtual uint32_t minArity() const override { return 0; }
+		inline virtual uint32_t maxArity() const override { return 0; }
 		inline virtual std::string ToString() const override { return "<native List method>"; }
 	};
 
@@ -103,7 +107,8 @@ namespace DXX
 		}
 		virtual ~ListContains() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native List method>"; }
 	};
 
@@ -118,7 +123,8 @@ namespace DXX
 		}
 		virtual ~ListInsert() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 2; }
+		inline virtual uint32_t minArity() const override { return 2; }
+		inline virtual uint32_t maxArity() const override { return 2; }
 		inline virtual std::string ToString() const override { return "<native List method>"; }
 	};
 
@@ -133,7 +139,8 @@ namespace DXX
 		}
 		virtual ~ListRemove() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native List method>"; }
 	};
 
@@ -148,7 +155,8 @@ namespace DXX
 		}
 		virtual ~ListIndexOf() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native List method>"; }
 	};
 
@@ -163,7 +171,8 @@ namespace DXX
 		}
 		virtual ~ListReverse() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 0; }
+		inline virtual uint32_t minArity() const override { return 0; }
+		inline virtual uint32_t maxArity() const override { return 0; }
 		inline virtual std::string ToString() const override { return "<native List method>"; }
 	};
 
@@ -178,7 +187,8 @@ namespace DXX
 		}
 		virtual ~ListCopy() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 0; }
+		inline virtual uint32_t minArity() const override { return 0; }
+		inline virtual uint32_t maxArity() const override { return 0; }
 		inline virtual std::string ToString() const override { return "<native List method>"; }
 	};
 
@@ -193,7 +203,8 @@ namespace DXX
 		}
 		virtual ~ListExtend() = default;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native List method>"; }
 	};
 

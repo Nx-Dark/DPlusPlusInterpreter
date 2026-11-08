@@ -27,7 +27,8 @@ namespace DXX
 		//override;
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
 
-		virtual uint32_t arity() const override;
+		virtual uint32_t minArity() const override;
+		virtual uint32_t maxArity() const override;
 
 		virtual std::string ToString() const override;
 

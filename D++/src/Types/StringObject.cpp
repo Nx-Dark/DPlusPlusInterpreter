@@ -2,6 +2,7 @@
 #include "StringObject.h"
 
 #include "Interpreter/Interpreter.h"
+#include "ListObject.h"
 
 namespace DXX
 {
@@ -168,6 +169,46 @@ namespace DXX
 			return std::string{};
 
 		return m_String.substr(startIdx, endIdx - startIdx);
+	}
+
+	Literal StringSplit::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
+	{
+		const Literal& separatorLiteral{ arguments[0] };
+
+		if (!std::holds_alternative<std::string>(separatorLiteral))
+			throw interpreter.nativeError("split requires a string as the separator.");
+
+		const std::string_view separator{ std::get<std::string>(separatorLiteral) };
+		
+		if(separator.empty())
+			throw interpreter.nativeError("split requires a non empty string as the separator.");
+
+		std::vector<Literal> elements{};
+
+		std::size_t start{ 0 };
+		std::size_t position{};
+
+		while ((position = m_String.find(separator, start)) != std::string::npos)
+		{
+			elements.emplace_back(m_String.substr(start, position - start));
+			start = position + separator.size();
+		}
+
+		elements.emplace_back(m_String.substr(start));
+
+		return CreateRef<ListObject>(std::move(elements));
+	}
+
+	Literal StringToList::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
+	{
+		std::vector<Literal> elements{};
+
+		for (char ch : m_String)
+		{
+			elements.emplace_back(std::string{1,  ch });
+		}
+
+		return CreateRef<ListObject>(std::move(elements));
 	}
 
 }

@@ -25,7 +25,7 @@ namespace DXX
 	{
 		EnvironmentGuard envGuard{ m_Closure, interpreter };
 
-		for (size_t i{}; i < arity(); i++)
+		for (size_t i{}; i < maxArity(); i++)
 		{
 			interpreter.m_Environment->define(m_Declaration->m_Parameters[i].m_Lexeme, arguments[i]);
 		}
@@ -49,7 +49,12 @@ namespace DXX
 		return Nil{};
 	}
 
-	uint32_t FunctionObject::arity() const
+	uint32_t FunctionObject::minArity() const
+	{
+		return m_Declaration->m_Parameters.size();
+	}
+
+	uint32_t FunctionObject::maxArity() const
 	{
 		return m_Declaration->m_Parameters.size();
 	}

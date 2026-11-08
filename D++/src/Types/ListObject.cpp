@@ -90,28 +90,41 @@ namespace DXX
 
 	Literal ListPop::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
 	{
-		const Literal& value{ arguments[0] };
-		double index{};
+		const std::size_t listLength{ m_ListObject->Length() };
 
-		if (std::holds_alternative<double>(value))
+		if(listLength == 0)
+			throw interpreter.nativeError("Cannot pop from an empty list.");
+
+		if (!arguments.empty())
 		{
-			index = std::get<double>(value);
+			const Literal& value{ arguments[0] };
+			double index{};
+
+			if (std::holds_alternative<double>(value))
+			{
+				index = std::get<double>(value);
+			}
+			else
+				throw interpreter.nativeError("Unsupported argument, pop takes in a number.");
+
+			if (!std::isfinite(index))
+				throw interpreter.nativeError("pop requires a finite Integer.");
+
+			if (std::floor(index) != index)
+				throw interpreter.nativeError("pop requires a Integer.");
+
+			if (index < 0)
+				throw interpreter.nativeError("pop requires a Positive Integer.");
+
+			std::size_t intIndex{ static_cast<std::size_t>(index) };
+
+			if (intIndex >= m_ListObject->Length())
+				throw interpreter.nativeError("Index out of range.");
+
+			return m_ListObject->Pop(intIndex);
 		}
-		else
-			throw interpreter.nativeError("Unsupported argument, pop takes in a number.");
 
-		if(std::floor(index) != index)
-			throw interpreter.nativeError("pop requires a Integer.");
-
-		if(index < 0)
-			throw interpreter.nativeError("pop requires a Positive Integer.");
-
-		std::size_t intIndex{ static_cast<std::size_t>(index) };
-
-		if(intIndex >= m_ListObject->Length())
-			throw interpreter.nativeError("Index out of range.");
-
-		return m_ListObject->Pop(intIndex);
+		return m_ListObject->Pop(listLength - 1);
 	}
 
 	Literal ListLength::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
@@ -144,6 +157,9 @@ namespace DXX
 		}
 		else
 			throw interpreter.nativeError("Unsupported argument, insert takes in a number in pos 0.");
+
+		if(!std::isfinite(index))
+			throw interpreter.nativeError("insert requires a finite Integer.");
 
 		if (std::floor(index) != index)
 			throw interpreter.nativeError("insert requires a Integer.");
