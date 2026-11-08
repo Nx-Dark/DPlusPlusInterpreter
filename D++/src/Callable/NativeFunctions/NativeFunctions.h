@@ -91,17 +91,6 @@ namespace DXX
 
 	};
 
-	class FloatCastFunc : public Callable
-	{
-	public:
-		virtual ~FloatCastFunc() = default;
-
-		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t arity() const override { return 1; }
-		inline virtual std::string ToString() const override { return "<native float func>"; }
-
-	};
-
 	class DoubleCastFunc : public Callable
 	{
 	public:

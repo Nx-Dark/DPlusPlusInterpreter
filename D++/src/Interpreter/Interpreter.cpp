@@ -18,8 +18,7 @@ namespace DXX
 	{
 		if (std::holds_alternative<Nil>(literal)) return false;
 		else if (std::holds_alternative<bool>(literal)) return std::get<bool>(literal);
-		else if (std::holds_alternative<float>(literal) && std::get<float>(literal) == 0.0f) return false;
-		else if (std::holds_alternative<double>(literal) && std::get<double>(literal) == 0.0f) return false;
+		else if (std::holds_alternative<double>(literal) && std::get<double>(literal) == 0.0) return false;
 		else return true;
 	}
 
@@ -68,8 +67,8 @@ namespace DXX
 		switch (op.m_Type)
 		{
 			case TokenType::MINUS: {
-				if (std::holds_alternative<float>(operand))
-					return -(std::get<float>(operand));
+				if (std::holds_alternative<double>(operand))
+					return -(std::get<double>(operand));
 				throw error(op, "Operation must done on a number.");
 			}
 			case TokenType::BANG:
@@ -234,6 +233,10 @@ namespace DXX
 				return CreateRef<StringReplace>(strObject);
 			else if (methodName == "trim")
 				return CreateRef<StringTrim>(strObject);
+			else if (methodName == "reverse")
+				return CreateRef<StringReverse>(strObject);
+			else if (methodName == "substring")
+				return CreateRef<StringSubstring>(strObject);
 
 			throw error(getExpr.m_Identifier, "Undefined str property/method " + getExpr.m_Identifier.m_Lexeme + ".");
 		}
@@ -629,9 +632,7 @@ namespace DXX
 			case TokenType::PLUS:
 			case TokenType::PLUS_EQUAL:
 			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) + std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+				if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
 					return std::get<double>(leftOperand) + std::get<double>(rightOperand);
 				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
 					return std::get<std::string>(leftOperand) + std::get<std::string>(rightOperand);
@@ -641,9 +642,7 @@ namespace DXX
 			case TokenType::MINUS:
 			case TokenType::MINUS_EQUAL:
 			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) - std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+				if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
 					return std::get<double>(leftOperand) - std::get<double>(rightOperand);
 
 				throw error(op, "Operation must be done on a number.");
@@ -652,9 +651,7 @@ namespace DXX
 			case TokenType::STAR:
 			case TokenType::STAR_EQUAL:
 			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) * std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+				if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
 					return std::get<double>(leftOperand) * std::get<double>(rightOperand);
 
 				throw error(op, "Operation must be done on a number.");
@@ -663,9 +660,7 @@ namespace DXX
 			case TokenType::SLASH:
 			case TokenType::SLASH_EQUAL:
 			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) / std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+				if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
 					return std::get<double>(leftOperand) / std::get<double>(rightOperand);
 
 				throw error(op, "Operation must be done on a number.");
@@ -674,9 +669,7 @@ namespace DXX
 			//logical and comparison operations;
 			case TokenType::GREATER:
 			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) > std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+				if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
 					return std::get<double>(leftOperand) > std::get<double>(rightOperand);
 				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
 					return std::get<std::string>(leftOperand) > std::get<std::string>(rightOperand);
@@ -685,9 +678,7 @@ namespace DXX
 			}
 			case TokenType::LESS:
 			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) < std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+				if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
 					return std::get<double>(leftOperand) < std::get<double>(rightOperand);
 				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
 					return std::get<std::string>(leftOperand) < std::get<std::string>(rightOperand);
@@ -696,9 +687,7 @@ namespace DXX
 			}
 			case TokenType::GREATER_EQUAL:
 			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) >= std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+				if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
 					return std::get<double>(leftOperand) >= std::get<double>(rightOperand);
 				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
 					return std::get<std::string>(leftOperand) >= std::get<std::string>(rightOperand);
@@ -707,9 +696,7 @@ namespace DXX
 			}
 			case TokenType::LESS_EQUAL:
 			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) <= std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+				if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
 					return std::get<double>(leftOperand) <= std::get<double>(rightOperand);
 				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
 					return std::get<std::string>(leftOperand) <= std::get<std::string>(rightOperand);
@@ -750,7 +737,6 @@ namespace DXX
 		m_GlobalEnv->define("input", CreateRef<InputFunc>());
 		//native type cast functions
 		m_GlobalEnv->define("str", CreateRef<StrCastFunc>());
-		m_GlobalEnv->define("float", CreateRef<FloatCastFunc>());
 		m_GlobalEnv->define("double", CreateRef<DoubleCastFunc>());
 		m_GlobalEnv->define("bool", CreateRef<BoolCastFunc>());
 
@@ -762,9 +748,7 @@ namespace DXX
 	{
 		double index{};
 
-		if (auto indexPtr{ std::get_if<float>(&indexLiteral) })
-			index = static_cast<double>(*indexPtr);
-		else if (auto indexPtr{ std::get_if<double>(&indexLiteral) })
+		if (auto indexPtr{ std::get_if<double>(&indexLiteral) })
 			index = *indexPtr;
 		else
 			throw error(token, "Index must be a Number.");

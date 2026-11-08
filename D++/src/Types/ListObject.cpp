@@ -93,11 +93,7 @@ namespace DXX
 		const Literal& value{ arguments[0] };
 		double index{};
 
-		if (std::holds_alternative<float>(value))
-		{ 
-			index = static_cast<double>(std::get<float>(value));
-		}
-		else if (std::holds_alternative<double>(value))
+		if (std::holds_alternative<double>(value))
 		{
 			index = std::get<double>(value);
 		}
@@ -142,11 +138,7 @@ namespace DXX
 		const Literal& insertValue{ arguments[1] };
 		double index{};
 
-		if (std::holds_alternative<float>(indexLiteral))
-		{
-			index = static_cast<double>(std::get<float>(indexLiteral));
-		}
-		else if (std::holds_alternative<double>(indexLiteral))
+		if (std::holds_alternative<double>(indexLiteral))
 		{
 			index = std::get<double>(indexLiteral);
 		}

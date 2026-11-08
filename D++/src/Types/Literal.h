@@ -15,7 +15,7 @@ namespace DXX
 		bool operator==(const Nil&) const = default;
 	};
 
-	using Literal = std::variant<Nil, float, double, std::string, bool, Ref<Callable>, Ref<ClassInstance>, Ref<ListObject>>;
+	using Literal = std::variant<Nil, double, std::string, bool, Ref<Callable>, Ref<ClassInstance>, Ref<ListObject>>;
 
 	std::string LiteralToString(const Literal& literal);
 	std::string LiteralToString(const Literal& litera, bool quoteString);

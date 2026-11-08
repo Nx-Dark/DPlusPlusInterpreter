@@ -145,4 +145,32 @@ namespace DXX
 		inline virtual std::string ToString() const override { return "<native str method>"; }
 	};
 
+	class StringReverse : public Callable
+	{
+		std::string m_String{};
+	public:
+		StringReverse(const std::string& string)
+			: m_String{ string }
+		{
+		}
+		virtual ~StringReverse() = default;
+		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
+		inline virtual uint32_t arity() const override { return 0; }
+		inline virtual std::string ToString() const override { return "<native str method>"; }
+	};
+
+	class StringSubstring : public Callable
+	{
+		std::string m_String{};
+	public:
+		StringSubstring(const std::string& string)
+			: m_String{ string }
+		{
+		}
+		virtual ~StringSubstring() = default;
+		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
+		inline virtual uint32_t arity() const override { return 2; }
+		inline virtual std::string ToString() const override { return "<native str method>"; }
+	};
+
 }

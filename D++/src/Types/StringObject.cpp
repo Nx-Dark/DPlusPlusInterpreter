@@ -6,6 +6,27 @@
 namespace DXX
 {
 
+	static std::size_t validateIndex(Interpreter& interpreter, const Literal& indexLiteral)
+	{
+		double index{};
+
+		if (auto indexPtr{ std::get_if<double>(&indexLiteral) })
+			index = *indexPtr;
+		else
+			throw interpreter.nativeError("Index must be a Number.");
+
+		if (!std::isfinite(index))
+			throw interpreter.nativeError("Index must be finite.");
+
+		if (std::floor(index) != index)
+			throw interpreter.nativeError("Index must be an Integer.");
+
+		if (index < 0.0f)
+			throw interpreter.nativeError("Index cannot be negative.");
+
+		return static_cast<std::size_t>(index);
+	}
+
 	Literal StringLength::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
 	{
 		std::size_t length{ m_String.size() };
@@ -118,6 +139,35 @@ namespace DXX
 			return std::string{};
 
 		return std::string{ first, last };
+	}
+
+	Literal StringReverse::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
+	{
+		std::string string{ m_String };
+		std::reverse(string.begin(), string.end());
+		return string;
+	}
+
+	Literal StringSubstring::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
+	{
+		const Literal& startIdxLiteral{ arguments[0] };
+		const Literal& endIdxLiteral{ arguments[1] };
+
+		std::size_t startIdx{ validateIndex(interpreter, startIdxLiteral) };
+		std::size_t endIdx{ validateIndex(interpreter, endIdxLiteral) };
+
+		if (startIdx > endIdx)
+			throw interpreter.nativeError("start index cannot be greater than end index.");
+		
+		if (startIdx >= m_String.size())
+			throw interpreter.nativeError("start index cannot be greater than the size of the string.");
+		if (endIdx > m_String.size())
+			throw interpreter.nativeError("end index cannot be greater than the size of the string.");
+
+		if (startIdx == endIdx)
+			return std::string{};
+
+		return m_String.substr(startIdx, endIdx - startIdx);
 	}
 
 }

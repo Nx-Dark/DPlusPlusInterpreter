@@ -40,9 +40,7 @@ namespace DXX
 
 		const Literal arg1{ arguments[0] };
 
-		if (std::holds_alternative<float>(arg1))
-			return std::sqrtf(std::get<float>(arg1));
-		else if (std::holds_alternative<double>(arg1))
+		if (std::holds_alternative<double>(arg1))
 			return std::sqrt(std::get<double>(arg1));
 		else throw interpreter.nativeError("Unsupported Type as argument.");
 
@@ -56,9 +54,7 @@ namespace DXX
 		const Literal arg1{ arguments[0] };
 		const Literal arg2{ arguments[1] };
 
-		if (std::holds_alternative<float>(arg1) && std::holds_alternative<float>(arg2))
-			return std::powf(std::get<float>(arg1), std::get<float>(arg2));
-		else if (std::holds_alternative<double>(arg1) && std::holds_alternative<double>(arg2))
+		if (std::holds_alternative<double>(arg1) && std::holds_alternative<double>(arg2))
 			return std::powf(std::get<double>(arg1), std::get<double>(arg2));
 		else throw interpreter.nativeError("Unsupported Type as argument.");
 
@@ -71,9 +67,7 @@ namespace DXX
 		const Literal arg1{ arguments[0] };
 		const Literal arg2{ arguments[1] };
 
-		if (std::holds_alternative<float>(arg1) && std::holds_alternative<float>(arg2))
-			return std::max(std::get<float>(arg1), std::get<float>(arg2));
-		else if (std::holds_alternative<std::string>(arg1) && std::holds_alternative<std::string>(arg2))
+		if (std::holds_alternative<std::string>(arg1) && std::holds_alternative<std::string>(arg2))
 			return std::max(std::get<std::string>(arg1), std::get<std::string>(arg2));
 		else if (std::holds_alternative<double>(arg1) && std::holds_alternative<double>(arg2))
 			return std::max(std::get<double>(arg1), std::get<double>(arg2));
@@ -87,9 +81,7 @@ namespace DXX
 		const Literal arg1{ arguments[0] };
 		const Literal arg2{ arguments[1] };
 
-		if (std::holds_alternative<float>(arg1) && std::holds_alternative<float>(arg2))
-			return std::min(std::get<float>(arg1), std::get<float>(arg2));
-		else if (std::holds_alternative<std::string>(arg1) && std::holds_alternative<std::string>(arg2))
+		if (std::holds_alternative<std::string>(arg1) && std::holds_alternative<std::string>(arg2))
 			return std::min(std::get<std::string>(arg1), std::get<std::string>(arg2));
 		else if (std::holds_alternative<double>(arg1) && std::holds_alternative<double>(arg2))
 			return std::min(std::get<double>(arg1), std::get<double>(arg2));
@@ -123,8 +115,6 @@ namespace DXX
 
 		if (std::holds_alternative<std::string>(toCastValue))
 			return std::get<std::string>(toCastValue);
-		else if (std::holds_alternative<float>(toCastValue))
-			return std::to_string(std::get<float>(toCastValue));
 		else if (std::holds_alternative<double>(toCastValue))
 			return std::to_string(std::get<double>(toCastValue));
 		else if (std::holds_alternative<bool>(toCastValue))
@@ -134,52 +124,6 @@ namespace DXX
 		}
 		else if (std::holds_alternative<Nil>(toCastValue))
 			return "NIL";
-		else
-			throw interpreter.nativeError("Unsupported Type to Cast.");
-	}
-
-	//float cast
-	Literal FloatCastFunc::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
-	{
-		const Literal toCastValue{ arguments[0] };
-
-		if (std::holds_alternative<std::string>(toCastValue))
-		{
-			float val{};
-			try {
-				std::string strValue{ std::get<std::string>(toCastValue) };
-				std::size_t parsedChar{};
-				val = std::stof(strValue, &parsedChar);
-
-				if(parsedChar != strValue.size())
-					throw interpreter.nativeError("Invalid cast: Cannot cast string to float.");
-				else if(strValue == "nan" || strValue == "inf")
-					throw interpreter.nativeError("Invalid cast: Cannot cast string to float.");
-
-				return val;
-			}
-			catch (const std::invalid_argument&)
-			{
-				throw interpreter.nativeError("Invalid cast: Cannot cast string to float.");
-			}
-			catch (const std::out_of_range&)
-			{
-				throw interpreter.nativeError("String is too big to cast to float.");
-			}
-
-			return val;
-		}
-		else if (std::holds_alternative<float>(toCastValue))
-			return std::get<float>(toCastValue);
-		else if (std::holds_alternative<double>(toCastValue))
-			return static_cast<float>(std::get<double>(toCastValue));
-		else if (std::holds_alternative<bool>(toCastValue))
-		{
-			if (std::get<bool>(toCastValue) == true) return 1.0f;
-			else return 0.0f;
-		}
-		else if (std::holds_alternative<Nil>(toCastValue))
-			throw interpreter.nativeError("Invalid cast: cannot cast NIL to float.");
 		else
 			throw interpreter.nativeError("Unsupported Type to Cast.");
 	}
@@ -213,8 +157,6 @@ namespace DXX
 				throw interpreter.nativeError("String is too big to cast to double.");
 			}
 		}
-		else if (std::holds_alternative<float>(toCastValue))
-			return static_cast<double>(std::get<float>(toCastValue));
 		else if (std::holds_alternative<double>(toCastValue))
 			return std::get<double>(toCastValue);
 		else if (std::holds_alternative<bool>(toCastValue))
@@ -239,8 +181,6 @@ namespace DXX
 				return false;
 			else return true;
 		}
-		else if (std::holds_alternative<float>(toCastValue))
-			return std::get<float>(toCastValue) == 0.0f ? false : true;
 		else if (std::holds_alternative<double>(toCastValue))
 			return std::get<double>(toCastValue) == 0.0 ? false : true;
 		else if (std::holds_alternative<bool>(toCastValue))
@@ -257,9 +197,7 @@ namespace DXX
 	{
 		const Literal value{ arguments[0] };
 
-		if (std::holds_alternative<float>(value))
-			std::println("<float>");
-		else if (std::holds_alternative<double>(value))
+		if (std::holds_alternative<double>(value))
 			std::println("<double>");
 		else if (std::holds_alternative<std::string>(value))
 			std::println("<str>");
