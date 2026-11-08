@@ -1,0 +1,75 @@
+{
+    "scopeName": "source.dpp",
+
+    "patterns": [
+        {
+            "include": "#comments"
+        },
+        {
+            "include": "#strings"
+        },
+        {
+            "include": "#numbers"
+        },
+        {
+            "include": "#keywords"
+        },
+        {
+            "include": "#constants"
+        },
+        {
+            "include": "#operators"
+        },
+        {
+            "include": "#functions"
+        }
+    ],
+
+    "repository": {
+        "comments": {
+            "patterns": [
+                {
+                    "name": "comment.line.double-slash.dpp",
+                    "match": "//.*$"
+                }
+            ]
+        },
+
+        "strings": {
+            "name": "string.quoted.double.dpp",
+            "begin": "\"",
+            "end": "\"",
+            "patterns": [
+                {
+                    "name": "constant.character.escape.dpp",
+                    "match": "\\\\."
+                }
+            ]
+        },
+
+        "numbers": {
+            "name": "constant.numeric.dpp",
+            "match": "\\b\\d+(\\.\\d+)?\\b"
+        },
+
+        "keywords": {
+            "name": "keyword.control.dpp",
+            "match": "\\b(and|class|else|False|for|func|if|NIL|or|print|println|return|super|this|True|var|while)\\b"
+        },
+
+        "constants": {
+            "name": "constant.language.dpp",
+            "match": "\\b(True|False|NIL)\\b"
+        },
+
+        "operators": {
+            "name": "keyword.operator.dpp",
+            "match": "\\+|-|\\*|/|%|==|!=|<=|>=|=|<|>|\\+=|-=|\\*=|/="
+        },
+
+        "functions": {
+            "name": "entity.name.function.dpp",
+            "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*(?=\\s*\\()"
+        }
+    }
+}

@@ -1,0 +1,43 @@
+{
+    "name": "dpp-language",
+    "displayName": "D++ Language Support",
+    "description": "Syntax highlighting for the D++ programming language",
+    "version": "0.0.1",
+    "publisher": "nxdxrk",
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "dpp",
+                "aliases": [
+                    ".dpp",
+                    ".D++",
+                    ".d++",
+                    ".DPP",
+                    ".DXX",
+                    ".dxx"
+                ],
+                "extensions": [
+                    ".dpp",
+                    ".D++",
+                    ".d++",
+                    ".DPP",
+                    ".DXX",
+                    ".dxx"
+                ]
+            }
+        ],
+        "grammars": [
+            {
+                "language": "dpp",
+                "scopeName": "source.dpp",
+                "path": "syntaxes/dpp.tmLanguage.json"
+            }
+        ]
+    }
+}

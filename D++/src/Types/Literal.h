@@ -18,5 +18,6 @@ namespace DXX
 	using Literal = std::variant<Nil, float, double, std::string, bool, Ref<Callable>, Ref<ClassInstance>, Ref<ListObject>>;
 
 	std::string LiteralToString(const Literal& literal);
+	std::string LiteralToString(const Literal& litera, bool quoteString);
 
 }

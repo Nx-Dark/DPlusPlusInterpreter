@@ -7,6 +7,7 @@ namespace DXX
 	
 	class Environment;
 	class FunctionStmt;
+	class Token;
 
 	class FunctionObject : public Callable
 	{

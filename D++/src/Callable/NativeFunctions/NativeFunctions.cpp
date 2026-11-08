@@ -3,6 +3,8 @@
 
 #include "Interpreter/Interpreter.h"
 #include "Callable/Classes/ClassInstance.h"
+#include "Types/ListObject.h"
+
 
 namespace DXX
 {
@@ -156,11 +158,11 @@ namespace DXX
 
 				return val;
 			}
-			catch (const std::invalid_argument& e)
+			catch (const std::invalid_argument&)
 			{
 				throw interpreter.nativeError("Invalid cast: Cannot cast string to float.");
 			}
-			catch (const std::out_of_range& e)
+			catch (const std::out_of_range&)
 			{
 				throw interpreter.nativeError("String is too big to cast to float.");
 			}
@@ -269,6 +271,8 @@ namespace DXX
 			std::println("{0}", std::get<Ref<Callable>>(value)->ToString());
 		else if (std::holds_alternative<Ref<ClassInstance>>(value))
 			std::println("{0}", std::get<Ref<ClassInstance>>(value)->ToString());
+		else if (std::holds_alternative<Ref<ListObject>>(value))
+			std::println("{0}", std::get<Ref<ListObject>>(value)->ToString());
 		else throw interpreter.nativeError("Unknown type.");
 
 		return Nil{};

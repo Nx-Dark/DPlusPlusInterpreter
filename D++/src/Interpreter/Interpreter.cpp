@@ -91,119 +91,9 @@ namespace DXX
 	{
 		const Token& op{ binaryExpr.m_Operator };
 		Literal leftOperand{ binaryExpr.m_LeftExpr->Accept(*this) };
-
-		//for evalutaing 'and' and 'or' logical operators; also called short-circuiting;
-		if (op.m_Type == TokenType::AND)
-		{
-			if (!isTruthy(leftOperand)) return leftOperand;
-		}
-		else if (op.m_Type == TokenType::OR)
-		{
-			if (isTruthy(leftOperand)) return leftOperand;
-		}
-
-		//evaluate rhs after
 		Literal rightOperand{ binaryExpr.m_RightExpr->Accept(*this) };
 
-		switch (op.m_Type)
-		{
-			//arithmetic operations;
-			case TokenType::PLUS:
-			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) + std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
-					return std::get<double>(leftOperand) + std::get<double>(rightOperand);
-				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
-					return std::get<std::string>(leftOperand) + std::get<std::string>(rightOperand);
-				
-				throw error(op, "Operation must be done on two number or two string.");
-			}
-			case TokenType::MINUS:
-			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) - std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
-					return std::get<double>(leftOperand) - std::get<double>(rightOperand);
-				
-				throw error(op, "Operation must be done on a number.");
-			}
-			case TokenType::STAR:
-			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) * std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
-					return std::get<double>(leftOperand) * std::get<double>(rightOperand);
-				
-				throw error(op, "Operation must be done on a number.");
-			}
-			case TokenType::SLASH:
-			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) / std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
-					return std::get<double>(leftOperand) / std::get<double>(rightOperand);
-				
-				throw error(op, "Operation must be done on a number.");
-			}
-
-			//logical and comparison operations;
-			case TokenType::GREATER:
-			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) > std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
-					return std::get<double>(leftOperand) > std::get<double>(rightOperand);
-				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
-					return std::get<std::string>(leftOperand) > std::get<std::string>(rightOperand);
-
-				throw error(op, "Operation must be done on two number or two string.");
-			}
-			case TokenType::LESS:
-			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) < std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
-					return std::get<double>(leftOperand) < std::get<double>(rightOperand);
-				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
-					return std::get<std::string>(leftOperand) < std::get<std::string>(rightOperand);
-
-				throw error(op, "Operation must be done on two number or two string.");
-			}
-			case TokenType::GREATER_EQUAL:
-			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) >= std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
-					return std::get<double>(leftOperand) >= std::get<double>(rightOperand);
-				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
-					return std::get<std::string>(leftOperand) >= std::get<std::string>(rightOperand);
-				
-				throw error(op, "Operation must be done on two number or two string.");
-			}
-			case TokenType::LESS_EQUAL:
-			{
-				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
-					return std::get<float>(leftOperand) <= std::get<float>(rightOperand);
-				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
-					return std::get<double>(leftOperand) <= std::get<double>(rightOperand);
-				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
-					return std::get<std::string>(leftOperand) <= std::get<std::string>(rightOperand);
-				
-				throw error(op, "Operation must be done on two number or two string.");
-			}
-			case TokenType::EQUAL_EQUAL: return leftOperand == rightOperand;
-			case TokenType::BANG_EQUAL : return leftOperand != rightOperand;
-			
-			//logical operation
-			case TokenType::AND: return rightOperand;
-			case TokenType::OR : return rightOperand;
-
-			default:
-				throw error(op, "Unexpected Error Occured.");
-		}
-
-		return Nil{};
+		return doBinaryOperation(leftOperand, op, rightOperand);
 	}
 
 	Literal Interpreter::visitGrouping(const GroupingExpr& groupingExpr)
@@ -281,30 +171,76 @@ namespace DXX
 		Literal object{ getExpr.m_Object->Accept(*this) };
 
 		auto classInstanceObj{ std::get_if<Ref<ClassInstance>>(&object) };
+		auto listObjectPtr{ std::get_if<Ref<ListObject>>(&object) };
 
 		std::optional<Literal> propertyVal{};
 
 		if (classInstanceObj)
 			propertyVal = (*classInstanceObj)->Get(getExpr.m_Identifier);
+		else if (listObjectPtr)
+		{
+			Ref<ListObject> listObject{ *listObjectPtr };
+			
+			const std::string& methodName{ getExpr.m_Identifier.m_Lexeme };
+
+			if (methodName == "push")
+				return CreateRef<ListPush>(listObject);
+			else if (methodName == "pop")
+				return CreateRef<ListPop>(listObject);
+			else if (methodName == "length")
+				return CreateRef<ListLength>(listObject);
+			else if (methodName == "clear")
+				return CreateRef<ListClear>(listObject);
+			else if (methodName == "contains")
+				return CreateRef<ListContains>(listObject);
+			else if (methodName == "insert")
+				return CreateRef<ListInsert>(listObject);
+			else if (methodName == "remove")
+				return CreateRef<ListRemove>(listObject);
+			else if (methodName == "indexOf")
+				return CreateRef<ListIndexOf>(listObject);
+			else if (methodName == "reverse")
+				return CreateRef<ListReverse>(listObject);
+			else if (methodName == "copy")
+				return CreateRef<ListCopy>(listObject);
+			else if (methodName == "extend")
+				return CreateRef<ListExtend>(listObject);
+
+			throw error(getExpr.m_Identifier, "Undefined list property/method " + getExpr.m_Identifier.m_Lexeme + ".");
+		}
 		else 
-			throw error(getExpr.m_Identifier, "Properties can only be accesses on Instances");
+			throw error(getExpr.m_Identifier, "Properties can only be accesses on Instances of Lists or Classes");
 		
 		if (propertyVal)
 			return propertyVal.value();
 
-		throw error(getExpr.m_Identifier, (*classInstanceObj)->ToString() + " Undefined property/field named " + getExpr.m_Identifier.m_Lexeme + ".");
+		throw error(getExpr.m_Identifier, " Undefined property/field named " + getExpr.m_Identifier.m_Lexeme + ".");
 	}
 
 	Literal Interpreter::visitSet(const SetExpr& setExpr)
 	{
 		Literal object{ setExpr.m_Object->Accept(*this) };
+		Token op{ setExpr.m_Operator };
 
 		auto classInstanceObj{ std::get_if<Ref<ClassInstance>>(&object) };
 
 		if (classInstanceObj)
 		{
 			Literal value{ setExpr.m_Value->Accept(*this) };
-			bool assigned{ (*classInstanceObj)->Set(setExpr.m_Identifier, value) };
+			Literal assignValue{ Nil{} };
+			if (op.m_Type == TokenType::EQUAL)
+			{
+				assignValue = value;
+			}
+			else
+			{
+				auto classInstanceValue{ (*classInstanceObj)->Get(setExpr.m_Identifier) };
+				if (classInstanceValue)
+					assignValue = doBinaryOperation(classInstanceValue.value(), op, value);
+				else
+					throw error(setExpr.m_Identifier, (*classInstanceObj)->ToString() + " Undefined property/field named " + setExpr.m_Identifier.m_Lexeme + ".");
+			}
+			bool assigned{ (*classInstanceObj)->Set(setExpr.m_Identifier, assignValue) };
 			if (!assigned) throw error(setExpr.m_Identifier, (*classInstanceObj)->ToString() + " Undefined property/field named " + setExpr.m_Identifier.m_Lexeme + ".");
 			return value;
 		}
@@ -383,14 +319,15 @@ namespace DXX
 			{
 				float index{ *indexPtr };
 
-				if (std::floor(index) != index)
+				if (std::floorf(index) != index)
 					throw error(indexExpr.m_keyword, "Index must be an Integer.");
 
 				if (index < 0.0f) throw error(indexExpr.m_keyword, "Index cannot be negative.");
 
 				std::size_t intIndex{ static_cast<std::size_t>(index) };
 
-				if (intIndex >= listObject->m_Elements.size())	throw error(indexExpr.m_keyword, "Index out of range.");
+				if (intIndex >= listObject->m_Elements.size()) 
+					throw error(indexExpr.m_keyword, "Index out of range.");
 
 				return listObject->m_Elements[intIndex];
 			}
@@ -404,6 +341,49 @@ namespace DXX
 
 	Literal Interpreter::visitIndexSet(const IndexSetExpr& indexSetExpr)
 	{
+		Literal objectLiteral{ indexSetExpr.m_Object->Accept(*this) };
+		Literal indexLiteral{ indexSetExpr.m_Index->Accept(*this) };
+		Literal valueLiteral{ indexSetExpr.m_Value->Accept(*this) };
+		const Token& op{ indexSetExpr.m_Operator };
+
+		auto listObjectPtr{ std::get_if<Ref<ListObject>>(&objectLiteral) };
+		auto listIndexPtr{ std::get_if<float>(&indexLiteral) };
+		if (listObjectPtr)
+		{
+			if (listIndexPtr)
+			{
+				Ref<ListObject> listObject{ *listObjectPtr };
+				float floatListIndex{ *listIndexPtr };
+
+				if (std::floorf(floatListIndex) != floatListIndex)
+					throw error(op, "Index must be an Integer.");
+
+				if (floatListIndex < 0.0f)
+					throw error(op, "Index cannot be negative.");
+
+				std::size_t intListIndex{ static_cast<std::size_t>(floatListIndex) };
+
+				if (intListIndex >= listObject->m_Elements.size())
+					throw error(op, "Index out of range.");
+
+				Literal& currentValue{ listObject->m_Elements[intListIndex] };
+
+				if (op.m_Type == TokenType::EQUAL)
+				{
+					currentValue = valueLiteral;
+				}
+				else {
+					currentValue = doBinaryOperation(currentValue, op, valueLiteral);
+				}
+
+				return currentValue;
+			}
+
+			throw error(op, "Index must be a number.");
+		}
+
+		throw error(op, "Cannot Index types other than list");
+
 		return Nil{};
 	}
 
@@ -610,6 +590,125 @@ namespace DXX
 		return value.value();
 	}
 
+	Literal Interpreter::doBinaryOperation(const Literal& leftOperand, const Token& op, const Literal& rightOperand)
+	{
+		//for evalutaing 'and' and 'or' logical operators; also called short-circuiting;
+		if (op.m_Type == TokenType::AND)
+		{
+			if (!isTruthy(leftOperand)) return leftOperand;
+		}
+		else if (op.m_Type == TokenType::OR)
+		{
+			if (isTruthy(rightOperand)) return rightOperand;
+		}
+
+		switch (op.m_Type)
+		{
+			//arithmetic operations;
+			case TokenType::PLUS:
+			case TokenType::PLUS_EQUAL:
+			{
+				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
+					return std::get<float>(leftOperand) + std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) + std::get<double>(rightOperand);
+				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
+					return std::get<std::string>(leftOperand) + std::get<std::string>(rightOperand);
+
+				throw error(op, "Operation must be done on two number or two string.");
+			}
+			case TokenType::MINUS:
+			case TokenType::MINUS_EQUAL:
+			{
+				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
+					return std::get<float>(leftOperand) - std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) - std::get<double>(rightOperand);
+
+				throw error(op, "Operation must be done on a number.");
+			}
+
+			case TokenType::STAR:
+			case TokenType::STAR_EQUAL:
+			{
+				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
+					return std::get<float>(leftOperand) * std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) * std::get<double>(rightOperand);
+
+				throw error(op, "Operation must be done on a number.");
+			}
+
+			case TokenType::SLASH:
+			case TokenType::SLASH_EQUAL:
+			{
+				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
+					return std::get<float>(leftOperand) / std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) / std::get<double>(rightOperand);
+
+				throw error(op, "Operation must be done on a number.");
+			}
+
+			//logical and comparison operations;
+			case TokenType::GREATER:
+			{
+				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
+					return std::get<float>(leftOperand) > std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) > std::get<double>(rightOperand);
+				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
+					return std::get<std::string>(leftOperand) > std::get<std::string>(rightOperand);
+
+				throw error(op, "Operation must be done on two number or two string.");
+			}
+			case TokenType::LESS:
+			{
+				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
+					return std::get<float>(leftOperand) < std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) < std::get<double>(rightOperand);
+				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
+					return std::get<std::string>(leftOperand) < std::get<std::string>(rightOperand);
+
+				throw error(op, "Operation must be done on two number or two string.");
+			}
+			case TokenType::GREATER_EQUAL:
+			{
+				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
+					return std::get<float>(leftOperand) >= std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) >= std::get<double>(rightOperand);
+				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
+					return std::get<std::string>(leftOperand) >= std::get<std::string>(rightOperand);
+
+				throw error(op, "Operation must be done on two number or two string.");
+			}
+			case TokenType::LESS_EQUAL:
+			{
+				if (std::holds_alternative<float>(leftOperand) && std::holds_alternative<float>(rightOperand))
+					return std::get<float>(leftOperand) <= std::get<float>(rightOperand);
+				else if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::get<double>(leftOperand) <= std::get<double>(rightOperand);
+				else if (std::holds_alternative<std::string>(leftOperand) && std::holds_alternative<std::string>(rightOperand))
+					return std::get<std::string>(leftOperand) <= std::get<std::string>(rightOperand);
+
+				throw error(op, "Operation must be done on two number or two string.");
+			}
+			case TokenType::EQUAL_EQUAL: return leftOperand == rightOperand;
+			case TokenType::BANG_EQUAL: return leftOperand != rightOperand;
+
+			//logical operation
+			case TokenType::AND: return rightOperand;
+			case TokenType::OR: return rightOperand;
+
+			default:
+				throw error(op, "Unexpected Error Occured.");
+		}
+
+		return Nil{};
+	}
+
 	void Interpreter::DefineNativeFunctions()
 	{
 		//registering nativ functions
@@ -662,8 +761,6 @@ namespace DXX
 			{ }
 		};
 
-		m_DiagnosticEngine.Report(std::move(diag));
-
-		return NativeRuntimeError{};
+		return NativeRuntimeError{ msg };
 	}
 }

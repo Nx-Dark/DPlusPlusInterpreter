@@ -86,6 +86,7 @@ namespace DXX
 		RuntimeError error(const Token& tk, const std::string& msg);
 
 		Literal lookUpVariable(Token name, const Expr& expr);
+		Literal doBinaryOperation(const Literal& lhs, const Token& op, const Literal& rhs);
 
 		void DefineNativeFunctions();
 

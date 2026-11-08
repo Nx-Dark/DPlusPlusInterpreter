@@ -2,6 +2,7 @@
 #include "Literal.h"
 #include "Callable/Callable.h"
 #include "Callable/Classes/ClassInstance.h"
+#include "ListObject.h"
 
 namespace DXX
 {
@@ -21,6 +22,65 @@ namespace DXX
 			else if constexpr (std::is_same_v<T, Ref<Callable>>) return value ? value->ToString() : "NIL";
 
 			else if constexpr (std::is_same_v<T, Ref<ClassInstance>>) return value ? value->ToString() : "NIL";
+
+			else if constexpr (std::is_same_v<T, Ref<ListObject>>) 
+			{
+				std::string stringList{};
+				const std::vector<Literal>& elements{ value->getElements() };
+
+				stringList += "[";
+				for (std::size_t i{}; i < elements.size(); i++)
+				{
+					stringList += LiteralToString(elements[i], true);
+					if(!(i == elements.size() - 1)) stringList += ", ";
+				}
+				stringList += "]";
+
+				return stringList;
+			}
+
+			else { std::ostringstream stream; stream << value; return stream.str(); }
+
+			}, literal);
+	}
+
+	std::string LiteralToString(const Literal& literal, bool quoteString)
+	{
+		return std::visit([quoteString](const auto& value) -> std::string {
+
+			using T = std::decay_t<decltype(value)>;
+
+			if constexpr (std::is_same_v<T, Nil>) return "NIL";
+
+			else if constexpr (std::is_same_v<T, std::string>)
+			{
+				if (quoteString)
+					return "\"" + value + "\"";
+
+				return value;
+			}
+
+			else if constexpr (std::is_same_v<T, bool>) return value ? "True" : "False";
+
+			else if constexpr (std::is_same_v<T, Ref<Callable>>) return value ? value->ToString() : "NIL";
+
+			else if constexpr (std::is_same_v<T, Ref<ClassInstance>>) return value ? value->ToString() : "NIL";
+
+			else if constexpr (std::is_same_v<T, Ref<ListObject>>)
+			{
+				std::string stringList{};
+				const std::vector<Literal>& elements{ value->getElements() };
+
+				stringList += "[";
+				for (std::size_t i{}; i < elements.size(); i++)
+				{
+					stringList += LiteralToString(elements[i], true);
+					if (!(i == elements.size() - 1)) stringList += ", ";
+				}
+				stringList += "]";
+
+				return stringList;
+			}
 
 			else { std::ostringstream stream; stream << value; return stream.str(); }
 
