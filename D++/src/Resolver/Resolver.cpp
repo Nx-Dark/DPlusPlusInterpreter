@@ -215,11 +215,15 @@ namespace DXX
 
 	void Resolver::visitForStmt(ForStmt& forStmt)
 	{
+		BeginScope();
+
 		if (forStmt.m_Initializer) Resolve(forStmt.m_Initializer);
 		if (forStmt.m_Condition) Resolve(*forStmt.m_Condition);
 		if (forStmt.m_Increment) Resolve(*forStmt.m_Increment);
 
 		Resolve(forStmt.m_Body);
+
+		EndScope();
 	}
 
 	void Resolver::visitFunctionStmt(FunctionStmt& functionStmt)

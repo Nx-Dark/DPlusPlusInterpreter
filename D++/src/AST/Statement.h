@@ -67,8 +67,8 @@ namespace DXX
 		Ref<Expr> m_InitializerExpr{};
 
 	public:
-		VarStmt(Token token, Ref<Expr> initializerExpr = nullptr)
-			: m_Token{ std::move(token) }, m_InitializerExpr{ initializerExpr }
+		VarStmt(const Token& token, Ref<Expr> initializerExpr = nullptr)
+			: m_Token{ token }, m_InitializerExpr{ initializerExpr }
 		{
 		}
 
@@ -171,8 +171,8 @@ namespace DXX
 		Ref<Expr> m_Expr{};
 
 	public:
-		ReturnStmt(Token keyword, Ref<Expr> expr)
-			: m_Keyword{ std::move(keyword) }, m_Expr{ expr }
+		ReturnStmt(const Token& keyword, Ref<Expr> expr)
+			: m_Keyword{ keyword }, m_Expr{ expr }
 		{
 		}
 
@@ -189,8 +189,8 @@ namespace DXX
 		std::vector<Token> m_Parameters{};
 
 	public:
-		FunctionStmt(Token name, Ref<Stmt> body, std::vector<Token> parameters = {})
-			: m_Name{ std::move(name) }, m_Body{ body }, m_Parameters{ std::move(parameters) }
+		FunctionStmt(const Token& name, Ref<Stmt> body, std::vector<Token> parameters = {})
+			: m_Name{ name }, m_Body{ body }, m_Parameters{ std::move(parameters) }
 		{
 		}
 
@@ -206,8 +206,8 @@ namespace DXX
 		std::vector<Ref<Stmt>> m_Methods{};
 
 	public:
-		ClassStmt(Token name, Ref<VariableExpr> superClass, std::vector<Ref<Stmt>> methods)
-			: m_Name{ std::move(name) }, m_SuperClass{ superClass }, m_Methods{ std::move(methods) }
+		ClassStmt(const Token& name, Ref<VariableExpr> superClass, std::vector<Ref<Stmt>> methods)
+			: m_Name{ name }, m_SuperClass{ superClass }, m_Methods{ std::move(methods) }
 		{
 		}
 

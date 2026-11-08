@@ -47,8 +47,8 @@ namespace DXX
 		virtual ~SqrtFunc() = default;
 
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t minArity() const override { return 2; }
-		inline virtual uint32_t maxArity() const override { return 2; }
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native sqrt func>"; }
 	};
 
@@ -91,7 +91,7 @@ namespace DXX
 		virtual ~InputFunc() = default;
 
 		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
-		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t minArity() const override { return 0; }
 		inline virtual uint32_t maxArity() const override { return 1; }
 		inline virtual std::string ToString() const override { return "<native input func>"; }
 	};

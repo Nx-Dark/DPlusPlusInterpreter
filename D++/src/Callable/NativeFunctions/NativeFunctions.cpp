@@ -9,6 +9,32 @@
 
 namespace DXX
 {
+
+	static std::optional<bool> isTruthy(const Literal& literal)
+	{
+		if (std::holds_alternative<Nil>(literal)) return false;
+		else if (std::holds_alternative<bool>(literal)) return std::get<bool>(literal);
+		else if (std::holds_alternative<double>(literal)) {
+			if (std::get<double>(literal) == 0.0)
+				return false;
+			return true;
+		}
+		else if (std::holds_alternative<Ref<Callable>>(literal)) return true;
+		else if (std::holds_alternative<std::string>(literal)) {
+			if (std::get<std::string>(literal).empty())
+				return false;
+			return true;
+		}
+		else if (std::holds_alternative<Ref<ListObject>>(literal))
+		{
+			if (std::get<Ref<ListObject>>(literal)->getElements().empty())
+				return false;
+			return true;
+		}
+		else if (std::holds_alternative<Ref<ClassInstance>>(literal)) return true;
+		else return std::nullopt;
+	}
+
 	//native exit function;
 	Literal ExitFunction::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
 	{
@@ -49,7 +75,12 @@ namespace DXX
 		const Literal arg1{ arguments[0] };
 
 		if (std::holds_alternative<double>(arg1))
-			return std::sqrt(std::get<double>(arg1));
+		{
+			double number{ std::get<double>(arg1) };
+			if (number >= 0)
+				return std::sqrt(number);
+			throw interpreter.nativeError("Can't calculate the root of a negative number.");
+		}
 		else throw interpreter.nativeError("Unsupported Type as argument.");
 
 		return Nil{};
@@ -101,18 +132,21 @@ namespace DXX
 	//native input func
 	Literal InputFunc::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
 	{
-		const Literal prompt{ arguments[0] };
 		std::string line{};
 
-		if (std::holds_alternative<std::string>(prompt))
-		{
-			std::print("{0}", std::get<std::string>(prompt));
-			if (std::getline(std::cin, line))
-				return line;
-			return "";
+		if (!arguments.empty())
+		{		
+			const Literal prompt{ arguments[0] };
+
+			if (std::holds_alternative<std::string>(prompt))
+				std::print("{0}", std::get<std::string>(prompt));
+
+			else throw interpreter.nativeError("Unsupported Type as argument.");
 		}
 
-		else throw interpreter.nativeError("Unsupported Type as argument.");
+		if (std::getline(std::cin, line))
+			return line;
+		return "";
 	}
 
 	//casting functions;
@@ -183,21 +217,12 @@ namespace DXX
 	{
 		const Literal toCastValue{ arguments[0] };
 
-		if (std::holds_alternative<std::string>(toCastValue))
-		{
-			if (std::get<std::string>(toCastValue).empty())
-				return false;
-			else return true;
-		}
-		else if (std::holds_alternative<double>(toCastValue))
-			return std::get<double>(toCastValue) == 0.0 ? false : true;
-		else if (std::holds_alternative<bool>(toCastValue))
-			return std::get<bool>(toCastValue);
-		else if (std::holds_alternative<Nil>(toCastValue))
-			return false;
+		auto val{ isTruthy(toCastValue) };
+
+		if (val)
+			return val.value();
 		else
 			throw interpreter.nativeError("Unsupported Type to Cast.");
-
 	}
 
 	//type check

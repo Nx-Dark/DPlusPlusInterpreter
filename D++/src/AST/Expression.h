@@ -53,8 +53,8 @@ namespace DXX
 		Ref<Expr> m_Expr{};
 
 	public:
-		UnaryExpr(Token op, Ref<Expr> expr)
-			: m_Expr{ expr }, m_Operator{ std::move(op) } { }
+		UnaryExpr(const Token& op, Ref<Expr> expr)
+			: m_Expr{ expr }, m_Operator{ op } { }
 
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
 		virtual void Accept(ExprResolverVisitor& visitor) const override;
@@ -69,8 +69,8 @@ namespace DXX
 		Ref<Expr> m_RightExpr{};
 
 	public:
-		BinaryExpr(Ref<Expr> leftExpr, Token op, Ref<Expr> rightExpr)
-			: m_LeftExpr{ leftExpr }, m_Operator{ std::move(op) }, m_RightExpr{ rightExpr } { }
+		BinaryExpr(Ref<Expr> leftExpr, const Token& op, Ref<Expr> rightExpr)
+			: m_LeftExpr{ leftExpr }, m_Operator{ op }, m_RightExpr{ rightExpr } { }
 
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
 		virtual void Accept(ExprResolverVisitor& visitor) const override;
@@ -98,8 +98,8 @@ namespace DXX
 		Token m_Token;
 
 	public:
-		VariableExpr(Token token)
-			: m_Token{ std::move(token) } { }
+		VariableExpr(const Token& token)
+			: m_Token{ token } { }
 
 		virtual Literal Accept(EvaluatorVisitor& visitor) const override;
 		virtual void Accept(ExprResolverVisitor& visitor) const override;
@@ -112,8 +112,8 @@ namespace DXX
 		Ref<Expr> m_Expr{};
 
 	public:
-		AssignExpr(Token identifier, Ref<Expr> expr)
-			: m_Identifier{ std::move(identifier) }, m_Expr{ expr } 
+		AssignExpr(const Token& identifier, Ref<Expr> expr)
+			: m_Identifier{ identifier }, m_Expr{ expr } 
 		{
 		}
 
@@ -129,8 +129,8 @@ namespace DXX
 		Token m_ClosingParen{};
 
 	public:
-		CallExpr(Ref<Expr> callee, std::vector<Ref<Expr>> args, Token closingParen)
-			: m_Callee{ callee }, m_Arguments{ std::move(args) }, m_ClosingParen{ std::move(closingParen) }
+		CallExpr(Ref<Expr> callee, std::vector<Ref<Expr>> args, const Token& closingParen)
+			: m_Callee{ callee }, m_Arguments{ std::move(args) }, m_ClosingParen{ closingParen }
 		{
 		}
 
@@ -145,8 +145,8 @@ namespace DXX
 		Token m_Identifier{};
 
 	public:
-		GetExpr(Ref<Expr> obj, Token identifier)
-			: m_Object{ obj }, m_Identifier{ std::move(identifier) }
+		GetExpr(Ref<Expr> obj, const Token& identifier)
+			: m_Object{ obj }, m_Identifier{ identifier }
 		{
 		}
 
@@ -163,8 +163,8 @@ namespace DXX
 		Token m_Operator{};
 
 	public:
-		SetExpr(Ref<Expr> obj, Token identifier, Ref<Expr> value, Token op)
-			: m_Object{ obj }, m_Identifier{ std::move(identifier) }, m_Value{ value }, m_Operator{ std::move(op) }
+		SetExpr(Ref<Expr> obj, const Token& identifier, Ref<Expr> value, const Token& op)
+			: m_Object{ obj }, m_Identifier{ identifier }, m_Value{ value }, m_Operator{ op }
 		{
 		}
 
@@ -178,8 +178,8 @@ namespace DXX
 		Token m_Keyword{};
 
 	public:
-		ThisExpr(Token keyword)
-			: m_Keyword{std::move(keyword)}
+		ThisExpr(const Token& keyword)
+			: m_Keyword{ keyword }
 		{
 		}
 
@@ -194,8 +194,8 @@ namespace DXX
 		Token m_Method{};
 
 	public:
-		SuperExpr(Token keyword, Token method)
-			: m_Keyword{ std::move(keyword) }, m_Method{ std::move(method) }
+		SuperExpr(const Token& keyword, const Token& method)
+			: m_Keyword{ keyword }, m_Method{ method }
 		{
 		}
 
@@ -226,8 +226,8 @@ namespace DXX
 		Token m_keyword{}; //for error and stuff handling
 
 	public:
-		IndexExpr(Ref<Expr> object, Ref<Expr> index, Token keyword)
-			: m_Object{ object }, m_Index{ index }, m_keyword{ std::move(keyword) }
+		IndexExpr(Ref<Expr> object, Ref<Expr> index, const Token& keyword)
+			: m_Object{ object }, m_Index{ index }, m_keyword{ keyword }
 		{
 		}
 
@@ -244,8 +244,8 @@ namespace DXX
 		Token m_Operator;
 
 	public:
-		IndexSetExpr(Ref<Expr> object, Ref<Expr> index, Ref<Expr> value, Token op)
-			: m_Object{ object }, m_Index{ index }, m_Value{ value }, m_Operator{ std::move(op) }
+		IndexSetExpr(Ref<Expr> object, Ref<Expr> index, Ref<Expr> value, const Token& op)
+			: m_Object{ object }, m_Index{ index }, m_Value{ value }, m_Operator{ op }
 		{
 		}
 

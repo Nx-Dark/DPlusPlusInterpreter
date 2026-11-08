@@ -96,7 +96,8 @@ namespace DXX
 	}
 
 	//token struct
-	struct Token {
+	class Token {
+	public:
 		TokenType m_Type{};
 		std::string m_Lexeme{};
 		Literal m_Literal{};

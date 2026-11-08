@@ -105,18 +105,18 @@ namespace DXX
 				Token name { variableExpr->m_Token };
 				if (op.m_Type != TokenType::EQUAL)
 				{
-					Ref<Expr> binaryExpr{ CreateRef<BinaryExpr>(CreateRef<VariableExpr>(std::move(name)), std::move(binaryOp), rightExpr) };
-					return CreateRef<AssignExpr>(std::move(name), binaryExpr);
+					Ref<Expr> binaryExpr{ CreateRef<BinaryExpr>(CreateRef<VariableExpr>(name), binaryOp, rightExpr) };
+					return CreateRef<AssignExpr>(name, binaryExpr);
 				}
-				return CreateRef<AssignExpr>(std::move(name), rightExpr);
+				return CreateRef<AssignExpr>(name, rightExpr);
 			}
 			else if (getExpr)
 			{
-				return CreateRef<SetExpr>(getExpr->m_Object, getExpr->m_Identifier, rightExpr, std::move(op));
+				return CreateRef<SetExpr>(getExpr->m_Object, getExpr->m_Identifier, rightExpr, op);
 			}
 			else if(indexExpr)
 			{
-				return CreateRef<IndexSetExpr>(indexExpr->m_Object, indexExpr->m_Index, rightExpr, std::move(op));
+				return CreateRef<IndexSetExpr>(indexExpr->m_Object, indexExpr->m_Index, rightExpr, op);
 			}
 
 			throw error(op, "Invalid Assignment target.");
@@ -135,7 +135,7 @@ namespace DXX
 
 			Ref<Expr> rightExpr{ logicalAnd() };
 
-			expr = CreateRef<BinaryExpr>(expr, std::move(op), rightExpr);
+			expr = CreateRef<BinaryExpr>(expr, op, rightExpr);
 		}
 
 		return expr;
@@ -151,7 +151,7 @@ namespace DXX
 
 			Ref<Expr> rightExpr{ equality() };
 
-			expr = CreateRef<BinaryExpr>(expr, std::move(op), rightExpr);
+			expr = CreateRef<BinaryExpr>(expr, op, rightExpr);
 		}
 
 		return expr;
@@ -169,7 +169,7 @@ namespace DXX
 
 			Ref<Expr> rightExpr{ comparison() };
 
-			expr = CreateRef<BinaryExpr>(expr, std::move(op), rightExpr);
+			expr = CreateRef<BinaryExpr>(expr, op, rightExpr);
 
 		}
 
@@ -187,7 +187,7 @@ namespace DXX
 
 			Ref<Expr> rightExpr{ term() };
 
-			expr = CreateRef<BinaryExpr>(expr, std::move(op), rightExpr);
+			expr = CreateRef<BinaryExpr>(expr, op, rightExpr);
 		}
 
 		return expr;
@@ -203,7 +203,7 @@ namespace DXX
 
 			Ref<Expr> rightExpr{ factor() };
 
-			expr = CreateRef<BinaryExpr>(expr, std::move(op), rightExpr);
+			expr = CreateRef<BinaryExpr>(expr, op, rightExpr);
 		}
 
 		return expr;
@@ -219,7 +219,7 @@ namespace DXX
 
 			Ref<Expr> rightExpr{ unary() };
 
-			expr = CreateRef<BinaryExpr>(expr, std::move(op), rightExpr);
+			expr = CreateRef<BinaryExpr>(expr, op, rightExpr);
 		}
 
 		return expr;
@@ -233,7 +233,7 @@ namespace DXX
 		{
 			advance();
 			Ref<Expr> rightExpr{ unary() };
-			return CreateRef<UnaryExpr>(std::move(op), rightExpr);
+			return CreateRef<UnaryExpr>(op, rightExpr);
 		}
 
 		return call();
@@ -250,13 +250,13 @@ namespace DXX
 			else if (match(TokenType::DOT))
 			{
 				Token name{ consume(TokenType::IDENTIFIER, "Expected property name after '.'.") };
-				expr = CreateRef<GetExpr>(expr, std::move(name));
+				expr = CreateRef<GetExpr>(expr, name);
 			}
 			else if (match(TokenType::LEFT_SQ_BRACE))
 			{
 				Ref<Expr> indexExpr{ expression() };
 				Token keyword{ consume(TokenType::RIGHT_SQ_BRACE, "Expected ']' after index expression.") };
-				expr = CreateRef<IndexExpr>(expr, indexExpr, std::move(keyword));
+				expr = CreateRef<IndexExpr>(expr, indexExpr, keyword);
 			}
 			else
 				break;
@@ -277,7 +277,7 @@ namespace DXX
 
 		Token closingParen{ consume(TokenType::RIGHT_PAREN, "Expected ')' after function call.") };
 
-		return CreateRef<CallExpr>(callee, std::move(arguments), std::move(closingParen));
+		return CreateRef<CallExpr>(callee, std::move(arguments), closingParen);
 	}
 
 	Ref<Expr> Parser::primary()
@@ -297,12 +297,12 @@ namespace DXX
 			case TokenType::NIL   :
 			case TokenType::TRUE  :
 			case TokenType::FALSE : return CreateRef<LiteralExpr>(std::move(token.m_Literal));
-			case TokenType::IDENTIFIER: return CreateRef<VariableExpr>(std::move(token));
-			case TokenType::THIS: return CreateRef<ThisExpr>(std::move(token));
+			case TokenType::IDENTIFIER: return CreateRef<VariableExpr>(token);
+			case TokenType::THIS: return CreateRef<ThisExpr>(token);
 			case TokenType::SUPER: {
 				consume(TokenType::DOT, "Expected '.' after super.");
 				Token identifier{ consume(TokenType::IDENTIFIER, "Expected Identifier after super.") };
-				return CreateRef<SuperExpr>(std::move(token), std::move(identifier));
+				return CreateRef<SuperExpr>(token, identifier);
 			}
 			
 			case TokenType::LEFT_PAREN:
@@ -489,7 +489,7 @@ namespace DXX
 
 		consume(TokenType::SEMICOLON, "Expected ';' after return.");
 
-		return CreateRef<ReturnStmt>(std::move(token), expr);
+		return CreateRef<ReturnStmt>(token, expr);
 	}
 
 	Ref<Stmt> Parser::varDeclaration(bool consumeSemicolon)
@@ -505,7 +505,7 @@ namespace DXX
 		}
 
 		if(consumeSemicolon) consume(TokenType::SEMICOLON, "Expected ';' after Statement.");
-		return CreateRef<VarStmt>(std::move(identifier), expr);
+		return CreateRef<VarStmt>(identifier, expr);
 	}
 
 	Ref<Stmt> Parser::classDeclaraton()
@@ -532,7 +532,7 @@ namespace DXX
 
 		consume(TokenType::RIGHT_BRACE, "Expected '}' after class body.");
 
-		return CreateRef<ClassStmt>(std::move(identifier), superClass, std::move(methods));
+		return CreateRef<ClassStmt>(identifier, superClass, std::move(methods));
 	}
 
 	Ref<Stmt> Parser::functionDeclaration(const std::string& kind)
@@ -560,9 +560,9 @@ namespace DXX
 
 		funcBodyStmts = block();
 
-		Ref<BlockStmt> funcBody{ CreateRef<BlockStmt>(std::move(funcBodyStmts)) };
+		Ref<BlockStmt> funcBody{ CreateRef<BlockStmt>(funcBodyStmts) };
 
-		return CreateRef<FunctionStmt>(std::move(identifier), funcBody, std::move(parameters));
+		return CreateRef<FunctionStmt>(identifier, funcBody, std::move(parameters));
 
 	}
 	

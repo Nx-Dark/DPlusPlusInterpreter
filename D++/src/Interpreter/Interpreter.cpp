@@ -124,7 +124,7 @@ namespace DXX
 			assigned = m_GlobalEnv->assign(assignExpr.m_Identifier.m_Lexeme, value);
 		}
 
-		if (!assigned) throw error(assignExpr.m_Identifier, "Undefine Variable " + assignExpr.m_Identifier.m_Lexeme + ".");
+		if (!assigned) throw error(assignExpr.m_Identifier, "Undefined Variable " + assignExpr.m_Identifier.m_Lexeme + ".");
 
 		return value;
 	}
@@ -156,7 +156,6 @@ namespace DXX
 
 			try 
 			{
-
 				return (*callableObject)->Call(*this, arguments);
 			}
 
@@ -297,39 +296,39 @@ namespace DXX
 	{
 		auto it{ m_Locals.find(superExpr.GetID()) };
 
-		int distance{};
+		if (it == m_Locals.end())
+			throw error(superExpr.m_Keyword, "Unresolved 'super' expression.");
 
-		if (it != m_Locals.end())
-			distance = it->second;
+		int distance{ it->second };
 
 		auto superClassLiteral{ m_Environment->getAt(distance, "super") };
 		auto objectLiteral{ m_Environment->getAt(distance - 1, "this") };
 
-		if (superClassLiteral)
-		{
-			auto superClassPtr{ std::get_if<Ref<Callable>>(&superClassLiteral.value()) };
+		if (!superClassLiteral || !objectLiteral)
+			throw error(superExpr.m_Keyword, "Invalid superclass environment.");
 
-			if (superClassPtr)
-			{
-				Ref<ClassObject> superClass{ std::dynamic_pointer_cast<ClassObject>(*superClassPtr) };
+		auto superClassPtr{ std::get_if<Ref<Callable>>(&superClassLiteral.value()) };
 
-				if (superClass && objectLiteral)
-				{
-					auto objectPtr { std::get_if<Ref<ClassInstance>>(&objectLiteral.value()) };
+		if (!superClassPtr)
+			throw error(superExpr.m_Keyword, "Invalid superclass.");
 
-					if (objectPtr)
-					{
-						Ref<ClassInstance> objectInstance{ *objectPtr };
+		Ref<ClassObject> superClass{ std::dynamic_pointer_cast<ClassObject>(*superClassPtr) };
 
-						Ref<FunctionObject> method{ std::dynamic_pointer_cast<FunctionObject>(superClass->FindMethod(superExpr.m_Method.m_Lexeme)) };
-						if (!method)
-							throw error(superExpr.m_Method, "Undefined Property '" + superExpr.m_Method.m_Lexeme + "'.");
+		if (!superClass)
+			throw error(superExpr.m_Keyword, "Invalid superclass.");
 
-						return method->Bind(objectInstance);
-					} 
-				}
-			}
-		}
+		auto objectPtr{ std::get_if<Ref<ClassInstance>>(&objectLiteral.value()) };
+
+		if (!objectPtr)
+			throw error(superExpr.m_Keyword, "Invalid 'this' reference.");
+
+		Ref<ClassInstance> objectInstance{ *objectPtr };
+
+		Ref<FunctionObject> method{ std::dynamic_pointer_cast<FunctionObject>(superClass->FindMethod(superExpr.m_Method.m_Lexeme)) };
+		if (!method)
+			throw error(superExpr.m_Method, "Undefined Property '" + superExpr.m_Method.m_Lexeme + "'.");
+
+		return method->Bind(objectInstance);
 	}
 
 	Literal Interpreter::visitList(const ListExpr& listExpr)
@@ -449,7 +448,7 @@ namespace DXX
 
 		EnvironmentGuard envGuard{ m_Environment, *this };
 
-		for (auto& stmt : blockStmt.m_Statements)
+		for (const auto& stmt : blockStmt.m_Statements)
 			stmt->Accept(*this);
 
 	}
@@ -540,11 +539,10 @@ namespace DXX
 
 	void Interpreter::visitFunctionStmt(FunctionStmt& functionStmt)
 	{
-		auto fName{ functionStmt.m_Name };
 
-		auto refFuncStatement{ CreateRef<FunctionStmt>(std::move(functionStmt.m_Name), functionStmt.m_Body, std::move(functionStmt.m_Parameters)) };
+		auto refFuncStatement{ CreateRef<FunctionStmt>(functionStmt.m_Name, functionStmt.m_Body, functionStmt.m_Parameters) };
 
-		m_Environment->define(fName.m_Lexeme, 
+		m_Environment->define(functionStmt.m_Name.m_Lexeme,
 			CreateRef<FunctionObject>(refFuncStatement, m_Environment)
 		);
 	}
@@ -610,7 +608,9 @@ namespace DXX
 		if (it != m_Locals.end())
 		{
 			int distance{ it->second };
-			return m_Environment->getAt(distance, token.m_Lexeme).value();
+			auto value{ m_Environment->getAt(distance, token.m_Lexeme) };
+			if (value)
+				return value.value();
 		}
 
 		auto value{ m_GlobalEnv->get(token.m_Lexeme) };

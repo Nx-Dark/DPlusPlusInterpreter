@@ -47,14 +47,14 @@ namespace DXX
 
 	std::optional<Literal> Environment::getAt(int distance, const std::string& name)
 	{
-		Ref<Environment> env{ getAncestor(distance) };;
+		Ref<Environment> env{ getAncestor(distance) };
 
 		auto it{ env->m_Values.find(name) };
 
 		if (it != env->m_Values.end())
 			return it->second;
 
-		return std::nullopt;;
+		return std::nullopt;
 	}
 
 	bool Environment::assignAt(int distance, const std::string& name, const Literal& value)

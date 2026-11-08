@@ -11,7 +11,7 @@ namespace DXX
 
 	class Interpreter;
 
-	struct Token;
+	class Token;
 
 	struct ResolveError {};
 
