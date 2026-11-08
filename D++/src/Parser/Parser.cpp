@@ -269,7 +269,7 @@ namespace DXX
 	{
 		std::vector<Ref<Expr>> arguments{};
 
-		while (!check(TokenType::RIGHT_PAREN)) 
+		while (!check(TokenType::RIGHT_PAREN) && !isAtEnd()) 
 		{
 			arguments.push_back(expression());
 			if (!check(TokenType::RIGHT_PAREN)) consume(TokenType::COMMA, "Expected ',' after argument expression.");
@@ -284,6 +284,9 @@ namespace DXX
 	{
 		//check for primary data and construct Expressions for it
 		//such as LiteralExpr(NUMBER, STRING, NIL) and GroupedExpr, enclosing in '()', which might contain an expression in it;
+
+		if (isAtEnd())
+			throw error(peek(), "Expected an Expression.");
 
 		Token token{ advance() };
 

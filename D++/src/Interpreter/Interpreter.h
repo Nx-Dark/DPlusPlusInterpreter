@@ -87,6 +87,7 @@ namespace DXX
 
 		Literal lookUpVariable(Token name, const Expr& expr);
 		Literal doBinaryOperation(const Literal& lhs, const Token& op, const Literal& rhs);
+		double validateIndex(const Token& token, const Literal& indexLitera);
 
 		void DefineNativeFunctions();
 

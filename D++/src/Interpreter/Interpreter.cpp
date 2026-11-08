@@ -9,6 +9,7 @@
 #include "Callable/Classes/ClassObject.h"
 #include "Callable/Classes/ClassInstance.h"
 #include "Types/ListObject.h"
+#include "Types/StringObject.h"
 
 namespace DXX
 {
@@ -172,6 +173,7 @@ namespace DXX
 
 		auto classInstanceObj{ std::get_if<Ref<ClassInstance>>(&object) };
 		auto listObjectPtr{ std::get_if<Ref<ListObject>>(&object) };
+		auto strObjectPtr{ std::get_if<std::string>(&object) };
 
 		std::optional<Literal> propertyVal{};
 
@@ -208,6 +210,34 @@ namespace DXX
 
 			throw error(getExpr.m_Identifier, "Undefined list property/method " + getExpr.m_Identifier.m_Lexeme + ".");
 		}
+		else if (strObjectPtr)
+		{
+			const std::string& strObject{ *strObjectPtr };
+
+			const std::string& methodName{ getExpr.m_Identifier.m_Lexeme };
+			
+			if (methodName == "length")
+				return CreateRef<StringLength>(strObject);
+			else if (methodName == "upper")
+				return CreateRef<StringUpper>(strObject);
+			else if (methodName == "lower")
+				return CreateRef<StringLower>(strObject);
+			else if (methodName == "contains")
+				return CreateRef<StringContains>(strObject);
+			else if (methodName == "startsWith")
+				return CreateRef<StringStartsWith>(strObject);
+			else if (methodName == "endsWith")
+				return CreateRef<StringEndsWith>(strObject);
+			else if (methodName == "indexOf")
+				return CreateRef<StringIndexOf>(strObject);
+			else if (methodName == "replace")
+				return CreateRef<StringReplace>(strObject);
+			else if (methodName == "trim")
+				return CreateRef<StringTrim>(strObject);
+
+			throw error(getExpr.m_Identifier, "Undefined str property/method " + getExpr.m_Identifier.m_Lexeme + ".");
+		}
+
 		else 
 			throw error(getExpr.m_Identifier, "Properties can only be accesses on Instances of Lists or Classes");
 		
@@ -310,32 +340,35 @@ namespace DXX
 		Literal indexLiteral{ indexExpr.m_Index->Accept(*this) };
 
 		auto listObjectPtr{ std::get_if<Ref<ListObject>>(&objectLiteral) };
+		auto strObjectPtr{ std::get_if<std::string>(&objectLiteral) };
+
 		if (listObjectPtr)
 		{
 			Ref<ListObject> listObject{ *listObjectPtr };
 
-			auto indexPtr{ std::get_if<float>(&indexLiteral) };
-			if (indexPtr)
-			{
-				float index{ *indexPtr };
+			double index{ validateIndex(indexExpr.m_keyword, indexLiteral) };
 
-				if (std::floorf(index) != index)
-					throw error(indexExpr.m_keyword, "Index must be an Integer.");
+			std::size_t intIndex{ static_cast<std::size_t>(index) };
 
-				if (index < 0.0f) throw error(indexExpr.m_keyword, "Index cannot be negative.");
+			if (intIndex >= listObject->m_Elements.size()) 
+				throw error(indexExpr.m_keyword, "Index out of range.");
 
-				std::size_t intIndex{ static_cast<std::size_t>(index) };
-
-				if (intIndex >= listObject->m_Elements.size()) 
-					throw error(indexExpr.m_keyword, "Index out of range.");
-
-				return listObject->m_Elements[intIndex];
-			}
-
-			throw error(indexExpr.m_keyword, "Index must be a Number.");
+			return listObject->m_Elements[intIndex];
 		}
+		else if (strObjectPtr)
+		{
+			const std::string_view strObject{ *strObjectPtr };
 
-		throw error(indexExpr.m_keyword, "Cannot Index types other than list.");
+			double index{ validateIndex(indexExpr.m_keyword, indexLiteral) };
+
+			std::size_t intIndex{ static_cast<std::size_t>(index) };
+
+			if (intIndex >= strObject.size())
+				throw error(indexExpr.m_keyword, "Index out of range.");
+
+			return std::string{ strObject[intIndex] };
+		}
+		throw error(indexExpr.m_keyword, "Cannot Index types other than list and str.");
 
 	}
 
@@ -347,42 +380,30 @@ namespace DXX
 		const Token& op{ indexSetExpr.m_Operator };
 
 		auto listObjectPtr{ std::get_if<Ref<ListObject>>(&objectLiteral) };
-		auto listIndexPtr{ std::get_if<float>(&indexLiteral) };
 		if (listObjectPtr)
 		{
-			if (listIndexPtr)
+			Ref<ListObject> listObject{ *listObjectPtr };
+
+			double listIndex{ validateIndex(indexSetExpr.m_Operator, indexLiteral) };
+			std::size_t intListIndex{ static_cast<std::size_t>(listIndex) };
+
+			if (intListIndex >= listObject->m_Elements.size())
+				throw error(op, "Index out of range.");
+
+			Literal& currentValue{ listObject->m_Elements[intListIndex] };
+
+			if (op.m_Type == TokenType::EQUAL)
 			{
-				Ref<ListObject> listObject{ *listObjectPtr };
-				float floatListIndex{ *listIndexPtr };
-
-				if (std::floorf(floatListIndex) != floatListIndex)
-					throw error(op, "Index must be an Integer.");
-
-				if (floatListIndex < 0.0f)
-					throw error(op, "Index cannot be negative.");
-
-				std::size_t intListIndex{ static_cast<std::size_t>(floatListIndex) };
-
-				if (intListIndex >= listObject->m_Elements.size())
-					throw error(op, "Index out of range.");
-
-				Literal& currentValue{ listObject->m_Elements[intListIndex] };
-
-				if (op.m_Type == TokenType::EQUAL)
-				{
-					currentValue = valueLiteral;
-				}
-				else {
-					currentValue = doBinaryOperation(currentValue, op, valueLiteral);
-				}
-
-				return currentValue;
+				currentValue = valueLiteral;
+			}
+			else {
+				currentValue = doBinaryOperation(currentValue, op, valueLiteral);
 			}
 
-			throw error(op, "Index must be a number.");
+			return currentValue;
 		}
 
-		throw error(op, "Cannot Index types other than list");
+		throw error(op, "Cannot Assign Index types other than list");
 
 		return Nil{};
 	}
@@ -735,6 +756,29 @@ namespace DXX
 
 		//native type check func
 		m_GlobalEnv->define("typeof", CreateRef<TypeCheckFunc>());
+	}
+
+	double Interpreter::validateIndex(const Token& token, const Literal& indexLiteral)
+	{
+		double index{};
+
+		if (auto indexPtr{ std::get_if<float>(&indexLiteral) })
+			index = static_cast<double>(*indexPtr);
+		else if (auto indexPtr{ std::get_if<double>(&indexLiteral) })
+			index = *indexPtr;
+		else
+			throw error(token, "Index must be a Number.");
+
+		if (!std::isfinite(index))
+			throw error(token, "Index must be finite.");
+
+		if(std::floor(index) != index)
+			throw error(token, "Index must be an Integer.");
+
+		if (index < 0.0f)
+			throw error(token, "Index cannot be negative.");
+
+		return index;
 	}
 
 	//runtime error handling

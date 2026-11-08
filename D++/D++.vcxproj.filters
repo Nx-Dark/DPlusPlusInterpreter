@@ -92,6 +92,7 @@
     <ClInclude Include="src\Callable\Classes\ClassObject.h" />
     <ClInclude Include="src\Callable\Classes\ClassInstance.h" />
     <ClInclude Include="src\Types\ListObject.h" />
+    <ClInclude Include="src\Types\StringObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AST\Expression.cpp">
@@ -135,5 +136,6 @@
     <ClCompile Include="src\Callable\Classes\ClassObject.cpp" />
     <ClCompile Include="src\Callable\Classes\ClassInstance.cpp" />
     <ClCompile Include="src\Types\ListObject.cpp" />
+    <ClCompile Include="src\Types\StringObject.cpp" />
   </ItemGroup>
 </Project>
