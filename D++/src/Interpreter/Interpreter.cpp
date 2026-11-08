@@ -727,6 +727,9 @@ namespace DXX
 	void Interpreter::DefineNativeFunctions()
 	{
 		//registering nativ functions
+		// native exit func
+		m_GlobalEnv->define("exit", CreateRef<ExitFunction>());
+		
 		//native clock func
 		m_GlobalEnv->define("clock", CreateRef<ClockFunction>());
 

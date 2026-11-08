@@ -2,6 +2,8 @@
 
 #include "Application.h"
 
+#include "Signals.h"
+
 void signalHandler(int signal)
 {
 	std::cout << "Exiting D++ Interpreter!\n";
@@ -9,7 +11,6 @@ void signalHandler(int signal)
 	std::exit(0);
 }
 
-//argc is argument count, the no of arguments we pass from the command line and argv is a string array storing all the arguments
 int main(int argc, char* argv[])
 {
 
@@ -24,8 +25,16 @@ int main(int argc, char* argv[])
 	}
 	
 	//instantiating the iterpreter
-	DXX::Application application{ argc, arg_counts };
-	application.launch();
+	try {
+		DXX::Application application{ argc, arg_counts };
+		application.launch();
+	}
+	catch (const DXX::ExitSignal&)
+	{
+		std::cout << "Exiting D++ Interpreter!\n";
+
+		std::exit(0);
+	}
 
 	return 0;
 }

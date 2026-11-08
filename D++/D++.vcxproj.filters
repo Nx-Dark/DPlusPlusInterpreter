@@ -93,6 +93,7 @@
     <ClInclude Include="src\Callable\Classes\ClassInstance.h" />
     <ClInclude Include="src\Types\ListObject.h" />
     <ClInclude Include="src\Types\StringObject.h" />
+    <ClInclude Include="src\Core\Signals.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AST\Expression.cpp">

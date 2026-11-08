@@ -5,9 +5,17 @@
 #include "Callable/Classes/ClassInstance.h"
 #include "Types/ListObject.h"
 
+#include "Core/Signals.h"
 
 namespace DXX
 {
+	//native exit function;
+	Literal ExitFunction::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
+	{
+		throw ExitSignal{};
+		return Nil{};
+	}
+
 	//native clock function;
 	Literal ClockFunction::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
 	{

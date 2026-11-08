@@ -4,6 +4,16 @@
 
 namespace DXX
 {
+	class ExitFunction : public Callable
+	{
+	public:
+		virtual ~ExitFunction() = default;
+
+		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
+		inline virtual uint32_t minArity() const override { return 0; }
+		inline virtual uint32_t maxArity() const override { return 0; }
+		inline virtual std::string ToString() const override { return "<native exit func>"; }
+	};
 
 	class ClockFunction : public Callable
 	{

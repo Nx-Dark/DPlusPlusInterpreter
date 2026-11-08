@@ -157,6 +157,7 @@
     <ClInclude Include="src\Callable\Classes\ClassObject.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\Core.h" />
+    <ClInclude Include="src\Core\Signals.h" />
     <ClInclude Include="src\Debug\InstrumentationTimer.h" />
     <ClInclude Include="src\Diagnostics\Diagnostic.h" />
     <ClInclude Include="src\Diagnostics\DiagnosticEngine.h" />
