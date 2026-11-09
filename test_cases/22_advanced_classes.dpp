@@ -1,0 +1,145 @@
+// ==========================================
+// BASE CLASS
+// ==========================================
+
+class Animal
+{
+    construct(name)
+    {
+        this.name = name;
+    }
+
+    speak()
+    {
+        return "Animal sound";
+    }
+
+    describe()
+    {
+        return "I am " + this.name;
+    }
+}
+
+
+// ==========================================
+// INHERITANCE
+// ==========================================
+
+class Dog < Animal
+{
+    speak()
+    {
+        return "Woof!";
+    }
+
+    parentSpeak()
+    {
+        return super.speak();
+    }
+}
+
+class Cat < Animal
+{
+    speak()
+    {
+        return "Meow!";
+    }
+}
+
+var dog = Dog("Rocky");
+var cat = Cat("Milo");
+
+println(dog.name);         // Rocky
+println(dog.speak());      // Woof!
+println(dog.parentSpeak()); // Animal sound
+println(cat.speak());      // Meow!
+
+
+// ==========================================
+// MULTIPLE LEVELS OF INHERITANCE
+// ==========================================
+
+class A
+{
+    method()
+    {
+        return "A";
+    }
+}
+
+class B < A
+{
+    method()
+    {
+        return "B";
+    }
+
+    parentMethod()
+    {
+        return super.method();
+    }
+}
+
+class C < B
+{
+    method()
+    {
+        return "C";
+    }
+
+    parentMethod()
+    {
+        return super.method();
+    }
+}
+
+var object = C();
+
+println(object.method());       // C
+println(object.parentMethod()); // B
+
+
+// ==========================================
+// INSTANCE PROPERTY MUTATION
+// ==========================================
+
+class Counter
+{
+    construct()
+    {
+        this.value = 0;
+    }
+
+    increment()
+    {
+        this.value += 1;
+    }
+
+    getValue()
+    {
+        return this.value;
+    }
+}
+
+var counter = Counter();
+
+counter.increment();
+counter.increment();
+counter.increment();
+
+println(counter.getValue()); // 3
+
+
+// ==========================================
+// INSTANCES INSIDE LISTS
+// ==========================================
+
+var animals = [
+    Dog("Max"),
+    Cat("Luna"),
+    Dog("Charlie")
+];
+
+println(animals[0].speak()); // Woof!
+println(animals[1].speak()); // Meow!
+println(animals[2].speak()); // Woof!

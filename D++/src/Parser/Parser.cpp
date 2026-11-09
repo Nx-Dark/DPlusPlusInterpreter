@@ -81,18 +81,19 @@ namespace DXX
 	{
 		Ref<Expr> expr{ logicalOr() }; //lhs expression
 
-		if (match(TokenType::EQUAL, TokenType::PLUS_EQUAL, TokenType::MINUS_EQUAL, TokenType::STAR_EQUAL, TokenType::SLASH_EQUAL))
+		if (match(TokenType::EQUAL, TokenType::PLUS_EQUAL, TokenType::MINUS_EQUAL, TokenType::STAR_EQUAL, TokenType::SLASH_EQUAL, TokenType::MODULO_EQUAL))
 		{
 			Token op{ previous() };
 			Token binaryOp{};
 
 			switch (op.m_Type)
 			{
-				case TokenType::EQUAL:											  break;
-				case TokenType::PLUS_EQUAL  : binaryOp.m_Type = TokenType::PLUS;  break;
-				case TokenType::MINUS_EQUAL : binaryOp.m_Type = TokenType::MINUS; break;
-				case TokenType::STAR_EQUAL  : binaryOp.m_Type = TokenType::STAR;  break;
-				case TokenType::SLASH_EQUAL : binaryOp.m_Type = TokenType::SLASH; break;
+				case TokenType::EQUAL:											   break;
+				case TokenType::PLUS_EQUAL  : binaryOp.m_Type = TokenType::PLUS;   break;
+				case TokenType::MINUS_EQUAL : binaryOp.m_Type = TokenType::MINUS;  break;
+				case TokenType::STAR_EQUAL  : binaryOp.m_Type = TokenType::STAR;   break;
+				case TokenType::SLASH_EQUAL : binaryOp.m_Type = TokenType::SLASH;  break;
+				case TokenType::MODULO_EQUAL: binaryOp.m_Type = TokenType::MODULO; break;
 			}
 
 			Ref<Expr> rightExpr{ assignment() };
@@ -213,7 +214,7 @@ namespace DXX
 	{
 		Ref<Expr> expr{ unary() };
 
-		while (check(TokenType::STAR) || check(TokenType::SLASH))
+		while (check(TokenType::STAR) || check(TokenType::SLASH) || check(TokenType::MODULO))
 		{
 			Token op{ advance() };
 

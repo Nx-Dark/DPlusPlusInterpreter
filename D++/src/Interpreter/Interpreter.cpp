@@ -14,6 +14,17 @@
 namespace DXX
 {
 
+	struct CallDepthGuard {
+
+		size_t& callDepth;
+
+		~CallDepthGuard()
+		{
+			--callDepth;
+		}
+
+	};
+
 	static bool isTruthy(const Literal& literal)
 	{
 		if (std::holds_alternative<Nil>(literal)) return false;
@@ -68,7 +79,7 @@ namespace DXX
 		{
 			case TokenType::MINUS: {
 				if (std::holds_alternative<double>(operand))
-					return -(std::get<double>(operand));
+					return (std::get<double>(operand) != 0.0 ? (-(std::get<double>(operand))) : 0.0);
 				throw error(op, "Operation must done on a number.");
 			}
 			case TokenType::BANG:
@@ -156,6 +167,13 @@ namespace DXX
 
 			try 
 			{
+				if (m_CallDepth >= MAX_CALL_DEPTH)
+					throw error(callExpr.m_ClosingParen, "Maximum Call Depth Exceeded.");
+
+				++m_CallDepth;
+
+				CallDepthGuard guard{ m_CallDepth };
+
 				return (*callableObject)->Call(*this, arguments);
 			}
 
@@ -669,6 +687,15 @@ namespace DXX
 			{
 				if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
 					return std::get<double>(leftOperand) / std::get<double>(rightOperand);
+
+				throw error(op, "Operation must be done on a number.");
+			}
+
+			case TokenType::MODULO:
+			case TokenType::MODULO_EQUAL:
+			{
+				if (std::holds_alternative<double>(leftOperand) && std::holds_alternative<double>(rightOperand))
+					return std::fmod(std::get<double>(leftOperand), std::get<double>(rightOperand));
 
 				throw error(op, "Operation must be done on a number.");
 			}

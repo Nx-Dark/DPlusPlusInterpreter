@@ -1,11 +1,11 @@
 #pragma once
 
 #ifndef VERSION
-#define VERSION 2.5f
+#define VERSION 1.0f
 #endif
 
 #ifndef BUILD_TYPE
-#define BUILD_TYPE "ALPHA"
+#define BUILD_TYPE "RELEASE"
 #endif
 
 #include "Diagnostics/DiagnosticEngine.h"

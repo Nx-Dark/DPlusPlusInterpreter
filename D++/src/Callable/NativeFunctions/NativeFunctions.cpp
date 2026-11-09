@@ -46,9 +46,9 @@ namespace DXX
 	Literal ClockFunction::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
 	{
 		auto timeNow{ std::chrono::system_clock::now() };
-		double seconds{ (double)std::chrono::duration_cast<std::chrono::seconds>(timeNow.time_since_epoch()).count() };
+		double milliseconds{ (double)std::chrono::duration_cast<std::chrono::milliseconds>(timeNow.time_since_epoch()).count() };
 
-		return seconds;
+		return milliseconds;
 	}
 
 	//native print function;

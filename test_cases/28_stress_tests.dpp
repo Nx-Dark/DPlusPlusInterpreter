@@ -1,0 +1,68 @@
+// ==========================================
+// LARGE LIST
+// ==========================================
+var time = clock();
+var numbers = [];
+
+for (var i = 0; i < 10000; i += 1)
+{
+    numbers.push(i);
+}
+
+println(numbers.length());
+println(numbers[0]);
+println(numbers[5000]);
+println(numbers[9999]);
+
+println("Time Taken: ", clock() - time, "ms");
+
+// ==========================================
+// LARGE STRING
+// ==========================================
+
+var text = "";
+
+for (var i = 0; i < 1000; i += 1)
+{
+    text = text + "a";
+}
+
+println(text.length());
+println(text[0]);
+println(text[999]);
+
+
+// ==========================================
+// RECURSION
+// ==========================================
+
+func fibonacci(n)
+{
+    if (n <= 1)
+        return n;
+
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+time = clock();
+println(fibonacci(10)); // 55
+println(fibonacci(15)); // 610
+println(fibonacci(20)); // 6765
+println("Time Taken: ", clock() - time, "ms");
+
+
+// ==========================================
+// DEEP NESTED FUNCTION CALLS
+// ==========================================
+
+func recursive(n)
+{
+    if (n <= 0)
+        return 0;
+
+    return recursive(n - 1) + 1;
+}
+
+println(recursive(100));
+println(recursive(500));
+println(recursive(1000)); //wont work, will throw a maximum call depth exceeded error

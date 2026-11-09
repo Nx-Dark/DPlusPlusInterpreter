@@ -116,6 +116,9 @@ namespace DXX
 		std::string string{ m_String };
 		std::size_t position{ 0 };
 
+		if(oldStr.empty() || newStr.empty())
+			throw interpreter.nativeError("Cannot replace empty string.");
+
 		while ((position = string.find(oldStr, position)) != std::string::npos)
 		{
 			string.replace(position, oldStr.size(), newStr);

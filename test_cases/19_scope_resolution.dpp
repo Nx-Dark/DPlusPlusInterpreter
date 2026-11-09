@@ -1,0 +1,113 @@
+// ==========================================
+// GLOBAL AND LOCAL VARIABLES
+// ==========================================
+
+var value = "global";
+
+func testScope()
+{
+    var value = "local";
+
+    println(value); // local
+}
+
+testScope();
+println(value); // global
+
+
+// ==========================================
+// NESTED BLOCKS
+// ==========================================
+
+var x = 10;
+
+{
+    var x = 20;
+    println(x); // 20
+
+    {
+        var x = 30;
+        println(x); // 30
+    }
+
+    println(x); // 20
+}
+
+println(x); // 10
+
+
+// ==========================================
+// ASSIGNING ENCLOSING VARIABLES
+// ==========================================
+
+var number = 100;
+
+func modify()
+{
+    number = 200;
+}
+
+modify();
+println(number); // 200
+
+
+// ==========================================
+// SHADOWING PARAMETERS
+// ==========================================
+
+var name = "Global";
+
+func printName(name)
+{
+    println(name);
+}
+
+printName("Local"); // Local
+println(name);       // Global
+
+
+// ==========================================
+// NESTED FUNCTIONS AND SCOPE
+// ==========================================
+
+func outer()
+{
+    var a = 10;
+
+    func middle()
+    {
+        var b = 20;
+
+        func inner()
+        {
+            var c = 30;
+            println(a + b + c); // 60
+        }
+
+        inner();
+    }
+
+    middle();
+}
+
+outer();
+
+
+// ==========================================
+// SAME VARIABLE NAME IN DIFFERENT FUNCTIONS
+// ==========================================
+
+func first()
+{
+    var number = 10;
+    println(number);
+}
+
+func second()
+{
+    var number = 20;
+    println(number);
+}
+
+first();  // 10
+second(); // 20

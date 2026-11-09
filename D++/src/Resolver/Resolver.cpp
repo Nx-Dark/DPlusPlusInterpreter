@@ -209,8 +209,10 @@ namespace DXX
 
 	void Resolver::visitWhileStmt(WhileStmt& whileStmt)
 	{
+		BeginScope();
 		Resolve(*whileStmt.m_Condition);
 		Resolve(whileStmt.m_ThenBranch);
+		EndScope();
 	}
 
 	void Resolver::visitForStmt(ForStmt& forStmt)

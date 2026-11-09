@@ -1,0 +1,72 @@
+// ==========================================
+// ZERO AND NEGATIVE NUMBERS
+// ==========================================
+
+println(0);
+println(-0);
+println(-10);
+println(-10.5);
+
+
+// ==========================================
+// OPERATOR PRECEDENCE
+// ==========================================
+
+println(2 + 3 * 4);       // 14
+println((2 + 3) * 4);     // 20
+println(2 * 3 + 4 * 5);   // 26
+println(100 / 10 / 2);    // 5
+println(2 - 3 - 4);       // -5
+
+
+// ==========================================
+// FLOATING POINT
+// ==========================================
+
+println(0.1 + 0.2);
+println(1.0 / 3.0);
+println(10.5 * 2.0);
+
+
+// ==========================================
+// MODULO
+// ==========================================
+
+println(10 % 3);  // 1
+println(15 % 5);  // 0
+println(17 % 4);  // 1
+
+
+// ==========================================
+// COMPOUND ASSIGNMENTS
+// ==========================================
+
+var x = 100;
+
+x /= 2;
+println(x); // 50
+
+x *= 4;
+println(x); // 200
+
+x -= 50;
+println(x); // 150
+
+x += 25;
+println(x); // 175
+
+x %= 5;
+println(x); // 0
+
+
+// ==========================================
+// LOGICAL EXPRESSIONS
+// ==========================================
+
+println(True and True);   // True
+println(True and False);  // False
+println(False or True);   // True
+println(False or False);  // False
+
+println(!True);           // False
+println(!False);          // True

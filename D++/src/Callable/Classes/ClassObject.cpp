@@ -64,6 +64,9 @@ namespace DXX
 		if (it != m_Methods.end())
 			return it->second;
 
+		if (m_SuperClass)
+			return m_SuperClass->FindMethod(name);
+
 		return nullptr;
 	}
 

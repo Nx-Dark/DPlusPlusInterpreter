@@ -11,6 +11,12 @@ workspace "D++ Interpreter"
 
     filter "system:windows"
         buildoptions { "/utf-8" }
+
+    filter "system:macosx"
+        architecture "ARM64"
+        toolset "clang"
+        linker "Default"
+
     filter {}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
@@ -37,17 +43,13 @@ project "D++"
        "%{prj.name}/src"
     }
 
-    linker "LLD"
-
     filter "system:windows"
         systemversion "latest"
 
     filter "configurations:Debug"
         runtime "Debug"
         symbols "On"
-
         editandcontinue "off"
-
         multiprocessorcompile "on"
         incrementallink "on"
 

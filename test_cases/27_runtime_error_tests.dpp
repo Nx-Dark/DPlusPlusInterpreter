@@ -1,0 +1,81 @@
+// ==========================================
+// UNDEFINED VARIABLES
+// ==========================================
+
+//println(unknownVariable);
+
+
+// ==========================================
+// INVALID OPERATIONS
+// ==========================================
+
+//println(10 + "hello");
+//println("hello" - "world");
+//println(True * 10);
+
+
+// ==========================================
+// FUNCTION ERRORS
+// ==========================================
+
+func add(a, b)
+{
+   return a + b;
+}
+
+//add(1);
+//add(1, 2, 3);
+
+
+// ==========================================
+// LIST ERRORS
+// ==========================================
+
+var numbers = [1, 2, 3];
+
+//println(numbers[100]);
+//println(numbers[-1]);
+//println(numbers[1.5]);
+
+//numbers[100] = 50;
+
+
+// ==========================================
+// STRING ERRORS
+// ==========================================
+
+var text = "hello";
+
+//println(text[100]);
+//println(text[-1]);
+
+//println(text.substring(4, 2));
+
+//println(text.replace("", "x"));
+
+
+// ==========================================
+// CLASS ERRORS
+// ==========================================
+
+class Example
+{
+    method()
+    {
+        return this.value;
+    }
+}
+
+var instance = Example();
+
+//println(instance.unknownProperty);
+
+
+// ==========================================
+// NATIVE FUNCTION ERRORS
+// ==========================================
+
+//sqrt("hello");
+//pow(2);
+//max(1);
+//min("hello", 10);

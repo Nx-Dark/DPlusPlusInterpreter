@@ -1,0 +1,121 @@
+// ==========================================
+// MULTIPLE INDEPENDENT CLOSURES
+// ==========================================
+
+func makeCounter()
+{
+    var count = 0;
+
+    func increment()
+    {
+        count += 1;
+        return count;
+    }
+
+    return increment;
+}
+
+var a = makeCounter();
+var b = makeCounter();
+
+println(a()); // 1
+println(a()); // 2
+println(b()); // 1
+println(a()); // 3
+println(b()); // 2
+
+
+// ==========================================
+// MULTIPLE FUNCTIONS SHARING ONE CLOSURE
+// ==========================================
+
+func makeBankAccount(initialBalance)
+{
+    var balance = initialBalance;
+
+    func deposit(amount)
+    {
+        balance += amount;
+        return balance;
+    }
+
+    func withdraw(amount)
+    {
+        balance -= amount;
+        return balance;
+    }
+
+    func getBalance()
+    {
+        return balance;
+    }
+
+    // Return a list containing the three functions.
+    return [deposit, withdraw, getBalance];
+}
+
+var account = makeBankAccount(1000);
+
+var deposit = account[0];
+var withdraw = account[1];
+var getBalance = account[2];
+
+println(getBalance());   // 1000
+println(deposit(500));   // 1500
+println(withdraw(200));  // 1300
+println(getBalance());   // 1300
+
+
+// ==========================================
+// NESTED CLOSURES
+// ==========================================
+
+func outer()
+{
+    var x = 10;
+
+    func middle()
+    {
+        var y = 20;
+
+        func inner()
+        {
+            return x + y;
+        }
+
+        return inner;
+    }
+
+    return middle;
+}
+
+var middleFunction = outer();
+var innerFunction = middleFunction();
+
+println(innerFunction()); // 30
+
+
+// ==========================================
+// RECURSION WITH CLOSURES
+// ==========================================
+
+func makeRecursiveCounter()
+{
+    var count = 0;
+
+    func increment()
+    {
+        count += 1;
+
+        if (count < 5)
+            return increment();
+
+        return count;
+    }
+
+    return increment;
+}
+
+var recursiveCounter = makeRecursiveCounter();
+
+println(recursiveCounter()); // 5

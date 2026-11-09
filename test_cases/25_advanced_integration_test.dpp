@@ -1,0 +1,109 @@
+// ==========================================
+// PLAYER CLASS
+// ==========================================
+
+class Player
+{
+    construct(name, health)
+    {
+        this.name = name;
+        this.health = health;
+    }
+
+    damage(amount)
+    {
+        this.health -= amount;
+
+        if (this.health < 0)
+            this.health = 0;
+    }
+
+    isAlive()
+    {
+        return this.health > 0;
+    }
+
+    describe()
+    {
+        return this.name + " has " + str(this.health) + " HP";
+    }
+}
+
+
+// ==========================================
+// PLAYER MANAGEMENT
+// ==========================================
+
+var players = [
+    Player("Knight", 100),
+    Player("Archer", 80),
+    Player("Mage", 60)
+];
+
+func damageAll(players, amount)
+{
+    for (var i = 0; i < players.length(); i += 1)
+    {
+        players[i].damage(amount);
+    }
+}
+
+func printPlayers(players)
+{
+    for (var i = 0; i < players.length(); i += 1)
+    {
+        println(players[i].describe());
+    }
+}
+
+printPlayers(players);
+
+damageAll(players, 25);
+
+println("After damage:");
+
+printPlayers(players);
+
+
+// ==========================================
+// SCORE TRACKER USING A CLOSURE
+// ==========================================
+
+func makeScoreTracker()
+{
+    var score = 0;
+
+    func addScore(points)
+    {
+        score += points;
+        return score;
+    }
+
+    return addScore;
+}
+
+var scoreTracker = makeScoreTracker();
+
+println(scoreTracker(100)); // 100
+println(scoreTracker(50));  // 150
+println(scoreTracker(25));  // 175
+
+
+// ==========================================
+// FILTERING PLAYERS
+// ==========================================
+
+func countAlive(players)
+{
+    var alive = 0;
+
+    for (var i = 0; i < players.length(); i += 1)
+    {
+        if (players[i].isAlive())
+            alive += 1;
+    }
+
+    return alive;
+}
+
+println(countAlive(players));

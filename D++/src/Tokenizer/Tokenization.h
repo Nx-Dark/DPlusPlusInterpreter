@@ -10,7 +10,7 @@ namespace DXX {
 	class Tokenizer
 	{
 		inline static const std::string punctuationChars{ ";[]{}().," };
-		inline static const std::string operatorChars{ "+-*/<>=!" };
+		inline static const std::string operatorChars{ "+-*/%<>=!" };
 
 		inline static const std::unordered_map<std::string, TokenType> s_keywords{
 			{"and", TokenType::AND},

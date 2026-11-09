@@ -1,0 +1,102 @@
+// ==========================================
+// NESTED LISTS
+// ==========================================
+
+var matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+];
+
+println(matrix[0][0]); // 1
+println(matrix[1][1]); // 5
+println(matrix[2][2]); // 9
+
+matrix[1][1] = 50;
+
+println(matrix[1][1]); // 50
+
+
+// ==========================================
+// LIST ALIASING
+// ==========================================
+
+var original = [10, 20, 30];
+var alias = original;
+
+alias[0] = 999;
+
+println(original[0]); // 999
+println(alias[0]);    // 999
+
+
+// ==========================================
+// MUTATING NESTED LISTS
+// ==========================================
+
+var nested = [[1, 2], [3, 4]];
+var row = nested[0];
+
+row.push(5);
+
+println(nested); // [[1, 2, 5], [3, 4]]
+
+
+// ==========================================
+// COMPOUND ASSIGNMENTS
+// ==========================================
+
+var numbers = [10, 20, 30];
+
+numbers[0] += 5;
+numbers[1] -= 5;
+numbers[2] *= 2;
+
+println(numbers); // [15, 15, 60]
+
+
+// ==========================================
+// LISTS CONTAINING DIFFERENT TYPES
+// ==========================================
+
+class Player
+{
+    construct(name)
+    {
+        this.name = name;
+    }
+}
+
+var mixed = [
+    10,
+    "Hello",
+    True,
+    NIL,
+    [1, 2, 3],
+    Player("Aaron")
+];
+
+println(mixed[0]);
+println(mixed[1]);
+println(mixed[2]);
+println(mixed[3]);
+println(mixed[4][1]);
+println(mixed[5].name);
+
+
+// ==========================================
+// POP AND PUSH
+// ==========================================
+
+var values = [1, 2, 3];
+
+println(values.pop());    // 3
+println(values);          // [1, 2]
+
+println(values.pop(0));   // 1
+println(values);          // [2]
+
+values.push(4);
+values.push(5);
+
+println(values);          // [2, 4, 5]

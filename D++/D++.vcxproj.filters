@@ -4,6 +4,18 @@
     <Filter Include="AST">
       <UniqueIdentifier>{6DD2870B-D9DB-877C-6257-9E7CCE5F937C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Callable">
+      <UniqueIdentifier>{5560857F-412D-E08A-6A46-CE3256721519}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Callable\Classes">
+      <UniqueIdentifier>{3254D414-1E4D-F366-477F-D8EB33D7D272}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Callable\Functions">
+      <UniqueIdentifier>{FDCA760A-E9AE-3760-520F-32B33E1222E2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Callable\NativeFunctions">
+      <UniqueIdentifier>{04A641C4-F0CA-9044-1916-76D4059A8F62}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
@@ -19,11 +31,17 @@
     <Filter Include="Parser">
       <UniqueIdentifier>{D27997C9-BE1B-C29F-A7D6-D5F3931749F0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resolver">
+      <UniqueIdentifier>{D78EDA9B-C35B-35A7-EC74-234FD8A06A35}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source">
       <UniqueIdentifier>{56EB95D1-428D-C0A7-2B48-D4FB178947F8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Tokenizer">
       <UniqueIdentifier>{6088AFBB-CCF2-6332-1531-15D881DA4187}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Types">
+      <UniqueIdentifier>{3A4E330E-A662-5BBF-6FE4-FE1EDBB757F0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -33,16 +51,43 @@
     <ClInclude Include="src\AST\Expression.h">
       <Filter>AST</Filter>
     </ClInclude>
+    <ClInclude Include="src\AST\ExpressionResolverVisitor.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AST\IdType.h">
+      <Filter>AST</Filter>
+    </ClInclude>
     <ClInclude Include="src\AST\Statement.h">
+      <Filter>AST</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AST\StatementResolverVisitor.h">
       <Filter>AST</Filter>
     </ClInclude>
     <ClInclude Include="src\AST\StatementVisitor.h">
       <Filter>AST</Filter>
     </ClInclude>
+    <ClInclude Include="src\Callable\Callable.h">
+      <Filter>Callable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Callable\Classes\ClassInstance.h">
+      <Filter>Callable\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Callable\Classes\ClassObject.h">
+      <Filter>Callable\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Callable\Functions\FunctionObject.h">
+      <Filter>Callable\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Callable\NativeFunctions\NativeFunctions.h">
+      <Filter>Callable\NativeFunctions</Filter>
+    </ClInclude>
     <ClInclude Include="src\Core\Application.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Signals.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Debug\InstrumentationTimer.h">
@@ -66,14 +111,14 @@
     <ClInclude Include="src\Parser\Parser.h">
       <Filter>Parser</Filter>
     </ClInclude>
+    <ClInclude Include="src\Resolver\Resolver.h">
+      <Filter>Resolver</Filter>
+    </ClInclude>
     <ClInclude Include="src\Source\SourceFile.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="src\Source\SourceManager.h">
       <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Types\Literal.h">
-      <Filter>Tokenizer</Filter>
     </ClInclude>
     <ClInclude Include="src\Tokenizer\Token.h">
       <Filter>Tokenizer</Filter>
@@ -81,19 +126,16 @@
     <ClInclude Include="src\Tokenizer\Tokenization.h">
       <Filter>Tokenizer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Types\ListObject.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Types\Literal.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Types\StringObject.h">
+      <Filter>Types</Filter>
+    </ClInclude>
     <ClInclude Include="src\dpch.h" />
-    <ClInclude Include="src\Callable\Functions\FunctionObject.h" />
-    <ClInclude Include="src\Callable\NativeFunctions\NativeFunctions.h" />
-    <ClInclude Include="src\AST\ExpressionResolverVisitor.h" />
-    <ClInclude Include="src\AST\StatementResolverVisitor.h" />
-    <ClInclude Include="src\Resolver\Resolver.h" />
-    <ClInclude Include="src\AST\IdType.h" />
-    <ClInclude Include="src\Callable\Callable.h" />
-    <ClInclude Include="src\Callable\Classes\ClassObject.h" />
-    <ClInclude Include="src\Callable\Classes\ClassInstance.h" />
-    <ClInclude Include="src\Types\ListObject.h" />
-    <ClInclude Include="src\Types\StringObject.h" />
-    <ClInclude Include="src\Core\Signals.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AST\Expression.cpp">
@@ -101,6 +143,18 @@
     </ClCompile>
     <ClCompile Include="src\AST\Statement.cpp">
       <Filter>AST</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Callable\Classes\ClassInstance.cpp">
+      <Filter>Callable\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Callable\Classes\ClassObject.cpp">
+      <Filter>Callable\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Callable\Functions\FunctionObject.cpp">
+      <Filter>Callable\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Callable\NativeFunctions\NativeFunctions.cpp">
+      <Filter>Callable\NativeFunctions</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Application.cpp">
       <Filter>Core</Filter>
@@ -123,20 +177,24 @@
     <ClCompile Include="src\Parser\Parser.cpp">
       <Filter>Parser</Filter>
     </ClCompile>
+    <ClCompile Include="src\Resolver\Resolver.cpp">
+      <Filter>Resolver</Filter>
+    </ClCompile>
     <ClCompile Include="src\Source\SourceManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\Tokenizer\Tokenization.cpp">
       <Filter>Tokenizer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Types\ListObject.cpp">
+      <Filter>Types</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Types\Literal.cpp">
+      <Filter>Types</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Types\StringObject.cpp">
+      <Filter>Types</Filter>
+    </ClCompile>
     <ClCompile Include="src\dpch.cpp" />
-    <ClCompile Include="src\Types\Literal.cpp" />
-    <ClCompile Include="src\Callable\Functions\FunctionObject.cpp" />
-    <ClCompile Include="src\Callable\NativeFunctions\NativeFunctions.cpp" />
-    <ClCompile Include="src\Resolver\Resolver.cpp" />
-    <ClCompile Include="src\Callable\Classes\ClassObject.cpp" />
-    <ClCompile Include="src\Callable\Classes\ClassInstance.cpp" />
-    <ClCompile Include="src\Types\ListObject.cpp" />
-    <ClCompile Include="src\Types\StringObject.cpp" />
   </ItemGroup>
 </Project>

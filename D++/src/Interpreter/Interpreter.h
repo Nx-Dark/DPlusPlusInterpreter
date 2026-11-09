@@ -13,6 +13,8 @@
 namespace DXX
 {
 
+	static constexpr size_t MAX_CALL_DEPTH{ 700 };
+
 	struct Token;
 
 	struct RuntimeError {};
@@ -32,6 +34,8 @@ namespace DXX
 
 		//locals(expressions)
 		std::unordered_map<ExprID, int> m_Locals{}; //int the depth, where a particular statement with this expression id is located
+
+		size_t m_CallDepth{};
 
 		friend class EnvironmentGuard;
 		friend class FunctionObject;

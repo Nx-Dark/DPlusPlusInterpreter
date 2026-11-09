@@ -1,0 +1,80 @@
+// ==========================================
+// EMPTY STRINGS
+// ==========================================
+
+var empty = "";
+
+println(empty.length()); // If length() is supported
+println(empty.reverse());
+println(empty.trim());
+println(empty.toList());
+
+
+// ==========================================
+// TRIM
+// ==========================================
+
+println("   hello   ".trim()); // hello
+println("hello".trim());      // hello
+println("       ".trim());     // Empty string
+
+
+// ==========================================
+// REPLACE
+// ==========================================
+
+println("aaaa".replace("a", "b"));   // bbbb
+println("hello hello".replace("hello", "hi")); // hi hi
+println("banana".replace("na", "NA")); // baNANA
+
+
+// ==========================================
+// SPLIT
+// ==========================================
+
+println("a,b,c".split(","));       // ["a", "b", "c"]
+println("a,,b".split(","));        // ["a", "", "b"]
+println(",a,b".split(","));        // ["", "a", "b"]
+println("a,b,".split(","));        // ["a", "b", ""]
+println("one::two::three".split("::"));
+
+
+// ==========================================
+// REVERSE
+// ==========================================
+
+println("hello".reverse()); // olleh
+println("12345".reverse()); // 54321
+println("".reverse());      // Empty string
+
+
+// ==========================================
+// SUBSTRING
+// ==========================================
+
+println("programming".substring(0, 7));  // program
+println("programming".substring(3, 7));  // gram
+println("programming".substring(0, 0));  // Empty string
+println("programming".substring(3, 3));  // Empty string
+
+
+// ==========================================
+// STRING TO LIST
+// ==========================================
+
+var characters = "hello".toList();
+
+println(characters);
+println(characters[0]); // h
+println(characters[4]); // o
+
+
+// ==========================================
+// STRING INDEXING
+// ==========================================
+
+var text = "D++";
+
+println(text[0]); // D
+println(text[1]); // +
+println(text[2]); // +
