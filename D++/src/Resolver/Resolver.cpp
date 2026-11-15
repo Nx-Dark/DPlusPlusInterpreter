@@ -50,7 +50,7 @@ namespace DXX
 	{
 		for (int i{ (int)m_Scopes.size() - 1 }; i >= 0; i--)
 		{
-			if (m_Scopes._Get_container().at(i).contains(name.m_Lexeme))
+			if (m_Scopes.c.at(i).contains(name.m_Lexeme))
 			{
 				m_Interpreter.Resolve(expr, m_Scopes.size() - 1 - i);
 				return;

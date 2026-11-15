@@ -770,6 +770,10 @@ namespace DXX
 		m_GlobalEnv->define("sqrt", CreateRef<SqrtFunc>());
 		//nativ min func
 		m_GlobalEnv->define("min", CreateRef<MinFunc>());
+		//native sin func
+		m_GlobalEnv->define("sin", CreateRef<SinFunc>());
+		//native cos func
+		m_GlobalEnv->define("cos", CreateRef<CosFunc>());
 		//native input func
 		m_GlobalEnv->define("input", CreateRef<InputFunc>());
 		//native type cast functions

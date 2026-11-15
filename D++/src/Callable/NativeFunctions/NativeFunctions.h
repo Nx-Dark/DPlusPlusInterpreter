@@ -85,6 +85,28 @@ namespace DXX
 		inline virtual std::string ToString() const override { return "<native min func>"; }
 	};
 
+	class SinFunc : public Callable
+	{
+	public:
+		virtual ~SinFunc() = default;
+
+		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
+		inline virtual std::string ToString() const override { return "<native sin func>"; }
+	};
+
+	class CosFunc : public Callable
+	{
+	public:
+		virtual ~CosFunc() = default;
+
+		virtual Literal Call(Interpreter& interpreter, const std::vector<Literal>& arguments) override;
+		inline virtual uint32_t minArity() const override { return 1; }
+		inline virtual uint32_t maxArity() const override { return 1; }
+		inline virtual std::string ToString() const override { return "<native cos func>"; }
+	};
+
 	class InputFunc : public Callable
 	{
 	public:

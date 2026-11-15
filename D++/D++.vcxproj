@@ -172,6 +172,7 @@
     <ClInclude Include="src\Source\SourceManager.h" />
     <ClInclude Include="src\Tokenizer\Token.h" />
     <ClInclude Include="src\Tokenizer\Tokenization.h" />
+    <ClInclude Include="src\Types\DictObject.h" />
     <ClInclude Include="src\Types\ListObject.h" />
     <ClInclude Include="src\Types\Literal.h" />
     <ClInclude Include="src\Types\StringObject.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="src\Resolver\Resolver.cpp" />
     <ClCompile Include="src\Source\SourceManager.cpp" />
     <ClCompile Include="src\Tokenizer\Tokenization.cpp" />
+    <ClCompile Include="src\Types\DictObject.cpp" />
     <ClCompile Include="src\Types\ListObject.cpp" />
     <ClCompile Include="src\Types\Literal.cpp" />
     <ClCompile Include="src\Types\StringObject.cpp" />

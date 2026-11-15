@@ -136,6 +136,7 @@
       <Filter>Types</Filter>
     </ClInclude>
     <ClInclude Include="src\dpch.h" />
+    <ClInclude Include="src\Types\DictObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AST\Expression.cpp">
@@ -196,5 +197,6 @@
       <Filter>Types</Filter>
     </ClCompile>
     <ClCompile Include="src\dpch.cpp" />
+    <ClCompile Include="src\Types\DictObject.cpp" />
   </ItemGroup>
 </Project>

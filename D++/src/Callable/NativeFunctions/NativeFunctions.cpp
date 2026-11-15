@@ -10,6 +10,11 @@
 namespace DXX
 {
 
+	static constexpr double ToRadians(double angleInDeg)
+	{
+		return (angleInDeg * 3.14159265358979323846) / 180.0f;
+	}
+
 	static std::optional<bool> isTruthy(const Literal& literal)
 	{
 		if (std::holds_alternative<Nil>(literal)) return false;
@@ -127,6 +132,26 @@ namespace DXX
 		else throw interpreter.nativeError("Unsupported Type as argument.");
 
 		return Nil{};
+	}
+
+	Literal SinFunc::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
+	{
+		const Literal arg1{ arguments[0] };
+
+		if (!std::holds_alternative<double>(arg1))
+			interpreter.nativeError("Unsupported Type as argument.");
+
+		return std::sin(ToRadians(std::get<double>(arg1)));
+	}
+
+	Literal CosFunc::Call(Interpreter& interpreter, const std::vector<Literal>& arguments)
+	{
+		const Literal arg1{ arguments[0] };
+
+		if (!std::holds_alternative<double>(arg1))
+			interpreter.nativeError("Unsupported Type as argument.");
+
+		return std::cos(ToRadians(std::get<double>(arg1)));
 	}
 
 	//native input func

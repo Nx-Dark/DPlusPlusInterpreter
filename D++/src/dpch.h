@@ -20,5 +20,6 @@
 #include <type_traits>
 #include <expected>
 #include <stack>
+#include <cmath>
 
 #include "Core/Core.h"

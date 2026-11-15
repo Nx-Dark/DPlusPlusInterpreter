@@ -9,6 +9,13 @@
 namespace DXX
 {
 
+	template<typename T, typename Container = std::deque<T>>
+	class permissive_stack : public std::stack<T, Container>
+	{
+	public:
+		using std::stack<T, Container>::c;
+	};
+
 	class Interpreter;
 
 	class Token;
@@ -23,7 +30,7 @@ namespace DXX
 		Interpreter& m_Interpreter;
 		std::string m_SourceName{};
 
-		std::stack<std::unordered_map<std::string, bool>> m_Scopes{};
+		permissive_stack<std::unordered_map<std::string, bool>> m_Scopes{};
 
 		//function type enum
 		enum class FunctionType
